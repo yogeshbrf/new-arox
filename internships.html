@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+  <script>
+    (function () {
+      const storedTheme = localStorage.getItem('arox-theme') || 'dark';
+      document.documentElement.className = 'theme-' + storedTheme;
+      if (storedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internships | AROX Tech - Launch Your Engineering Career</title>
+  <meta name="description"
+    content="Join AROX Tech internships - Full Stack, Python Backend, UI/UX, AI Agent, Cloud DevOps and Mobile App engineering programs with real production projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/coverflow.css" />
+  <style>
+    /* ============================================================
+       MAGNETIC CAROUSEL - Skeuomorphic macOS-dock style
+       Adapted from the AROX magnetic internship concept, wired into
+       the site theme (light/dark) and live application flow.
+    ============================================================ */
+    .internship-hero {
+      padding: 110px 1.5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .internship-hero .grid-lines-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.18;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    }
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+    }
+    .internship-hero h1 {
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: 1.25rem;
+    }
+    .internship-hero h1 .accent-word {
+      background: linear-gradient(120deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .internship-hero p {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    /* ---- carousel ---- */
+    .carousel-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel-container {
+      width: 100%;
+      max-width: 1320px;
+      height: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      overflow: visible;
+      user-select: none;
+      padding: 0 24px;
+    }
+    @media (max-width: 700px) {
+      .carousel-scroll { overflow-x: auto; }
+      .carousel-container { justify-content: flex-start; min-width: max-content; }
+    }
+
+    .carousel-bar {
+      flex: none;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: var(--surface-elevated);
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .collapsed-view {
+      position: absolute;
+      inset: 0;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+    .carousel-bar.is-hovered .collapsed-view {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .collapsed-title {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--heading);
+      white-space: nowrap;
+    }
+    .collapsed-index {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--muted);
+      opacity: 0.9;
+    }
+
+    .hover-view {
+      position: absolute;
+      inset: 0;
+      padding: 26px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      pointer-events: none;
+    }
+    .carousel-bar.is-hovered .hover-view {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    .hover-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hover-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 4px 8px;
+      background: rgba(128, 128, 128, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .hover-index {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .hover-icon-container {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: rgba(128, 128, 128, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .hover-icon-container::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0;
+      filter: blur(8px);
+      z-index: -1;
+      transition: opacity 0.3s ease;
+    }
+    .carousel-bar.is-hovered .hover-icon-container::after { opacity: 0.65; }
+    .hover-icon-container svg {
+      width: 38px;
+      height: 38px;
+      stroke-width: 1.5;
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 8px var(--accent-glow));
+    }
+    .hover-info-container { display: flex; flex-direction: column; gap: 6px; }
+    .hover-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1.2;
+    }
+    .hover-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.8;
+      margin-bottom: 6px;
+    }
+    .hover-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+    .hover-metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .metric-val {
+      font-weight: 700;
+      color: var(--heading);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .star-icon {
+      width: 12px;
+      height: 12px;
+      fill: #fbbf24;
+      stroke: none;
+    }
+    .hover-apply-btn {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-color);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .hover-apply-btn:hover { transform: translateX(4px); }
+
+    /* ---- perks strip ---- */
+    .perks-section {
+      padding: 4.5rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .perks-head {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .perks-head h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .perks-head p { color: var(--muted); max-width: 560px; margin: 0 auto; line-height: 1.7; }
+    .perks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+    .perk-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+    }
+    .perk-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow);
+    }
+    .perk-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glow-color);
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .perk-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .perk-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ---- split-screen modal ---- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .modal-window {
+      width: 880px;
+      max-width: calc(100vw - 32px);
+      height: auto;
+      max-height: calc(100vh - 32px);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.7);
+      display: flex;
+      overflow: hidden;
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      background-color: var(--surface-elevated);
+    }
+    .modal-backdrop.active .modal-window { transform: scale(1); }
+    .modal-left-panel {
+      width: 38%;
+      background: #03060f;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+    }
+    .modal-vertical-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.05);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .modal-icon-container {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .modal-icon-container::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0.8;
+      filter: blur(12px);
+      z-index: -1;
+    }
+    .modal-icon-container svg {
+      width: 64px;
+      height: 64px;
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 12px var(--accent-glow));
+    }
+    .modal-right-panel {
+      width: 62%;
+      position: relative;
+      background-color: var(--surface-elevated);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 28px;
+      font-weight: 300;
+      cursor: pointer;
+      line-height: 1;
+      z-index: 100;
+      transition: color 0.2s;
+    }
+    .modal-close-btn:hover { color: var(--heading); }
+    .modal-panel-view { display: none; animation: fadeSlideIn 0.3s ease forwards; }
+    .modal-panel-view.active { display: block; }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      background: rgba(128, 128, 128, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent-color);
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .modal-apply-trigger-btn {
+      background: linear-gradient(180deg, #FF8C42 0%, #D84315 100%);
+      color: #FFFFFF;
+      border: 1px solid #BF360C;
+      border-top: 1px solid #FFCC80;
+      padding: 13px 26px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s ease;
+      align-self: flex-start;
+    }
+    .modal-apply-trigger-btn:hover { background: linear-gradient(180deg, #FFA726 0%, #E65100 100%); }
+
+    /* Google-style form */
+    .google-form-container { display: flex; flex-direction: column; width: 100%; }
+    .google-form-header { margin-bottom: 20px; }
+    .google-form-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--heading);
+      margin-bottom: 4px;
+    }
+    .google-form-subtitle { font-size: 13px; color: var(--muted); opacity: 0.85; }
+    .google-input-group { position: relative; margin-bottom: 20px; width: 100%; }
+    .google-input {
+      width: 100%;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      color: var(--heading);
+      font-size: 14px;
+      outline: none;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s;
+    }
+    .google-input:focus { border-color: var(--primary); }
+    .google-label {
+      position: absolute;
+      left: 0;
+      top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .google-input:focus ~ .google-label,
+    .google-input:not(:placeholder-shown) ~ .google-label {
+      top: -12px;
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .google-select {
+      width: 100%;
+      padding: 10px 0;
+      background: var(--surface-elevated);
+      border: none;
+      border-bottom: 2px solid var(--border);
+      color: var(--heading);
+      font-size: 14px;
+      outline: none;
+      font-family: var(--font-sans);
+      cursor: pointer;
+    }
+    .google-select:focus { border-color: var(--primary); }
+    .google-select-group { margin-bottom: 20px; }
+    .google-select-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .google-form-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .google-btn-back {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .google-btn-back:hover { background: rgba(128, 128, 128, 0.1); color: var(--heading); }
+    .google-btn-next {
+      background: var(--primary);
+      color: var(--background);
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: background 0.2s;
+    }
+    .google-btn-next:hover { background: var(--secondary); }
+    .google-btn-next[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+    /* Success view */
+    .success-view {
+      text-align: center;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-icon-container {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: #10b981;
+      animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-icon-container svg { width: 36px; height: 36px; }
+    .success-meta {
+      margin: 0.5rem auto 1.5rem;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .success-meta strong { color: var(--heading); }
+    .success-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .success-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      color: var(--heading);
+      background: var(--surface);
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .success-link-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .error-msg {
+      color: var(--error);
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 18px;
+      margin-top: 4px;
+    }
+    .submit-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 700px) {
+      .modal-window { flex-direction: column; overflow-y: auto; }
+      .modal-left-panel { width: 100%; padding: 24px; border-right: none; border-bottom: 1px solid var(--border); }
+      .modal-icon-container { width: 84px; height: 84px; }
+      .modal-icon-container svg { width: 40px; height: 40px; }
+      .modal-vertical-title { font-size: 20px; }
+      .modal-right-panel { width: 100%; padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <header id="site-header">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo">
+          <img id="nav-logo-img" src="public/assets/logo/logo-dark.png" alt="Arox Tech Logo"
+            onerror="this.style.display='none';document.getElementById('nav-logo-text').style.display='block'" />
+          <span id="nav-logo-text"
+            style="display:none;font-family:var(--font-display);font-weight:800;font-size:1.25rem;color:var(--heading);letter-spacing:-.03em;">AROX</span>
+          <span class="mobile-breadcrumb-sep">/</span>
+          <span class="mobile-breadcrumb-current">Internships</span>
+        </a>
+        <div class="nav-divider">/</div>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="courses.html" class="nav-link">Courses</a>
+          <a href="internships.html" class="nav-link active"><span class="nav-link-indicator"></span>Internships</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <a href="/login" class="nav-login">Login</a>
+        <label class="switch" title="Toggle theme">
+          <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
+          <span class="slider">
+            <div class="star star_1"></div>
+            <div class="star star_2"></div>
+            <div class="star star_3"></div>
+            <svg viewBox="0 0 16 16" class="cloud_1 cloud">
+              <path
+                transform="matrix(.77976 0 0 .78395-299.99-418.63)"
+                fill="#fff"
+                d="m391.84 540.91c-.421-.329-.949-.524-1.523-.524-1.351 0-2.451 1.084-2.485 2.435-1.395.526-2.388 1.88-2.388 3.466 0 1.874 1.385 3.423 3.182 3.667v.034h12.73v-.006c1.775-.104 3.182-1.584 3.182-3.395 0-1.747-1.309-3.186-2.994-3.379.007-.106.011-.214.011-.322 0-2.707-2.271-4.901-5.072-4.901-2.073 0-3.856 1.202-4.643 2.925"
+              ></path>
+            </svg>
+          </span>
+        </label>
+        <button id="hamburger-btn" class="nav-hamburger" aria-label="Toggle mobile menu">
+          <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line class="line-1" x1="4" y1="6" x2="20" y2="6"></line>
+            <line class="line-2" x1="4" y1="12" x2="20" y2="12"></line>
+            <line class="line-3" x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div id="mobile-menu" aria-hidden="true">
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link"><span>Home</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="about.html" class="mobile-nav-link"><span>About</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="services.html" class="mobile-nav-link"><span>Services</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="courses.html" class="mobile-nav-link"><span>Courses</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg></a>
+      <a href="internships.html" class="mobile-nav-link active"><span>Internships</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg></a>
+      <a href="contact.html" class="mobile-nav-link"><span>Contact</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+    </nav>
+    <div class="mobile-bottom">
+      <div class="mobile-theme-row">
+        <span>Theme</span>
+        <div class="mobile-theme-buttons">
+          <button class="mobile-theme-btn" data-theme="light">light</button>
+          <button class="mobile-theme-btn active" data-theme="dark">dark</button>
+        </div>
+      </div>
+      <a href="/login" class="mobile-login-btn">Login</a>
+      <a href="apply.html" class="mobile-cta-btn">Get Started</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section class="internship-hero">
+      <div class="grid-lines-bg" aria-hidden="true"></div>
+      <div style="position:relative;">
+        <div class="section-badge">
+          <span class="badge-dot"></span>
+          Cohort Openings 2026
+        </div>
+        <h1>Engineering Internships<br /><span class="accent-word">That Pull You Forward</span></h1>
+        <p>
+          Work on real production projects, ship production-grade code, and learn from senior
+          engineers at AROX Tech. Hands-on programs designed to make you interview-ready in 1–3 months.
+        </p>
+        <div class="hero-cta-row">
+          <a href="#internship-programs" class="btn-primary">
+            Explore Programs
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:6px;display:inline-block;vertical-align:middle;">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+          <a href="courses.html" class="btn-secondary">View Training Programs</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAGNETIC CAROUSEL -->
+    <section id="internship-programs" style="padding:1rem 0 3rem;scroll-margin-top:120px;">
+      <div class="carousel-scroll">
+        <div class="carousel-container" id="carousel-container"></div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.875rem;margin-top:.5rem;">
+        Hover the bars to expand a program &middot; click <strong style="color:var(--heading);">Apply Now</strong> to start your application
+      </p>
+    </section>
+
+    <!-- PERKS -->
+    <section class="perks-section">
+      <div class="perks-head">
+        <div class="section-badge" style="margin-bottom:1rem;">
+          <span class="badge-dot"></span>
+          Why AROX Internships
+        </div>
+        <h2>More than an internship.</h2>
+        <p>Every program blends mentorship, real client work, and structured curriculum so you graduate with a portfolio — not just a certificate.</p>
+      </div>
+      <div class="perks-grid">
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Real Production Work</h3>
+          <p>Contribute to live projects shipped to AROX client deployments with code reviews by senior engineers.</p>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>1:1 Mentorship</h3>
+          <p>Weekly pairing with domain leads, personalized roadmaps, and direct feedback on every pull request.</p>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+          <h3>Offer Letter & Certificate</h3>
+          <p>Receive a formal offer letter, completion certificate, and application PDF the moment you apply.</p>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Interview Ready</h3>
+          <p>Mock interviews, resume clinics, and placement support tuned to what hiring managers look for in 2026.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+      <!-- PRE-FOOTER CTA SECTION -->
+  <section class="cta-section" id="cta">
+    <div class="cta-card reveal">
+      <div class="cta-content">
+        <div class="card-number">03 / INTERNSHIPS</div>
+        <h2 class="cta-heading">Learn technology by building it.</h2>
+        <p class="cta-text">Develop practical skills through structured training, real-world projects, and guided learning designed for students and aspiring technology professionals.</p>
+        <div class="cta-actions">
+          <a href="courses.html" class="btn-primary">
+            <span>Explore Courses</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 6px; display: inline-block; vertical-align: middle;"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg>
+          </a>
+          <a href="apply.html" class="btn-secondary">
+            <span>Apply for Internship</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPLIT-SCREEN APPLICATION MODAL -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-window">
+      <div class="modal-left-panel" id="modal-left-panel">
+        <div class="modal-vertical-title" id="modal-vertical-title">FULL STACK</div>
+        <div class="modal-icon-container" id="modal-icon-container"></div>
+      </div>
+      <div class="modal-right-panel" id="modal-right-panel">
+        <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">&times;</button>
+
+        <!-- STAGE 1: Program Details -->
+        <div class="modal-panel-view active" id="modal-view-details">
+          <span class="modal-badge" id="modal-badge-duration">Duration: 1–3 Months</span>
+          <h2 class="modal-title" id="modal-title-text">Full Stack Web Development Internship</h2>
+          <p class="modal-desc" id="modal-desc-text"></p>
+          <button class="modal-apply-trigger-btn" id="modal-apply-trigger-btn">
+            Apply Now &rarr;
+          </button>
+        </div>
+
+        <!-- STAGE 2: Personal details -->
+        <div class="modal-panel-view" id="modal-view-form-step1">
+          <div class="google-form-container">
+            <div class="google-form-header">
+              <h3 class="google-form-title">Enter your details</h3>
+              <p class="google-form-subtitle">Step 1 of 2: Personal information</p>
+            </div>
+            <form id="google-form-1" onsubmit="return false;">
+              <div class="google-input-group">
+                <input type="text" class="google-input" id="form-name" placeholder=" " required>
+                <label class="google-label" for="form-name">Full Name</label>
+              </div>
+              <div class="google-input-group">
+                <input type="email" class="google-input" id="form-email" placeholder=" " required>
+                <label class="google-label" for="form-email">Email address</label>
+              </div>
+              <div class="google-input-group">
+                <input type="tel" class="google-input" id="form-phone" placeholder=" " required>
+                <label class="google-label" for="form-phone">Phone number</label>
+              </div>
+              <div class="google-select-group">
+                <label class="google-select-label" for="form-gender">Gender</label>
+                <select class="google-select" id="form-gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="error-msg" id="error-step1"></div>
+              <div class="google-form-actions">
+                <button type="button" class="google-btn-back" id="form-btn-back-details">Cancel</button>
+                <button type="button" class="google-btn-next" id="form-btn-next-step2">Next</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- STAGE 3: Academic details -->
+        <div class="modal-panel-view" id="modal-view-form-step2">
+          <div class="google-form-container">
+            <div class="google-form-header">
+              <h3 class="google-form-title">Tell us about your academics</h3>
+              <p class="google-form-subtitle">Step 2 of 2: College information</p>
+            </div>
+            <form id="google-form-2" onsubmit="return false;">
+              <div class="google-input-group">
+                <input type="text" class="google-input" id="form-college" placeholder=" " required>
+                <label class="google-label" for="form-college">College / University</label>
+              </div>
+              <div class="google-input-group">
+                <input type="text" class="google-input" id="form-degree" placeholder=" " required>
+                <label class="google-label" for="form-degree">Degree &amp; Specialization</label>
+              </div>
+              <div class="google-input-group">
+                <input type="text" class="google-input" id="form-grad-year" placeholder=" " required>
+                <label class="google-label" for="form-grad-year">Graduation Year</label>
+              </div>
+              <div class="google-select-group">
+                <label class="google-select-label" for="form-payment">Payment Plan</label>
+                <select class="google-select" id="form-payment">
+                  <option value="full">Pay in Full</option>
+                  <option value="advance">Pay in Advance</option>
+                </select>
+              </div>
+              <div class="error-msg" id="error-step2"></div>
+              <div class="google-form-actions">
+                <button type="button" class="google-btn-back" id="form-btn-back-step1">Back</button>
+                <button type="button" class="google-btn-next" id="form-btn-submit">Submit Application</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- STAGE 4: Success -->
+        <div class="modal-panel-view" id="modal-view-success">
+          <div class="success-view">
+            <div class="success-icon-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h2 class="modal-title" style="font-size:24px;margin-bottom:8px;">Application Submitted!</h2>
+            <p class="success-meta" id="success-meta-text">
+              Thanks for applying. Your application reference is <strong id="success-app-id">—</strong>.
+            </p>
+            <div class="success-links" id="success-links">
+              <a href="#" class="success-link-btn" id="success-offer-link" target="_blank" rel="noopener">Download Offer Letter</a>
+              <a href="#" class="success-link-btn" id="success-pdf-link" target="_blank" rel="noopener">Download Application</a>
+            </div>
+            <button class="google-btn-next" id="success-btn-done">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      'use strict';
+
+      /* ============ MAGNETIC CAROUSEL DATA (AROX programs) ============ */
+      const DATA = [
+        {
+          index: "01",
+          title: "Full Stack Web Development",
+          subtitle: "React, Node.js & Databases",
+          pill: "FRONTEND & BACKEND",
+          badge: "Duration: 1–3 Months",
+          desc: "Build real production-ready web platforms using React, Node.js, REST & GraphQL APIs, and SQL/NoSQL databases.",
+          duration: "3 Months",
+          rating: "4.85",
+          accentColor: "#FF5500",
+          accentGlow: "rgba(255, 85, 0, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`
+        },
+        {
+          index: "02",
+          title: "Python Backend Engineering",
+          subtitle: "FastAPI, PostgreSQL & Docker",
+          pill: "PYTHON & DJANGO",
+          badge: "Duration: 1–3 Months",
+          desc: "Engineer scalable backend microservices, REST APIs, and automation scripts with FastAPI, PostgreSQL, Redis, and Docker.",
+          duration: "3 Months",
+          rating: "4.90",
+          accentColor: "#f59e0b",
+          accentGlow: "rgba(245, 158, 11, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
+        },
+        {
+          index: "03",
+          title: "UI/UX Product Design",
+          subtitle: "Figma & Design Systems",
+          pill: "FIGMA & PROTOTYPE",
+          badge: "Duration: 1–3 Months",
+          desc: "Prototype enterprise-grade digital products and master complete design systems with advanced Figma workflows.",
+          duration: "3 Months",
+          rating: "4.91",
+          accentColor: "#ec4899",
+          accentGlow: "rgba(236, 72, 153, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>`
+        },
+        {
+          index: "04",
+          title: "AI Agent Engineering",
+          subtitle: "LLM, RAG & Vector Search",
+          pill: "LLM & RAG",
+          badge: "Duration: 3–6 Months",
+          desc: "Orchestrate LLMs, build RAG pipelines, and deploy custom vector search engines with LangChain and OpenAI APIs.",
+          duration: "6 Months",
+          rating: "4.95",
+          accentColor: "#10b981",
+          accentGlow: "rgba(16, 185, 129, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`
+        },
+        {
+          index: "05",
+          title: "Cloud & DevOps Engineering",
+          subtitle: "AWS, Terraform & Kubernetes",
+          pill: "AWS & CLOUD",
+          badge: "Duration: 1–3 Months",
+          desc: "Deploy serverless architectures and automate cloud infrastructure with AWS, Terraform, Docker, and Kubernetes.",
+          duration: "3 Months",
+          rating: "4.89",
+          accentColor: "#06b6d4",
+          accentGlow: "rgba(6, 182, 212, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>`
+        },
+        {
+          index: "06",
+          title: "Mobile App Engineering",
+          subtitle: "React Native & Expo",
+          pill: "IOS & ANDROID",
+          badge: "Duration: 1–3 Months",
+          desc: "Build native cross-platform mobile apps for iOS and Android with React Native, Expo, and App Store publishing.",
+          duration: "3 Months",
+          rating: "4.92",
+          accentColor: "#8b5cf6",
+          accentGlow: "rgba(139, 92, 246, 0.4)",
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12" y2="18"></line></svg>`
+        }
+      ];
+
+      /* ============ CAROUSEL RENDER + PHYSICS ============ */
+      const collapsedWidth = 110;
+      const hoverWidth = 290;
+      const collapsedHeight = 440;
+      const hoverHeight = 480;
+      const gap = 16;
+      const influence = 180;
+
+      const container = document.getElementById('carousel-container');
+      let factors = DATA.map(() => 0);
+      let targetRef = DATA.map(() => 0);
+      let curRef = DATA.map(() => 0);
+      let loopId = null;
+
+      DATA.forEach((item, i) => {
+        const bar = document.createElement('div');
+        bar.className = 'carousel-bar';
+        bar.style.width = collapsedWidth + 'px';
+        bar.style.height = collapsedHeight + 'px';
+        bar.style.setProperty('--accent-color', item.accentColor);
+        bar.style.setProperty('--accent-glow', item.accentGlow);
+
+        const collapsedDiv = document.createElement('div');
+        collapsedDiv.className = 'collapsed-view';
+        const titleVert = document.createElement('span');
+        titleVert.className = 'collapsed-title';
+        titleVert.textContent = item.title;
+        const indexBot = document.createElement('span');
+        indexBot.className = 'collapsed-index';
+        indexBot.textContent = item.index;
+        collapsedDiv.appendChild(titleVert);
+        collapsedDiv.appendChild(indexBot);
+        bar.appendChild(collapsedDiv);
+
+        const hoverDiv = document.createElement('div');
+        hoverDiv.className = 'hover-view';
+
+        const topRow = document.createElement('div');
+        topRow.className = 'hover-top-row';
+        const pill = document.createElement('span');
+        pill.className = 'hover-pill';
+        pill.textContent = item.pill;
+        const indexTop = document.createElement('span');
+        indexTop.className = 'hover-index';
+        indexTop.textContent = item.index;
+        topRow.appendChild(pill);
+        topRow.appendChild(indexTop);
+        hoverDiv.appendChild(topRow);
+
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'hover-icon-container';
+        iconDiv.innerHTML = item.icon;
+        hoverDiv.appendChild(iconDiv);
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'hover-info-container';
+
+        const mainTitle = document.createElement('h3');
+        mainTitle.className = 'hover-title';
+        mainTitle.textContent = item.title;
+        const subTitle = document.createElement('p');
+        subTitle.className = 'hover-subtitle';
+        subTitle.textContent = item.subtitle;
+        const divLine = document.createElement('hr');
+        divLine.className = 'hover-divider';
+        const metricRow = document.createElement('div');
+        metricRow.className = 'hover-metric-row';
+        metricRow.innerHTML = '<span>Duration</span><span class="metric-val">' + item.duration + '</span>';
+        const ratingRow = document.createElement('div');
+        ratingRow.className = 'hover-metric-row';
+        ratingRow.innerHTML = '<span>Rating</span><span class="metric-val"><svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' + item.rating + '</span>';
+        const applyBtn = document.createElement('div');
+        applyBtn.className = 'hover-apply-btn';
+        applyBtn.innerHTML = 'Apply Now &rarr;';
+
+        infoDiv.appendChild(mainTitle);
+        infoDiv.appendChild(subTitle);
+        infoDiv.appendChild(divLine);
+        infoDiv.appendChild(metricRow);
+        infoDiv.appendChild(ratingRow);
+        infoDiv.appendChild(applyBtn);
+        hoverDiv.appendChild(infoDiv);
+        bar.appendChild(hoverDiv);
+
+        container.appendChild(bar);
+
+        bar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openModal(item);
+        });
+      });
+
+      const bars = Array.from(container.querySelectorAll('.carousel-bar'));
+
+      function physicsStep() {
+        let moving = false;
+        for (let i = 0; i < curRef.length; i++) {
+          const diff = targetRef[i] - curRef[i];
+          if (Math.abs(diff) > 0.001) {
+            curRef[i] += diff * 0.16;
+            moving = true;
+          } else {
+            curRef[i] = targetRef[i];
+          }
+        }
+        factors = curRef.slice();
+
+        bars.forEach((bar, i) => {
+          const f = factors[i] || 0;
+          const w = collapsedWidth + (hoverWidth - collapsedWidth) * f;
+          const h = collapsedHeight + (hoverHeight - collapsedHeight) * f;
+          bar.style.width = w + 'px';
+          bar.style.height = h + 'px';
+          if (w > 180) {
+            bar.classList.add('is-hovered');
+          } else {
+            bar.classList.remove('is-hovered');
+          }
+        });
+
+        loopId = moving ? requestAnimationFrame(physicsStep) : null;
+      }
+
+      function startPhysics() {
+        if (!loopId) {
+          loopId = requestAnimationFrame(physicsStep);
+        }
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const n = DATA.length;
+        const totalBase = n * collapsedWidth + (n - 1) * gap;
+        const startX = (rect.width - totalBase) / 2;
+        targetRef = DATA.map((_, i) => {
+          const center = startX + i * (collapsedWidth + gap) + collapsedWidth / 2;
+          const dist = Math.abs(cx - center);
+          const f = Math.max(0, 1 - dist / influence);
+          return f * f * (3 - 2 * f);
+        });
+        startPhysics();
+      });
+
+      container.addEventListener('mouseleave', () => {
+        targetRef = DATA.map(() => 0);
+        startPhysics();
+      });
+
+      /* ============ SPLIT-SCREEN MODAL + WORKING APPLICATION ============ */
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalLeftPanel = document.getElementById('modal-left-panel');
+      const modalVertTitle = document.getElementById('modal-vertical-title');
+      const modalIconContainer = document.getElementById('modal-icon-container');
+
+      const modalViewDetails = document.getElementById('modal-view-details');
+      const modalViewFormStep1 = document.getElementById('modal-view-form-step1');
+      const modalViewFormStep2 = document.getElementById('modal-view-form-step2');
+      const modalViewSuccess = document.getElementById('modal-view-success');
+
+      const error1 = document.getElementById('error-step1');
+      const error2 = document.getElementById('error-step2');
+
+      let currentInternship = null;
+
+      function openModal(item) {
+        currentInternship = item;
+        modalLeftPanel.style.setProperty('--accent-color', item.accentColor);
+        modalLeftPanel.style.setProperty('--accent-glow', item.accentGlow);
+        modalVertTitle.textContent = item.title;
+        modalIconContainer.innerHTML = item.icon;
+        document.getElementById('modal-badge-duration').textContent = item.badge;
+        document.getElementById('modal-title-text').textContent = item.title + ' Internship';
+        document.getElementById('modal-desc-text').textContent = item.desc;
+        resetFormViews();
+        modalBackdrop.classList.add('active');
+      }
+
+      function resetFormViews() {
+        modalViewDetails.classList.add('active');
+        modalViewFormStep1.classList.remove('active');
+        modalViewFormStep2.classList.remove('active');
+        modalViewSuccess.classList.remove('active');
+        error1.textContent = '';
+        error2.textContent = '';
+        document.getElementById('google-form-1').reset();
+        document.getElementById('google-form-2').reset();
+      }
+
+      function closeModal() {
+        modalBackdrop.classList.remove('active');
+      }
+
+      modalCloseBtn.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) closeModal();
+      });
+
+      document.getElementById('modal-apply-trigger-btn').addEventListener('click', () => {
+        modalViewDetails.classList.remove('active');
+        modalViewFormStep1.classList.add('active');
+      });
+
+      document.getElementById('form-btn-back-details').addEventListener('click', () => {
+        modalViewFormStep1.classList.remove('active');
+        modalViewDetails.classList.add('active');
+      });
+
+      document.getElementById('form-btn-next-step2').addEventListener('click', () => {
+        const nameInput = document.getElementById('form-name');
+        const emailInput = document.getElementById('form-email');
+        const phoneInput = document.getElementById('form-phone');
+        if (nameInput.value.trim() === '') { error1.textContent = 'Please enter your full name.'; nameInput.focus(); return; }
+        if (!emailInput.checkValidity() || emailInput.value.trim() === '') { error1.textContent = 'Please enter a valid email address.'; emailInput.focus(); return; }
+        if (phoneInput.value.trim() === '') { error1.textContent = 'Please enter your phone number.'; phoneInput.focus(); return; }
+        error1.textContent = '';
+        modalViewFormStep1.classList.remove('active');
+        modalViewFormStep2.classList.add('active');
+      });
+
+      document.getElementById('form-btn-back-step1').addEventListener('click', () => {
+        modalViewFormStep2.classList.remove('active');
+        modalViewFormStep1.classList.add('active');
+      });
+
+      document.getElementById('form-btn-submit').addEventListener('click', async (e) => {
+        const collegeInput = document.getElementById('form-college');
+        const degreeInput = document.getElementById('form-degree');
+        const gradYearInput = document.getElementById('form-grad-year');
+        if (collegeInput.value.trim() === '') { error2.textContent = 'Please enter your college or university.'; collegeInput.focus(); return; }
+        if (degreeInput.value.trim() === '') { error2.textContent = 'Please enter your degree.'; degreeInput.focus(); return; }
+        if (gradYearInput.value.trim() === '') { error2.textContent = 'Please enter your graduation year.'; gradYearInput.focus(); return; }
+
+        const btn = e.target;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="submit-spinner"></span>Submitting...';
+        error2.textContent = '';
+
+        const fullName = document.getElementById('form-name').value.trim();
+        const nameParts = fullName.split(' ');
+        const first = nameParts.shift();
+        const last = nameParts.join(' ') || first;
+
+        const payload = new FormData();
+        payload.append('first_name', first);
+        payload.append('last_name', last);
+        payload.append('email', document.getElementById('form-email').value.trim());
+        payload.append('phone', document.getElementById('form-phone').value.trim());
+        payload.append('gender', document.getElementById('form-gender').value);
+        payload.append('college', collegeInput.value.trim());
+        payload.append('university', collegeInput.value.trim());
+        payload.append('degree', degreeInput.value.trim());
+        payload.append('department', degreeInput.value.trim());
+        payload.append('year_of_study', '');
+        payload.append('graduation_year', gradYearInput.value.trim());
+        payload.append('course', currentInternship.title + ' Internship');
+        payload.append('course_duration', currentInternship.duration);
+        payload.append('course_start_date', '');
+        payload.append('payment_plan', document.getElementById('form-payment').value);
+
+        try {
+          const response = await fetch('/api/registrations/apply', {
+            method: 'POST',
+            body: payload
+          });
+          const data = await response.json();
+          if (data.success) {
+            const appData = data.data || {};
+            document.getElementById('success-app-id').textContent = appData.studentId || '—';
+            document.getElementById('success-offer-link').href = appData.offerLetterUrl || '#';
+            document.getElementById('success-pdf-link').href = appData.applicationPdfUrl || '#';
+            if (!appData.offerLetterUrl) document.getElementById('success-offer-link').style.display = 'none';
+            if (!appData.applicationPdfUrl) document.getElementById('success-pdf-link').style.display = 'none';
+            modalViewFormStep2.classList.remove('active');
+            modalViewSuccess.classList.add('active');
+          } else {
+            error2.textContent = data.message || 'Application failed. Please try again.';
+            btn.disabled = false;
+            btn.innerHTML = 'Submit Application';
+          }
+        } catch (err) {
+          console.error('Submit error:', err);
+          error2.textContent = 'Network error, please try again.';
+          btn.disabled = false;
+          btn.innerHTML = 'Submit Application';
+        }
+      });
+
+      document.getElementById('success-btn-done').addEventListener('click', closeModal);
+    });
+  </script>
+  <footer>
+    <div class="footer-inner">
+      <!-- Background Watermark -->
+      <div class="footer-watermark">Arox Tech</div>
+
+      <!-- Main Footer Grid / Mobile Accordions -->
+      <div class="footer-grid">
+        <!-- Brand Section (Top on mobile, Col 1 on desktop) -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-brand-logo">
+            <img id="footer-logo-img" src="public/assets/logo/logo-dark.png" alt="Arox Tech" onerror="this.src='assets/logo/logo-dark.png'" />
+          </a>
+          <p class="footer-tagline">
+            We build scalable software architectures, robust digital platforms, and high-impact AI solutions for modern businesses.
+          </p>
+          <!-- 4 Social Icons in a Single Row: Instagram, WhatsApp, Facebook, LinkedIn -->
+          <div class="footer-socials">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+          </div>
+          <div class="footer-brand-divider"></div>
+          <p class="footer-copyright">&copy; <span>AROX Tech 2026</span><br/>All Rights Reserved</p>
+        </div>
+
+        <!-- Row 1 / Col 2: Company -->
+        <details class="footer-col footer-col-company" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v8"/><path d="M18 9h2a2 2 0 0 1 2 2v11"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Company</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="about.html"><span class="footer-link-arrow"></span> About Us</a></li>
+              <li><a class="footer-link" href="about.html#journey"><span class="footer-link-arrow"></span> Our Journey</a></li>
+              <li><a class="footer-link" href="apply.html"><span class="footer-link-arrow"></span> Careers</a></li>
+              <li><a class="footer-link" href="about.html#team"><span class="footer-link-arrow"></span> Core Team</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Partners</a></li>
+              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> News &amp; Updates</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 1 / Col 3: Services -->
+        <details class="footer-col footer-col-services" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Services</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Software Development</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Design &amp; Dev</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> App Development</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> UI/UX &amp; Branding</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; Infrastructure</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Digital Marketing &amp; SEO</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 1 / Col 4: Training -->
+        <details class="footer-col footer-col-training" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Training</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cyber Security</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Mobile App Dev</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 2: Internships -->
+        <details class="footer-col footer-col-internships" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Internships</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Full Stack Internship</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Python Backend</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 3: Contact -->
+        <details class="footer-col footer-col-contact" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2.38l3-.02a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.44-1.44a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Contact</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-contact-items">
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Salem, Tamil Nadu, India</span>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2.38l3-.02a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.44-1.44a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"/></svg>
+                <a href="tel:+911234567890">+91 12345 67890</a>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <a href="mailto:info@aroxtech.com">info@aroxtech.com</a>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 4: Stay Updated (Newsletter) -->
+        <details class="footer-col footer-col-newsletter" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Stay Updated</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <div class="footer-newsletter">
+              <p class="footer-newsletter-desc">Subscribe to our newsletter for the latest tech releases, industry insights, and engineering updates.</p>
+              <form class="footer-newsletter-form" onsubmit="event.preventDefault();">
+                <input class="footer-newsletter-input" placeholder="Enter your email" required type="email" />
+                <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Mobile Copyright (Visible only on mobile) -->
+      <div class="footer-mobile-copyright">
+        &copy; <span>AROX Tech 2026</span> &bull; All Rights Reserved
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

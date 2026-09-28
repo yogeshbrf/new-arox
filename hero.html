@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jack &mdash; 3D Creator</title>
+  
+  <style>
+    /* ==========================================================================
+       1. FONTS & DESIGN TOKENS
+       ========================================================================== */
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    :root {
+      --bg-dark: #0C0C0C;
+      --text-primary: #D7E2EA;
+      --text-muted: #8E9BA4;
+      --text-heading-start: #646973;
+      --text-heading-end: #BBCCD7;
+      --card-border: #D7E2EA;
+      --white: #FFFFFF;
+      --font-family: 'Kanit', Arial, sans-serif;
+    }
+
+    /* ==========================================================================
+       2. GLOBAL RESET & BASE STYLES
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      overflow-x: clip;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* Gradient Heading Utility */
+    .hero-heading {
+      background: linear-gradient(180deg, var(--text-heading-start) 0%, var(--text-heading-end) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .main-wrapper {
+      width: 100%;
+      overflow-x: clip;
+      position: relative;
+    }
+
+    /* ==========================================================================
+       3. REUSABLE COMPONENTS
+       ========================================================================== */
+    /* Contact Button */
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      background: linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%);
+      box-shadow: 0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1;
+      outline: 2px solid #FFFFFF;
+      outline-offset: -3px;
+      color: #FFFFFF;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 0.75rem 2rem;
+      font-size: 0.75rem;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, opacity 0.2s ease;
+      cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+      .contact-btn {
+        padding: 0.875rem 2.5rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .contact-btn {
+        padding: 1rem 3rem;
+        font-size: 1rem;
+      }
+    }
+
+    .contact-btn:hover {
+      transform: scale(1.04);
+      opacity: 0.95;
+    }
+
+    .contact-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Live Project Button */
+    .live-project-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      border: 2px solid var(--card-border);
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+      transition: background-color 0.25s ease, transform 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 640px) {
+      .live-project-btn {
+        padding: 0.875rem 2.5rem;
+        font-size: 1rem;
+      }
+    }
+
+    .live-project-btn:hover {
+      background-color: rgba(215, 226, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .live-project-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Fade-in Animation Engine (Framer Motion replica) */
+    .fade-in {
+      opacity: 0;
+      transform: translate3d(var(--x, 0px), var(--y, 30px), 0);
+      transition: opacity var(--duration, 0.7s) cubic-bezier(0.25, 0.1, 0.25, 1) var(--delay, 0s),
+                  transform var(--duration, 0.7s) cubic-bezier(0.25, 0.1, 0.25, 1) var(--delay, 0s);
+      will-change: opacity, transform;
+    }
+
+    .fade-in.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Subtle Image Fallback placeholder */
+    .img-placeholder {
+      position: relative;
+      background: #141416;
+      border: 1px dashed rgba(215, 226, 234, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .img-placeholder::after {
+      content: attr(data-placeholder);
+      position: absolute;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(215, 226, 234, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.5rem;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       4. SECTION 1: HERO SECTION
+       ========================================================================== */
+    .hero-section {
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow-x: clip;
+      overflow-y: hidden;
+      width: 100%;
+    }
+
+    /* Navbar */
+    .hero-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 1.5rem 1.5rem 0;
+      z-index: 30;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .hero-nav {
+        padding: 2rem 2.5rem 0;
+      }
+    }
+
+    .nav-item {
+      color: var(--text-primary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      transition: opacity 200ms ease;
+    }
+
+    @media (min-width: 768px) {
+      .nav-item {
+        font-size: 1.125rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .nav-item {
+        font-size: 1.4rem;
+      }
+    }
+
+    .nav-item:hover {
+      opacity: 0.7;
+    }
+
+    /* Hero Heading Container */
+    .hero-heading-container {
+      width: 100%;
+      overflow: hidden;
+      text-align: center;
+      margin-top: 1.5rem;
+      z-index: 5;
+    }
+
+    @media (min-width: 640px) {
+      .hero-heading-container {
+        margin-top: 1rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero-heading-container {
+        margin-top: -1.25rem;
+      }
+    }
+
+    .hero-title {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+      white-space: nowrap;
+      width: 100%;
+      font-size: 14vw;
+      user-select: none;
+    }
+
+    @media (min-width: 640px) {
+      .hero-title {
+        font-size: 15vw;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 16vw;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-title {
+        font-size: 17.5vw;
+      }
+    }
+
+    /* Hero Portrait (Magnetic) */
+    .hero-portrait-wrapper {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      width: 280px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+
+    @media (min-width: 640px) {
+      .hero-portrait-wrapper {
+        top: auto;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 360px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero-portrait-wrapper {
+        width: 440px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-portrait-wrapper {
+        width: 520px;
+      }
+    }
+
+    .hero-portrait-img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
+    }
+
+    /* Hero Bottom Bar */
+    .hero-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 100%;
+      padding: 0 1.5rem 1.75rem;
+      z-index: 20;
+      position: relative;
+    }
+
+    @media (min-width: 640px) {
+      .hero-bottom {
+        padding-bottom: 2rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero-bottom {
+        padding: 0 2.5rem 2.5rem;
+      }
+    }
+
+    .hero-bottom-text {
+      color: var(--text-primary);
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      line-height: 1.375;
+      font-size: clamp(0.75rem, 1.4vw, 1.5rem);
+      max-width: 160px;
+    }
+
+    @media (min-width: 640px) {
+      .hero-bottom-text {
+        max-width: 220px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero-bottom-text {
+        max-width: 260px;
+      }
+    }
+
+    /* ==========================================================================
+       5. SECTION 2: MARQUEE SECTION
+       ========================================================================== */
+    .marquee-section {
+      background-color: var(--bg-dark);
+      padding-top: 6rem;
+      padding-bottom: 2.5rem;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .marquee-section {
+        padding-top: 8rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .marquee-section {
+        padding-top: 10rem;
+      }
+    }
+
+    .marquee-track-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .marquee-row {
+      display: flex;
+      gap: 12px;
+      width: max-content;
+      will-change: transform;
+      user-select: none;
+    }
+
+    .marquee-tile {
+      width: 420px;
+      height: 270px;
+      border-radius: 1rem;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #141416;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    @media (max-width: 640px) {
+      .marquee-tile {
+        width: 300px;
+        height: 195px;
+      }
+    }
+
+    .marquee-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ==========================================================================
+       6. SECTION 3: ABOUT SECTION
+       ========================================================================== */
+    .about-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 1.25rem;
+      text-align: center;
+      background-color: var(--bg-dark);
+    }
+
+    @media (min-width: 640px) {
+      .about-section {
+        padding: 5rem 2rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .about-section {
+        padding: 5rem 2.5rem;
+      }
+    }
+
+    /* 4 Decorative 3D Images */
+    .about-decor {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .decor-moon {
+      top: 4%;
+      left: 1%;
+      width: 120px;
+    }
+
+    .decor-object {
+      bottom: 8%;
+      left: 3%;
+      width: 100px;
+    }
+
+    .decor-lego {
+      top: 4%;
+      right: 1%;
+      width: 120px;
+    }
+
+    .decor-group {
+      bottom: 8%;
+      right: 3%;
+      width: 130px;
+    }
+
+    @media (min-width: 640px) {
+      .decor-moon { left: 2%; width: 160px; }
+      .decor-object { left: 6%; width: 140px; }
+      .decor-lego { right: 2%; width: 160px; }
+      .decor-group { right: 6%; width: 170px; }
+    }
+
+    @media (min-width: 768px) {
+      .decor-moon { left: 4%; width: 210px; }
+      .decor-object { left: 10%; width: 180px; }
+      .decor-lego { right: 4%; width: 210px; }
+      .decor-group { right: 10%; width: 220px; }
+    }
+
+    .about-content-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .about-title {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      font-size: clamp(3rem, 12vw, 160px);
+      margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .about-paragraph {
+      color: var(--text-primary);
+      font-weight: 500;
+      line-height: 1.625;
+      text-align: center;
+      max-width: 560px;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      margin-bottom: clamp(4rem, 7vw, 6rem);
+      user-select: text;
+    }
+
+    .char-span {
+      opacity: 0.2;
+      transition: opacity 0.15s ease;
+      display: inline;
+    }
+
+    /* ==========================================================================
+       7. SECTION 4: SERVICES SECTION
+       ========================================================================== */
+    .services-section {
+      background-color: var(--white);
+      color: #0C0C0C;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      padding: 5rem 1.25rem;
+      position: relative;
+      z-index: 15;
+    }
+
+    @media (min-width: 640px) {
+      .services-section {
+        border-top-left-radius: 50px;
+        border-top-right-radius: 50px;
+        padding: 6rem 2rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .services-section {
+        border-top-left-radius: 60px;
+        border-top-right-radius: 60px;
+        padding: 8rem 2.5rem;
+      }
+    }
+
+    .services-title {
+      color: #0C0C0C;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: clamp(3rem, 12vw, 160px);
+      line-height: 1;
+      margin-bottom: clamp(4rem, 8vw, 7rem);
+    }
+
+    .services-list {
+      max-width: 1024px;
+      margin: 0 auto;
+      width: 100%;
+      border-top: 1px solid rgba(12, 12, 12, 0.15);
+    }
+
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(12, 12, 12, 0.15);
+    }
+
+    @media (min-width: 640px) {
+      .service-item {
+        padding: 2.5rem 0;
+        gap: 2.5rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .service-item {
+        padding: 3rem 0;
+        gap: 3.5rem;
+      }
+    }
+
+    .service-num {
+      color: #0C0C0C;
+      font-weight: 900;
+      font-size: clamp(3rem, 10vw, 140px);
+      line-height: 0.85;
+      width: 25%;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .service-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 75%;
+    }
+
+    .service-name {
+      color: #0C0C0C;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: clamp(1rem, 2.2vw, 2.1rem);
+      line-height: 1.2;
+    }
+
+    .service-desc {
+      color: #0C0C0C;
+      font-weight: 300;
+      line-height: 1.625;
+      max-width: 42rem;
+      font-size: clamp(0.85rem, 1.6vw, 1.25rem);
+      opacity: 0.6;
+    }
+
+    /* ==========================================================================
+       8. SECTION 5: PROJECTS SECTION (Sticky Stacking)
+       ========================================================================== */
+    .projects-section {
+      background-color: var(--bg-dark);
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      margin-top: -2.5rem;
+      position: relative;
+      z-index: 20;
+      padding: 5rem 1.25rem 6rem;
+    }
+
+    @media (min-width: 640px) {
+      .projects-section {
+        border-top-left-radius: 50px;
+        border-top-right-radius: 50px;
+        margin-top: -3rem;
+        padding: 6rem 2rem 7rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .projects-section {
+        border-top-left-radius: 60px;
+        border-top-right-radius: 60px;
+        margin-top: -3.5rem;
+        padding: 7rem 2.5rem 8rem;
+      }
+    }
+
+    .projects-title {
+      font-weight: 900;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: clamp(3rem, 12vw, 160px);
+      line-height: 1;
+      margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
+
+    .projects-stack-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Each Project Wrapper sets the scroll distance */
+    .project-card-slot {
+      height: 85vh;
+      min-height: 600px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Sticky Card */
+    .project-card {
+      position: sticky;
+      width: 100%;
+      background: var(--bg-dark);
+      border: 2px solid var(--card-border);
+      border-radius: 40px;
+      padding: 1rem;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9);
+      will-change: transform;
+      transform-origin: center top;
+      transition: transform 0.1s linear;
+    }
+
+    @media (min-width: 640px) {
+      .project-card {
+        border-radius: 50px;
+        padding: 1.5rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .project-card {
+        border-radius: 60px;
+        padding: 2rem;
+      }
+    }
+
+    /* Card Top Row */
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .card-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .card-number {
+      color: var(--text-primary);
+      font-weight: 900;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+    }
+
+    .card-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-category {
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+      font-weight: 400;
+    }
+
+    .card-project-name {
+      color: var(--text-primary);
+      font-size: clamp(1.15rem, 2.5vw, 2.25rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    /* Card Bottom Row: Two-Column Image Grid */
+    .card-image-grid {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .card-image-grid {
+        gap: 1.25rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .card-image-grid {
+        gap: 1.5rem;
+      }
+    }
+
+    /* 40% Column */
+    .grid-col-left {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .grid-col-left {
+        gap: 1.25rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .grid-col-left {
+        gap: 1.5rem;
+      }
+    }
+
+    .project-img-thumb {
+      width: 100%;
+      object-fit: cover;
+      border-radius: clamp(20px, 3.5vw, 50px);
+      background: #141416;
+    }
+
+    .project-img-top {
+      height: clamp(130px, 16vw, 230px);
+    }
+
+    .project-img-bottom {
+      height: clamp(160px, 22vw, 340px);
+    }
+
+    /* 60% Column */
+    .grid-col-right {
+      width: 60%;
+      display: flex;
+    }
+
+    .project-img-tall {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: clamp(20px, 3.5vw, 50px);
+      min-height: clamp(300px, 40vw, 585px);
+      background: #141416;
+    }
+
+    /* ==========================================================================
+       9. CONTACT / FOOTER SECTION
+       ========================================================================== */
+    .contact-footer {
+      background-color: var(--bg-dark);
+      padding: 4rem 1.5rem 3rem;
+      border-top: 1px solid rgba(215, 226, 234, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .footer-heading {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-email {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      color: var(--text-primary);
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .footer-email:hover {
+      opacity: 0.75;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="main-wrapper">
+
+    <!-- ========================================================================
+         1. HERO SECTION
+         ======================================================================== -->
+    <section class="hero-section" id="hero">
+      
+      <!-- Navbar -->
+      <nav class="hero-nav fade-in" data-delay="0s" data-y="-20px" aria-label="Main Navigation">
+        <a href="#about" class="nav-item">About</a>
+        <a href="#price" class="nav-item">Price</a>
+        <a href="#projects" class="nav-item">Projects</a>
+        <a href="#contact" class="nav-item">Contact</a>
+      </nav>
+
+      <!-- Massive Hero Heading -->
+      <div class="hero-heading-container fade-in" data-delay="0.15s" data-y="40px">
+        <h1 class="hero-title hero-heading">Hi, i&rsquo;m jack</h1>
+      </div>
+
+      <!-- Hero Portrait with Magnet Mouse-Follow Effect -->
+      <div class="hero-portrait-wrapper fade-in" id="hero-magnet" data-delay="0.6s" data-y="30px">
+        <img 
+          src="assets/hero/service-hero.png" 
+          alt="Jack - 3D Creator Portrait"
+          class="hero-portrait-img"
+          onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Jack Portrait (3D Creator)');"
+        />
+      </div>
+
+      <!-- Hero Bottom Bar -->
+      <div class="hero-bottom">
+        <p class="hero-bottom-text fade-in" data-delay="0.35s" data-y="20px">
+          a 3d creator driven by crafting striking and unforgettable projects
+        </p>
+
+        <div class="fade-in" data-delay="0.5s" data-y="20px">
+          <a href="#contact" class="contact-btn">Contact Me</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         2. MARQUEE SECTION
+         ======================================================================== -->
+    <section class="marquee-section" id="marquee">
+      <div class="marquee-track-container">
+        
+        <!-- Row 1: Moves RIGHT on scroll -->
+        <div class="marquee-row" id="marquee-row-1">
+          <!-- Item 1 to 11 (Tripled) -->
+          <div class="marquee-tile"><img src="assets/marquee/01-space-voyage.gif" alt="Space Voyage" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '01 Space Voyage');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/02-codenest.gif" alt="Codenest" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '02 Codenest');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/03-vex-ventures.gif" alt="Vex Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '03 Vex Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/04-stellar-ai-v2.gif" alt="Stellar AI v2" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '04 Stellar AI v2');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/05-asme.gif" alt="ASME" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '05 ASME');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/06-transform-data.gif" alt="Transform Data" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '06 Transform Data');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/07-vitara.gif" alt="Vitara" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '07 Vitara');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/08-terra.gif" alt="Terra" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '08 Terra');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/09-skyelite.gif" alt="Skyelite" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '09 Skyelite');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/10-aethera.gif" alt="Aethera" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '10 Aethera');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/11-designpro.gif" alt="Designpro" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '11 Designpro');"></div>
+
+          <!-- Triple Set 2 -->
+          <div class="marquee-tile"><img src="assets/marquee/01-space-voyage.gif" alt="Space Voyage" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '01 Space Voyage');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/02-codenest.gif" alt="Codenest" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '02 Codenest');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/03-vex-ventures.gif" alt="Vex Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '03 Vex Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/04-stellar-ai-v2.gif" alt="Stellar AI v2" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '04 Stellar AI v2');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/05-asme.gif" alt="ASME" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '05 ASME');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/06-transform-data.gif" alt="Transform Data" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '06 Transform Data');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/07-vitara.gif" alt="Vitara" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '07 Vitara');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/08-terra.gif" alt="Terra" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '08 Terra');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/09-skyelite.gif" alt="Skyelite" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '09 Skyelite');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/10-aethera.gif" alt="Aethera" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '10 Aethera');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/11-designpro.gif" alt="Designpro" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '11 Designpro');"></div>
+
+          <!-- Triple Set 3 -->
+          <div class="marquee-tile"><img src="assets/marquee/01-space-voyage.gif" alt="Space Voyage" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '01 Space Voyage');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/02-codenest.gif" alt="Codenest" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '02 Codenest');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/03-vex-ventures.gif" alt="Vex Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '03 Vex Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/04-stellar-ai-v2.gif" alt="Stellar AI v2" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '04 Stellar AI v2');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/05-asme.gif" alt="ASME" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '05 ASME');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/06-transform-data.gif" alt="Transform Data" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '06 Transform Data');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/07-vitara.gif" alt="Vitara" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '07 Vitara');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/08-terra.gif" alt="Terra" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '08 Terra');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/09-skyelite.gif" alt="Skyelite" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '09 Skyelite');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/10-aethera.gif" alt="Aethera" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '10 Aethera');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/11-designpro.gif" alt="Designpro" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '11 Designpro');"></div>
+        </div>
+
+        <!-- Row 2: Moves LEFT on scroll -->
+        <div class="marquee-row" id="marquee-row-2">
+          <!-- Item 12 to 21 (Tripled) -->
+          <div class="marquee-tile"><img src="assets/marquee/12-stellar-ai.gif" alt="Stellar AI" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '12 Stellar AI');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/13-xportfolio.gif" alt="XPortfolio" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '13 XPortfolio');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/14-orbit-web3.gif" alt="Orbit Web3" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '14 Orbit Web3');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/15-nexora.gif" alt="Nexora" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '15 Nexora');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/16-evr-ventures.gif" alt="EVR Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '16 EVR Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/17-planet-orbit.gif" alt="Planet Orbit" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '17 Planet Orbit');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/18-new-era.gif" alt="New Era" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '18 New Era');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/19-wealth.gif" alt="Wealth" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '19 Wealth');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/20-luminex.gif" alt="Luminex" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '20 Luminex');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/21-celestia.gif" alt="Celestia" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '21 Celestia');"></div>
+
+          <!-- Triple Set 2 -->
+          <div class="marquee-tile"><img src="assets/marquee/12-stellar-ai.gif" alt="Stellar AI" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '12 Stellar AI');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/13-xportfolio.gif" alt="XPortfolio" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '13 XPortfolio');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/14-orbit-web3.gif" alt="Orbit Web3" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '14 Orbit Web3');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/15-nexora.gif" alt="Nexora" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '15 Nexora');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/16-evr-ventures.gif" alt="EVR Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '16 EVR Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/17-planet-orbit.gif" alt="Planet Orbit" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '17 Planet Orbit');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/18-new-era.gif" alt="New Era" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '18 New Era');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/19-wealth.gif" alt="Wealth" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '19 Wealth');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/20-luminex.gif" alt="Luminex" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '20 Luminex');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/21-celestia.gif" alt="Celestia" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '21 Celestia');"></div>
+
+          <!-- Triple Set 3 -->
+          <div class="marquee-tile"><img src="assets/marquee/12-stellar-ai.gif" alt="Stellar AI" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '12 Stellar AI');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/13-xportfolio.gif" alt="XPortfolio" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '13 XPortfolio');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/14-orbit-web3.gif" alt="Orbit Web3" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '14 Orbit Web3');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/15-nexora.gif" alt="Nexora" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '15 Nexora');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/16-evr-ventures.gif" alt="EVR Ventures" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '16 EVR Ventures');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/17-planet-orbit.gif" alt="Planet Orbit" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '17 Planet Orbit');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/18-new-era.gif" alt="New Era" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '18 New Era');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/19-wealth.gif" alt="Wealth" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '19 Wealth');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/20-luminex.gif" alt="Luminex" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '20 Luminex');"></div>
+          <div class="marquee-tile"><img src="assets/marquee/21-celestia.gif" alt="Celestia" loading="lazy" onerror="this.parentElement.classList.add('img-placeholder'); this.parentElement.setAttribute('data-placeholder', '21 Celestia');"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         3. ABOUT SECTION
+         ======================================================================== -->
+    <section class="about-section" id="about">
+      
+      <!-- 4 Decorative 3D Images in Corners -->
+      <img 
+        src="assets/about/moon.png" 
+        alt="Moon 3D Icon" 
+        class="about-decor decor-moon fade-in"
+        data-delay="0.1s" data-x="-80px" data-y="0px" data-duration="0.9s"
+        onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Moon 3D');"
+      />
+      <img 
+        src="assets/about/object.png" 
+        alt="3D Geometric Object" 
+        class="about-decor decor-object fade-in"
+        data-delay="0.25s" data-x="-80px" data-y="0px" data-duration="0.9s"
+        onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', '3D Object');"
+      />
+      <img 
+        src="assets/about/lego.png" 
+        alt="Lego 3D Icon" 
+        class="about-decor decor-lego fade-in"
+        data-delay="0.15s" data-x="80px" data-y="0px" data-duration="0.9s"
+        onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Lego 3D');"
+      />
+      <img 
+        src="assets/about/group.png" 
+        alt="3D Group Icon" 
+        class="about-decor decor-group fade-in"
+        data-delay="0.3s" data-x="80px" data-y="0px" data-duration="0.9s"
+        onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', '3D Group');"
+      />
+
+      <div class="about-content-wrap">
+        <h2 class="about-title hero-heading fade-in" data-delay="0s" data-y="40px">About me</h2>
+
+        <!-- Scroll-driven character-by-character reveal paragraph -->
+        <p class="about-paragraph" id="about-animated-paragraph">
+          With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!
+        </p>
+
+        <div class="fade-in" data-delay="0.2s" data-y="20px">
+          <a href="#contact" class="contact-btn">Contact Me</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         4. SERVICES SECTION
+         ======================================================================== -->
+    <section class="services-section" id="services">
+      <div id="price" style="position: relative; top: -40px;"></div>
+
+      <h2 class="services-title fade-in" data-delay="0s" data-y="30px">Services</h2>
+
+      <div class="services-list">
+        
+        <!-- 01 3D Modeling -->
+        <div class="service-item fade-in" data-delay="0s" data-y="30px">
+          <div class="service-num">01</div>
+          <div class="service-body">
+            <h3 class="service-name">3D Modeling</h3>
+            <p class="service-desc">
+              Creation of detailed objects, characters, or environments tailored to specific client needs, ideal for games, products, and visualizations.
+            </p>
+          </div>
+        </div>
+
+        <!-- 02 Rendering -->
+        <div class="service-item fade-in" data-delay="0.1s" data-y="30px">
+          <div class="service-num">02</div>
+          <div class="service-body">
+            <h3 class="service-name">Rendering</h3>
+            <p class="service-desc">
+              High-quality, photorealistic renders that showcase designs with custom lighting, textures, and materials to bring concepts to life.
+            </p>
+          </div>
+        </div>
+
+        <!-- 03 Motion Design -->
+        <div class="service-item fade-in" data-delay="0.2s" data-y="30px">
+          <div class="service-num">03</div>
+          <div class="service-body">
+            <h3 class="service-name">Motion Design</h3>
+            <p class="service-desc">
+              Dynamic animations and motion graphics that add energy and storytelling to brands, products, and digital experiences.
+            </p>
+          </div>
+        </div>
+
+        <!-- 04 Branding -->
+        <div class="service-item fade-in" data-delay="0.3s" data-y="30px">
+          <div class="service-num">04</div>
+          <div class="service-body">
+            <h3 class="service-name">Branding</h3>
+            <p class="service-desc">
+              Crafting cohesive visual identities &mdash; from logos to full brand systems &mdash; that communicate a clear and memorable presence.
+            </p>
+          </div>
+        </div>
+
+        <!-- 05 Web Design -->
+        <div class="service-item fade-in" data-delay="0.4s" data-y="30px">
+          <div class="service-num">05</div>
+          <div class="service-body">
+            <h3 class="service-name">Web Design</h3>
+            <p class="service-desc">
+              Designing clean, modern, and conversion-focused websites with attention to layout, typography, and user experience.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         5. PROJECTS SECTION (Sticky-Stacking Cards)
+         ======================================================================== -->
+    <section class="projects-section" id="projects">
+      
+      <h2 class="projects-title hero-heading fade-in" data-delay="0s" data-y="30px">Project</h2>
+
+      <div class="projects-stack-container" id="projects-stack">
+        
+        <!-- PROJECT 01: Nextlevel Studio -->
+        <div class="project-card-slot" data-card-index="0">
+          <div class="project-card" id="project-card-0">
+            
+            <div class="card-top-row">
+              <div class="card-meta-left">
+                <span class="card-number">01</span>
+                <div class="card-title-group">
+                  <span class="card-category">Client</span>
+                  <h3 class="card-project-name">Nextlevel Studio</h3>
+                </div>
+              </div>
+              <button class="live-project-btn" type="button" aria-label="View Nextlevel Studio Live Project">Live Project</button>
+            </div>
+
+            <div class="card-image-grid">
+              <div class="grid-col-left">
+                <img 
+                  src="assets/projects/nextlevel/image-1.png" 
+                  alt="Nextlevel Studio 3D render 1" 
+                  class="project-img-thumb project-img-top"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Nextlevel 01');"
+                />
+                <img 
+                  src="assets/projects/nextlevel/image-2.png" 
+                  alt="Nextlevel Studio 3D render 2" 
+                  class="project-img-thumb project-img-bottom"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Nextlevel 02');"
+                />
+              </div>
+              <div class="grid-col-right">
+                <img 
+                  src="assets/projects/nextlevel/image-3.png" 
+                  alt="Nextlevel Studio Showcase Hero" 
+                  class="project-img-tall"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Nextlevel Hero');"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PROJECT 02: Aura Brand Identity -->
+        <div class="project-card-slot" data-card-index="1">
+          <div class="project-card" id="project-card-1">
+            
+            <div class="card-top-row">
+              <div class="card-meta-left">
+                <span class="card-number">02</span>
+                <div class="card-title-group">
+                  <span class="card-category">Personal</span>
+                  <h3 class="card-project-name">Aura Brand Identity</h3>
+                </div>
+              </div>
+              <button class="live-project-btn" type="button" aria-label="View Aura Brand Identity Live Project">Live Project</button>
+            </div>
+
+            <div class="card-image-grid">
+              <div class="grid-col-left">
+                <img 
+                  src="assets/projects/aura/image-1.png" 
+                  alt="Aura Brand 3D render 1" 
+                  class="project-img-thumb project-img-top"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Aura 01');"
+                />
+                <img 
+                  src="assets/projects/aura/image-2.png" 
+                  alt="Aura Brand 3D render 2" 
+                  class="project-img-thumb project-img-bottom"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Aura 02');"
+                />
+              </div>
+              <div class="grid-col-right">
+                <img 
+                  src="assets/projects/aura/image-3.png" 
+                  alt="Aura Brand Showcase Hero" 
+                  class="project-img-tall"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Aura Hero');"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PROJECT 03: Solaris Digital -->
+        <div class="project-card-slot" data-card-index="2">
+          <div class="project-card" id="project-card-2">
+            
+            <div class="card-top-row">
+              <div class="card-meta-left">
+                <span class="card-number">03</span>
+                <div class="card-title-group">
+                  <span class="card-category">Client</span>
+                  <h3 class="card-project-name">Solaris Digital</h3>
+                </div>
+              </div>
+              <button class="live-project-btn" type="button" aria-label="View Solaris Digital Live Project">Live Project</button>
+            </div>
+
+            <div class="card-image-grid">
+              <div class="grid-col-left">
+                <img 
+                  src="assets/projects/solaris/image-1.png" 
+                  alt="Solaris Digital 3D render 1" 
+                  class="project-img-thumb project-img-top"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Solaris 01');"
+                />
+                <img 
+                  src="assets/projects/solaris/image-2.png" 
+                  alt="Solaris Digital 3D render 2" 
+                  class="project-img-thumb project-img-bottom"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Solaris 02');"
+                />
+              </div>
+              <div class="grid-col-right">
+                <img 
+                  src="assets/projects/solaris/image-3.png" 
+                  alt="Solaris Digital Showcase Hero" 
+                  class="project-img-tall"
+                  loading="lazy"
+                  onerror="this.classList.add('img-placeholder'); this.setAttribute('data-placeholder', 'Solaris Hero');"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         6. CONTACT SECTION & FOOTER
+         ======================================================================== -->
+    <footer class="contact-footer" id="contact">
+      <h2 class="footer-heading hero-heading">Let&rsquo;s Create Something Extraordinary</h2>
+      <a href="mailto:jack@3dcreator.studio" class="footer-email">jack@3dcreator.studio</a>
+      <a href="mailto:jack@3dcreator.studio" class="contact-btn">Contact Me</a>
+      <p class="footer-copy">&copy; 2026 Jack &mdash; 3D Creator. All rights reserved.</p>
+    </footer>
+
+  </main>
+
+  <!-- ==========================================================================
+       VANILLA JAVASCRIPT CONTROLLERS
+       ========================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ------------------------------------------------------------------------
+         1. FADE-IN INTERSECTION OBSERVER (Replicating Framer Motion whileInView)
+         ------------------------------------------------------------------------ */
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const observerOptions = {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0
+      };
+
+      const fadeObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const delay = el.getAttribute('data-delay') || '0s';
+            const duration = el.getAttribute('data-duration') || '0.7s';
+            const x = el.getAttribute('data-x') || '0px';
+            const y = el.getAttribute('data-y') || '30px';
+
+            el.style.setProperty('--delay', delay);
+            el.style.setProperty('--duration', duration);
+            el.style.setProperty('--x', x);
+            el.style.setProperty('--y', y);
+
+            el.classList.add('is-visible');
+            observer.unobserve(el);
+          }
+        });
+      }, observerOptions);
+
+      fadeElements.forEach(el => fadeObserver.observe(el));
+
+      /* ------------------------------------------------------------------------
+         2. MAGNET COMPONENT (Replicating Mouse-Following Magnetic Portrait)
+         ------------------------------------------------------------------------ */
+      const magnetEl = document.getElementById('hero-magnet');
+      if (magnetEl) {
+        const padding = 150;
+        const strength = 3;
+        let isHovered = false;
+
+        function handleMouseMove(e) {
+          const rect = magnetEl.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          const distLeft = rect.left - padding;
+          const distRight = rect.right + padding;
+          const distTop = rect.top - padding;
+          const distBottom = rect.bottom + padding;
+
+          const inBounds = (
+            e.clientX >= distLeft &&
+            e.clientX <= distRight &&
+            e.clientY >= distTop &&
+            e.clientY <= distBottom
+          );
+
+          if (inBounds) {
+            if (!isHovered) {
+              isHovered = true;
+              magnetEl.style.transition = 'transform 0.3s ease-out';
+            }
+            const dx = (e.clientX - centerX) / strength;
+            const dy = (e.clientY - centerY) / strength;
+            magnetEl.style.transform = `translate3d(calc(-50% + ${dx}px), ${dy}px, 0)`;
+          } else if (isHovered) {
+            isHovered = false;
+            magnetEl.style.transition = 'transform 0.6s ease-in-out';
+            magnetEl.style.transform = 'translate3d(-50%, 0, 0)';
+          }
+        }
+
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+      }
+
+      /* ------------------------------------------------------------------------
+         3. ANIMATED TEXT (Character-by-Character Scroll Reveal)
+         ------------------------------------------------------------------------ */
+      const paragraphEl = document.getElementById('about-animated-paragraph');
+      let charSpans = [];
+
+      if (paragraphEl) {
+        const rawText = paragraphEl.textContent.trim();
+        paragraphEl.innerHTML = '';
+
+        // Wrap each character in span
+        for (let i = 0; i < rawText.length; i++) {
+          const ch = rawText[i];
+          const span = document.createElement('span');
+          span.className = 'char-span';
+          span.textContent = ch;
+          paragraphEl.appendChild(span);
+          charSpans.push(span);
+        }
+
+        function updateTextScroll() {
+          const rect = paragraphEl.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+
+          // Target offset: start 0.8, end 0.2
+          const start = windowHeight * 0.8;
+          const end = windowHeight * 0.2;
+
+          let progress = (start - rect.top) / (start - end);
+          progress = Math.max(0, Math.min(1, progress));
+
+          const activeCount = Math.floor(progress * charSpans.length);
+
+          for (let i = 0; i < charSpans.length; i++) {
+            if (i < activeCount) {
+              charSpans[i].style.opacity = '1';
+            } else {
+              charSpans[i].style.opacity = '0.2';
+            }
+          }
+        }
+
+        window.addEventListener('scroll', updateTextScroll, { passive: true });
+        updateTextScroll();
+      }
+
+      /* ------------------------------------------------------------------------
+         4. MARQUEE SCROLL CONTROLLER (Bidirectional Horizontal Movement)
+         ------------------------------------------------------------------------ */
+      const marqueeSection = document.getElementById('marquee');
+      const row1 = document.getElementById('marquee-row-1');
+      const row2 = document.getElementById('marquee-row-2');
+
+      function updateMarquee() {
+        if (!marqueeSection || !row1 || !row2) return;
+        const rect = marqueeSection.getBoundingClientRect();
+        const sectionTop = window.scrollY + rect.top;
+        
+        // Exact formula from specification:
+        // (window.scrollY - sectionTop + window.innerHeight) * 0.3
+        const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
+
+        // Row 1 moves RIGHT (translateX(offset - 200))
+        // Row 2 moves LEFT (translateX(-(offset - 200)))
+        const r1Translate = offset - 200;
+        const r2Translate = -(offset - 200);
+
+        row1.style.transform = `translate3d(${r1Translate}px, 0, 0)`;
+        row2.style.transform = `translate3d(${r2Translate}px, 0, 0)`;
+      }
+
+      window.addEventListener('scroll', updateMarquee, { passive: true });
+      updateMarquee();
+
+      /* ------------------------------------------------------------------------
+         5. STICKY PROJECT CARDS SCALING (Framer Motion useScroll & useTransform)
+         ------------------------------------------------------------------------ */
+      const slots = document.querySelectorAll('.project-card-slot');
+      const cards = [
+        document.getElementById('project-card-0'),
+        document.getElementById('project-card-1'),
+        document.getElementById('project-card-2')
+      ];
+      const totalCards = 3;
+
+      function updateCardStack() {
+        const windowHeight = window.innerHeight;
+
+        slots.forEach((slot, index) => {
+          const card = cards[index];
+          if (!card) return;
+
+          // Each card offset top
+          const topOffset = index * 28 + (window.innerWidth >= 768 ? 128 : 96);
+          card.style.top = `${topOffset}px`;
+
+          const slotRect = slot.getBoundingClientRect();
+          
+          // Calculate how far through the slot we've scrolled
+          // When slot top reaches topOffset, progress starts at 0 and goes to 1 as it scrolls past
+          let progress = (topOffset - slotRect.top) / (slotRect.height * 0.8);
+          progress = Math.max(0, Math.min(1, progress));
+
+          // Formula from specification: targetScale = 1 - (totalCards - 1 - index) * 0.03
+          const minScale = 1 - (totalCards - 1 - index) * 0.03;
+          const currentScale = 1 - progress * (1 - minScale);
+
+          card.style.transform = `scale(${currentScale})`;
+        });
+      }
+
+      window.addEventListener('scroll', updateCardStack, { passive: true });
+      window.addEventListener('resize', updateCardStack, { passive: true });
+      updateCardStack();
+
+    })();
+  </script>
+
+</body>
+</html>

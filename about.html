@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+  <script>
+    (function () {
+      const storedTheme = localStorage.getItem('arox-theme') || 'dark';
+      document.documentElement.className = 'theme-' + storedTheme;
+      if (storedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AROX TECH - Building scalable software and systems</title>
+  <meta name="description"
+    content="AROX Tech designs world-class enterprise architectures, digital platforms, and custom ERP integrations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            muted: "var(--muted)",
+            heading: "var(--heading)",
+            body: "var(--body)",
+            border: "var(--border)",
+            background: "var(--background)",
+            surface: "var(--surface)",
+            "surface-elevated": "var(--surface-elevated)",
+            primary: "var(--primary)"
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/coverflow.css" />
+</head>
+<body>
+  <header id="site-header">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo">
+          <img id="nav-logo-img" src="public/assets/logo/logo-dark.png" alt="Arox Tech Logo"
+            onerror="this.style.display='none';document.getElementById('nav-logo-text').style.display='block'" />
+          <span id="nav-logo-text"
+            style="display:none;font-family:var(--font-display);font-weight:800;font-size:1.25rem;color:var(--heading);letter-spacing:-.03em;">AROX</span>
+          <span class="mobile-breadcrumb-sep">/</span>
+          <span class="mobile-breadcrumb-current">About</span>
+        </a>
+        <div class="nav-divider">/</div>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="index.html" class="nav-link"><span class="nav-link-indicator"></span>Home</a>
+          <a href="about.html" class="nav-link active"><span class="nav-link-indicator"></span>About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="courses.html" class="nav-link">Training</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <a href="/login" class="nav-login">Login</a>
+        <label class="switch" title="Toggle theme">
+          <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
+          <span class="slider">
+            <div class="star star_1"></div>
+            <div class="star star_2"></div>
+            <div class="star star_3"></div>
+            <svg viewBox="0 0 16 16" class="cloud_1 cloud">
+              <path
+                transform="matrix(.77976 0 0 .78395-299.99-418.63)"
+                fill="#fff"
+                d="m391.84 540.91c-.421-.329-.949-.524-1.523-.524-1.351 0-2.451 1.084-2.485 2.435-1.395.526-2.388 1.88-2.388 3.466 0 1.874 1.385 3.423 3.182 3.667v.034h12.73v-.006c1.775-.104 3.182-1.584 3.182-3.395 0-1.747-1.309-3.186-2.994-3.379.007-.106.011-.214.011-.322 0-2.707-2.271-4.901-5.072-4.901-2.073 0-3.856 1.202-4.643 2.925"
+              ></path>
+            </svg>
+          </span>
+        </label>
+        <button id="hamburger-btn" class="nav-hamburger" aria-label="Toggle mobile menu">
+          <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line class="line-1" x1="4" y1="6" x2="20" y2="6"></line>
+            <line class="line-2" x1="4" y1="12" x2="20" y2="12"></line>
+            <line class="line-3" x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div id="mobile-menu" aria-hidden="true">
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link"><span>Home</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="about.html" class="mobile-nav-link active"><span>About</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="services.html" class="mobile-nav-link"><span>Services</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+      <a href="courses.html" class="mobile-nav-link"><span>Training</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg></a>
+      <a href="contact.html" class="mobile-nav-link"><span>Contact</span><svg width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg></a>
+    </nav>
+    <div class="mobile-bottom">
+      <div class="mobile-theme-row">
+        <span>Theme</span>
+        <div class="mobile-theme-buttons">
+          <button class="mobile-theme-btn" data-theme="light">light</button>
+          <button class="mobile-theme-btn active" data-theme="dark">dark</button>
+        </div>
+      </div>
+      <a href="/login" class="mobile-login-btn">Login</a>
+      <a href="#" class="mobile-cta-btn">Get Started</a>
+    </div>
+  </div>
+  
+  <main class="bg-background text-body relative overflow-hidden">
+    <!-- ============================================================
+         ABOUT INTERACTIVE DNA & ORIGIN HERO SECTION
+    ============================================================ -->
+    <section id="hero" class="page-hero-pro relative flex flex-col items-center justify-start pt-24 pb-12 lg:pt-28 lg:pb-16 overflow-hidden border-b border-[var(--border)]">
+      <!-- Background Ambient Elements -->
+      <div class="ambient-layer pointer-events-none absolute inset-0 overflow-hidden z-0" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
+        <div class="grid-lines-bg absolute inset-0 opacity-20"></div>
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#FF5500]/15 rounded-full blur-[130px]"></div>
+        <div class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] bg-[#FF7733]/15 rounded-full blur-[140px]"></div>
+      </div>
+
+      <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
+        <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
+          Built by Builders, Driven by <span class="hero-gradient-text">Extreme Velocity</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-[var(--muted)] leading-relaxed font-light max-w-2xl mb-8">
+          We are a collective of systems architects, creative technologists, and software purists dedicated to engineering digital platforms that redefine operational benchmarks.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-10 w-full sm:w-auto">
+          <button onclick="document.getElementById('mission-section').scrollIntoView({behavior:'smooth'})" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(255,85,0,0.3)] hover:shadow-[0_15px_40px_rgba(255,85,0,0.5)]">
+            <span>Explore Our Purpose</span>
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+          <a href="contact.html" class="btn-secondary-pro inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full border border-[var(--border)] bg-[var(--surface)]/70 hover:bg-[var(--surface-elevated)] backdrop-blur-md text-[var(--heading)] font-display font-semibold text-sm transition-all duration-300">
+            <span>Get In Touch</span>
+            <svg class="w-4 h-4 text-[var(--muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-[var(--border)]/70 w-full max-w-2xl mx-auto">
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-mono font-bold text-[var(--heading)]">2022</span>
+            <span class="text-[11px] text-[var(--muted)] tracking-wide">Inception</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-mono font-bold text-[var(--heading)]">50+</span>
+            <span class="text-[11px] text-[var(--muted)] tracking-wide">Platforms Built</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-mono font-bold text-[var(--heading)]">100+</span>
+            <span class="text-[11px] text-[var(--muted)] tracking-wide">Engineers Trained</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-mono font-bold text-[var(--heading)]">Salem HQ</span>
+            <span class="text-[11px] text-[var(--muted)] tracking-wide">Global Reach</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Our Mission & Vision Bento Grid Section -->
+    <section id="mission-section" class="py-16 md:py-24 bg-background border-b border-border">
+      <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+        <!-- Mission Card -->
+        <div class="bg-surface border border-border rounded-2xl p-6 md:p-12 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-primary">
+          <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary to-accent"></div>
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">PURPOSE</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-heading mt-2 mb-4 md:mb-6 font-display">Our Mission</h2>
+          <p class="text-sm md:text-base text-body leading-relaxed font-light opacity-90">
+            Empowering businesses through scalable software architectures, high-impact digital solutions, and personalized technology innovation.
+          </p>
+        </div>
+        
+        <!-- Vision Card -->
+        <div class="bg-surface border border-border rounded-2xl p-6 md:p-12 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-primary">
+          <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-accent to-primary"></div>
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">ASPIRATION</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-heading mt-2 mb-4 md:mb-6 font-display">Our Vision</h2>
+          <p class="text-sm md:text-base text-body leading-relaxed font-light opacity-90">
+            Setting the global benchmark for digital transformation, sustainable engineering, and future-proof digital product excellence.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Core Values Section -->
+    <section class="py-20 md:py-24 bg-background border-b border-border">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">PHILOSOPHY</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-heading mt-2 font-display">Our Core Values</h2>
+          <p class="text-muted mt-3 font-light text-sm md:text-base">The foundational principles defining how we engineer, collaborate, and deliver excellence.</p>
+        </div>
+        
+        <!-- 2 Rows and 3 Columns Grid for 6 Values -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4 md:gap-6">
+          <!-- 1. Collaboration -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span class="value-tile-title">Collaboration</span>
+          </div>
+
+          <!-- 2. Integrity -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <span class="value-tile-title">Integrity</span>
+          </div>
+
+          <!-- 3. Accountability -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            <span class="value-tile-title">Accountability</span>
+          </div>
+
+          <!-- 4. Quality -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span class="value-tile-title">Quality</span>
+          </div>
+
+          <!-- 5. Authenticity -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <span class="value-tile-title">Authenticity</span>
+          </div>
+
+          <!-- 6. Openness -->
+          <div class="value-tile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span class="value-tile-title">Openness</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Process / How We Do It Section -->
+    <section class="py-16 md:py-28 bg-background border-b border-border" id="process-section">
+      <div class="max-w-6xl mx-auto px-5 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16 items-start">
+        <!-- Left Content (Header on mobile) -->
+        <div class="process-header flex flex-col items-start text-left md:col-span-1 md:sticky md:top-32">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">
+            OUR MODEL
+          </span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-heading mb-3 md:mb-4 font-display">
+            How We Do It
+          </h2>
+          <p class="text-xs sm:text-sm md:text-base text-muted leading-relaxed mb-5 md:mb-8">
+            We work on a typical matrix of time, effort, and money, following Agile methodologies to deliver exceptional results.
+          </p>
+          <a href="services.html" class="btn-primary inline-flex items-center gap-2">
+            <span>Learn More</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Right Content - 2 Cards in a row Grid -->
+        <div class="process-cards-grid grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 md:col-span-2">
+          <!-- 1. Brainstorming -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path>
+                <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"></path>
+                <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"></path>
+                <path d="M17.599 6.5a3 3 0 0 0 .399-1.375"></path>
+                <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"></path>
+                <path d="M3.477 10.896a4 4 0 0 1 .585-.396"></path>
+                <path d="M19.938 10.5a4 4 0 0 1 .585.396"></path>
+                <path d="M6 18a4 4 0 0 1-1.967-.516"></path>
+                <path d="M19.967 17.484A4 4 0 0 1 18 18"></path>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Brainstorming</h3>
+              <p class="text-xs md:text-sm text-muted font-light">Ideas & Concepts</p>
+            </div>
+          </div>
+
+          <!-- 2. Market Strategy -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Market Strategy</h3>
+              <p class="text-xs md:text-sm text-muted font-light">Overall Planning</p>
+            </div>
+          </div>
+
+          <!-- 3. Product Design -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 19 7-7 3 3-7 7-3-3z"></path>
+                <path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                <path d="m2 2 7.586 7.586"></path>
+                <circle cx="11" cy="11" r="2"></circle>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Product Design</h3>
+              <p class="text-xs md:text-sm text-muted font-light">UI/UX & Prototyping</p>
+            </div>
+          </div>
+
+          <!-- 4. Development -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Development</h3>
+              <p class="text-xs md:text-sm text-muted font-light">Full-Stack Engineering</p>
+            </div>
+          </div>
+
+          <!-- 5. Testing & QA -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Testing & QA</h3>
+              <p class="text-xs md:text-sm text-muted font-light">Quality Assurance</p>
+            </div>
+          </div>
+
+          <!-- 6. Release & Marketing -->
+          <div class="process-card group">
+            <div class="process-accent-line-v"></div>
+            <div class="process-accent-line-h"></div>
+            <div class="process-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 11 18-5v12L3 14v-3z"></path>
+                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <h3 class="mb-1 text-base md:text-lg font-bold text-heading font-display">Release & Marketing</h3>
+              <p class="text-xs md:text-sm text-muted font-light">Launch Campaign</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <!-- PRE-FOOTER CTA SECTION -->
+  <section class="cta-section" id="cta">
+    <div class="cta-card reveal">
+      <div class="cta-content">
+        <div class="card-number">05 / ABOUT</div>
+        <h2 class="cta-heading">Technology with a purpose.</h2>
+        <p class="cta-text">AROX Tech focuses on creating useful digital products, practical technology solutions, and experiences that create lasting value.</p>
+        <div class="cta-actions">
+          <a href="services.html" class="btn-primary">
+            <span>Discover Our Approach</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 6px; display: inline-block; vertical-align: middle;"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg>
+          </a>
+          <a href="contact.html" class="btn-secondary">
+            <span>Work With Us</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="footer-inner">
+      <!-- Background Watermark -->
+      <div class="footer-watermark">Arox Tech</div>
+
+      <!-- Main Footer Grid / Mobile Accordions -->
+      <div class="footer-grid">
+        <!-- Brand Section (Top on mobile, Col 1 on desktop) -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-brand-logo">
+            <img id="footer-logo-img" src="public/assets/logo/logo-dark.png" alt="Arox Tech" onerror="this.src='assets/logo/logo-dark.png'" />
+          </a>
+          <p class="footer-tagline">
+            We build scalable software architectures, robust digital platforms, and high-impact AI solutions for modern businesses.
+          </p>
+          <!-- 4 Social Icons in a Single Row: Instagram, WhatsApp, Facebook, LinkedIn -->
+          <div class="footer-socials">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+          </div>
+          <div class="footer-brand-divider"></div>
+          <p class="footer-copyright">&copy; <span>AROX Tech 2026</span><br/>All Rights Reserved</p>
+        </div>
+
+        <!-- Row 1 / Col 2: Company -->
+        <details class="footer-col footer-col-company" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v8"/><path d="M18 9h2a2 2 0 0 1 2 2v11"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Company</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="about.html"><span class="footer-link-arrow"></span> About Us</a></li>
+              <li><a class="footer-link" href="about.html#journey"><span class="footer-link-arrow"></span> Our Journey</a></li>
+              <li><a class="footer-link" href="apply.html"><span class="footer-link-arrow"></span> Careers</a></li>
+              <li><a class="footer-link" href="about.html#team"><span class="footer-link-arrow"></span> Core Team</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Partners</a></li>
+              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> News &amp; Updates</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 1 / Col 3: Services -->
+        <details class="footer-col footer-col-services" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Services</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Software Development</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Design &amp; Dev</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> App Development</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> UI/UX &amp; Branding</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; Infrastructure</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Digital Marketing &amp; SEO</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 1 / Col 4: Training -->
+        <details class="footer-col footer-col-training" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Training</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cyber Security</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Mobile App Dev</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 2: Internships -->
+        <details class="footer-col footer-col-internships" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Internships</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-links">
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Full Stack Internship</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Python Backend</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 3: Contact -->
+        <details class="footer-col footer-col-contact" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2.38l3-.02a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.44-1.44a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Contact</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <ul class="footer-contact-items">
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Salem, Tamil Nadu, India</span>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2.38l3-.02a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.44-1.44a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"/></svg>
+                <a href="tel:+911234567890">+91 12345 67890</a>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <a href="mailto:info@aroxtech.com">info@aroxtech.com</a>
+              </li>
+              <li class="footer-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Row 2 / Col 4: Stay Updated (Newsletter) -->
+        <details class="footer-col footer-col-newsletter" open>
+          <summary class="footer-col-header">
+            <div class="footer-col-header-left">
+              <div class="footer-col-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+              </div>
+              <div>
+                <h3 class="footer-col-title">Stay Updated</h3>
+                <div class="footer-title-bar"></div>
+              </div>
+            </div>
+            <div class="footer-chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </summary>
+          <div class="footer-col-body">
+            <div class="footer-newsletter">
+              <p class="footer-newsletter-desc">Subscribe to our newsletter for the latest tech releases, industry insights, and engineering updates.</p>
+              <form class="footer-newsletter-form" onsubmit="event.preventDefault();">
+                <input class="footer-newsletter-input" placeholder="Enter your email" required type="email" />
+                <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Mobile Copyright (Visible only on mobile) -->
+      <div class="footer-mobile-copyright">
+        &copy; <span>AROX Tech 2026</span> &bull; All Rights Reserved
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>
