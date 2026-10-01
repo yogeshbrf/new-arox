@@ -19,6 +19,7 @@
     localStorage.setItem('arox-theme', t);
     updateThemeUI();
     updateLogos();
+    window.dispatchEvent(new CustomEvent('arox-theme-change', { detail: { theme: t } }));
   }
 
   function updateThemeUI() {
@@ -148,8 +149,110 @@
     lastScrollY = y;
   }, { passive: true });
 
-  /* (Pill hover indicator retired in favor of native active orange underline) */
+  /* ── NAVBAR SLIDING HOVER PILL ───────────────────────────── */
+  function initNavHoverPill() {
+    const navLinksList = document.querySelectorAll('.nav-links');
+    navLinksList.forEach(nav => {
+      let pill = nav.querySelector('.nav-sliding-pill');
+      if (!pill) {
+        pill = document.createElement('div');
+        pill.className = 'nav-sliding-pill';
+        nav.insertBefore(pill, nav.firstChild);
+      }
 
+      const links = Array.from(nav.querySelectorAll('.nav-link'));
+      if (!links.length) return;
+
+      function updatePill(targetEl, immediate) {
+        if (!targetEl) {
+          pill.style.opacity = '0';
+          return;
+        }
+        const navRect = nav.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+        const left = targetRect.left - navRect.left;
+        const top = targetRect.top - navRect.top;
+        const width = targetRect.width;
+        const height = targetRect.height;
+
+        if (immediate) {
+          pill.style.transition = 'none';
+        } else {
+          pill.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease';
+        }
+
+        pill.style.transform = `translate(${left}px, ${top}px)`;
+        pill.style.width = `${width}px`;
+        pill.style.height = `${height}px`;
+        pill.style.opacity = '1';
+
+        if (immediate) {
+          requestAnimationFrame(() => {
+            pill.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease';
+          });
+        }
+      }
+
+      nav.classList.add('nav-pill-ready');
+      const activeLink = nav.querySelector('.nav-link.active') || links[0];
+      
+      // Position on active link on load
+      requestAnimationFrame(() => {
+        updatePill(activeLink, true);
+      });
+      setTimeout(() => {
+        const curActive = nav.querySelector('.nav-link.active') || links[0];
+        updatePill(curActive, true);
+      }, 80);
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          const curActive = nav.querySelector('.nav-link.active') || links[0];
+          updatePill(curActive, true);
+        });
+      }
+
+      links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+          nav.classList.add('nav-hovering');
+          links.forEach(l => l.classList.remove('nav-link-hovered'));
+          link.classList.add('nav-link-hovered');
+          updatePill(link, false);
+        });
+      });
+
+      nav.addEventListener('mouseleave', () => {
+        nav.classList.remove('nav-hovering');
+        links.forEach(l => l.classList.remove('nav-link-hovered'));
+        const currentActive = nav.querySelector('.nav-link.active');
+        if (currentActive) {
+          updatePill(currentActive, false);
+        } else {
+          pill.style.opacity = '0';
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        const currentHovered = nav.querySelector('.nav-link.nav-link-hovered') || nav.querySelector('.nav-link:hover');
+        const currentActive = nav.querySelector('.nav-link.active');
+        updatePill(currentHovered || currentActive, true);
+      }, { passive: true });
+
+      window.addEventListener('arox-theme-change', () => {
+        setTimeout(() => {
+          const currentHovered = nav.querySelector('.nav-link.nav-link-hovered') || nav.querySelector('.nav-link:hover');
+          const currentActive = nav.querySelector('.nav-link.active');
+          updatePill(currentHovered || currentActive, true);
+        }, 50);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavHoverPill);
+  } else {
+    initNavHoverPill();
+  }
 
   /* ── HERO SECTION ENTRANCE & PARALLAX ────────────────────────── */
   const heroSection = document.getElementById('hero');
@@ -750,46 +853,6 @@
     autoSwipeInterval = setInterval(autoSwipe, 3800);
   }
 
-
-  /* ── PAGE TRANSITION SLIDE CURTAIN ── */
-  const curtain = document.createElement('div');
-  curtain.className = 'page-transition-curtain';
-  curtain.style.transform = 'translateY(0)'; // start at top to mask initial load
-  curtain.style.pointerEvents = 'all';
-  document.body.appendChild(curtain);
-
-  // Trigger curtain slide-out to reveal page content once ready
-  window.addEventListener('DOMContentLoaded', () => {
-    requestAnimationFrame(() => {
-      curtain.style.transform = 'translateY(-100%)';
-      setTimeout(() => {
-        curtain.style.pointerEvents = 'none';
-      }, 550);
-    });
-  });
-
-  // Intercept local page routing for curtain slide-in effect
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a');
-    if (link && link.href && link.getAttribute('href') !== '#' && !link.getAttribute('href').startsWith('javascript:') && link.target !== '_blank') {
-      const url = new URL(link.href, window.location.href);
-      if (url.origin === window.location.origin) {
-        e.preventDefault();
-        // Position curtain at bottom, then slide up to cover screen
-        curtain.style.transition = 'none';
-        curtain.style.transform = 'translateY(100%)';
-        curtain.style.pointerEvents = 'all';
-        
-        requestAnimationFrame(() => {
-          curtain.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
-          curtain.style.transform = 'translateY(0)';
-          setTimeout(() => {
-            window.location.href = link.href;
-          }, 420);
-        });
-      }
-    }
-  });
 
   /* ── LENIS SMOOTH INERTIA SCROLLING ── */
   function initLenis() {

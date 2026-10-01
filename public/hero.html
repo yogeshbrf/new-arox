@@ -214,6 +214,8 @@
       overflow-x: clip;
       overflow-y: hidden;
       width: 100%;
+      background: transparent !important;
+      background-image: none !important;
     }
 
     /* Navbar */
@@ -233,7 +235,8 @@
       }
     }
 
-    .nav-item {
+    .nav-item,
+    .nav-item:visited {
       color: var(--text-primary);
       font-weight: 500;
       text-transform: uppercase;
@@ -243,18 +246,21 @@
     }
 
     @media (min-width: 768px) {
-      .nav-item {
+      .nav-item,
+      .nav-item:visited {
         font-size: 1.125rem;
       }
     }
 
     @media (min-width: 1024px) {
-      .nav-item {
+      .nav-item,
+      .nav-item:visited {
         font-size: 1.4rem;
       }
     }
 
-    .nav-item:hover {
+    .nav-item:hover,
+    .nav-item:visited:hover {
       opacity: 0.7;
     }
 

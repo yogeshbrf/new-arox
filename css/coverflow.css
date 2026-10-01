@@ -7,48 +7,48 @@
 /* Design Tokens & Theme Colors */
 :root {
   --cf-bg: #FFFFFF;
-  --cf-card-bg: linear-gradient(180deg, #fff5f0 0%, #fffaf7 50%, #ffffff 100%);
-  --cf-border: 1px solid #fed7aa;
-  --cf-border-hover: 1px solid #FF5500;
-  --cf-shadow: 0 20px 60px rgba(255, 85, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.06);
-  --cf-heading: #1a0f08;
-  --cf-body: #785340;
-  --cf-chip-border: 1px solid #fed7aa;
-  --cf-chip-bg: #fff0eb;
-  --cf-chip-text: #FF5500;
+  --cf-card-bg: #FFFFFF;
+  --cf-border: 1px solid #E2E8F0;
+  --cf-border-hover: 1px solid #CBD5E1;
+  --cf-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.08);
+  --cf-heading: #0F172A;
+  --cf-body: #64748B;
+  --cf-chip-border: 1px solid #E2E8F0;
+  --cf-chip-bg: #F8FAFC;
+  --cf-chip-text: #475569;
   --cf-nav-btn-bg: transparent;
-  --cf-nav-btn-border: 1px solid #fed7aa;
-  --cf-nav-btn-color: #1a0f08;
-  --cf-dot-bg: #fed7aa;
+  --cf-nav-btn-border: 1px solid #E2E8F0;
+  --cf-nav-btn-color: #0F172A;
+  --cf-dot-bg: #E2E8F0;
   --cf-dot-active: #FF5500;
-  --svg-bg: #fff5f0;
+  --svg-bg: #F8FAFC;
   --svg-surface: #ffffff;
-  --svg-soft: #fffaf7;
-  --svg-muted: #9a7663;
-  --svg-line: #fcd5b8;
+  --svg-soft: #F1F5F9;
+  --svg-muted: #64748B;
+  --svg-line: #E2E8F0;
 }
 
 .theme-dark, .theme-navy, html[data-theme="dark"] {
-  --cf-bg: #0b0704;
-  --cf-card-bg: linear-gradient(180deg, #1c1008 0%, #140b05 50%, #0d0703 100%);
-  --cf-border: 1px solid rgba(255, 85, 0, 0.18);
-  --cf-border-hover: 1px solid rgba(255, 85, 0, 0.5);
+  --cf-bg: #0b0c11;
+  --cf-card-bg: rgba(22, 24, 34, 0.85);
+  --cf-border: 1px solid rgba(255, 255, 255, 0.08);
+  --cf-border-hover: 1px solid rgba(255, 255, 255, 0.2);
   --cf-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  --cf-heading: #fff4ed;
-  --cf-body: #cca591;
-  --cf-chip-border: 1px solid rgba(255, 85, 0, 0.22);
-  --cf-chip-bg: rgba(255, 85, 0, 0.12);
-  --cf-chip-text: #FF7733;
+  --cf-heading: #FFFFFF;
+  --cf-body: #8DA2C0;
+  --cf-chip-border: 1px solid rgba(255, 255, 255, 0.08);
+  --cf-chip-bg: rgba(255, 255, 255, 0.05);
+  --cf-chip-text: #CBD5E1;
   --cf-nav-btn-bg: transparent;
-  --cf-nav-btn-border: 1px solid rgba(255, 85, 0, 0.22);
-  --cf-nav-btn-color: #fff4ed;
-  --cf-dot-bg: rgba(255, 85, 0, 0.25);
+  --cf-nav-btn-border: 1px solid rgba(255, 255, 255, 0.12);
+  --cf-nav-btn-color: #FFFFFF;
+  --cf-dot-bg: rgba(255, 255, 255, 0.2);
   --cf-dot-active: #FF5500;
-  --svg-bg: #140b05;
-  --svg-surface: #1f1209;
-  --svg-soft: #26160c;
-  --svg-muted: #cca591;
-  --svg-line: #422513;
+  --svg-bg: #11131a;
+  --svg-surface: #161822;
+  --svg-soft: #1e2230;
+  --svg-muted: #8da2c0;
+  --svg-line: #202638;
 }
 
 /* Section Layout */
@@ -72,7 +72,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--cf-card-bg) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -80,6 +80,12 @@
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
+}
+
+.theme-dark .featured-projects-section::before,
+.theme-navy .featured-projects-section::before,
+html[data-theme="dark"] .featured-projects-section::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
 }
 
 .projects-container {

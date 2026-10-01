@@ -109,8 +109,8 @@
       --warning: #FBBC04;
       --error: #EA4335;
       --card-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-      --font-display: 'Sora', 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
-      --font-sans: 'Inter', sans-serif;
+      --font-display: 'Montserrat', sans-serif;
+      --font-sans: 'Montserrat', sans-serif;
       --transition-normal: 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
       --radius-s: 8px;
       --radius-m: 16px;
@@ -155,20 +155,10 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
     /* ============================================================
-       GRID BACKGROUND
+       GRID BACKGROUND (REMOVED)
     ============================================================ */
     .grid-lines-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background-size: 40px 40px;
-      background-image:
-        linear-gradient(to right, var(--border) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-      -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 100%);
-      mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 100%);
-      opacity: 0.15;
-      pointer-events: none;
+      display: none !important;
     }
 
     /* ============================================================
@@ -472,15 +462,7 @@
       color: var(--heading);
     }
     .nav-brand span { color: var(--accent); }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--body);
-      opacity: 0.7;
-      transition: opacity 200ms;
-    }
-    .nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--heading); }
+
     .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
     .btn-nav-login {
       padding: 8px 18px;
@@ -549,8 +531,10 @@
       padding: 120px 24px 80px;
       text-align: center;
       overflow: hidden;
+      background: transparent !important;
+      background-image: none !important;
     }
-    .hero-section .grid-lines-bg { opacity: 0.12; }
+    .hero-section .grid-lines-bg { display: none !important; }
     .hero-eyebrow {
       color: var(--primary);
       font-size: 0.75rem;
@@ -2529,7 +2513,7 @@
         <a href="index.html" class="nav-link">Home</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="services.html" class="nav-link">Services</a>
-        <a href="courses.html" class="nav-link active"><span class="nav-link-indicator"></span>Training</a>
+        <a href="courses.html" class="nav-link active">Training</a>
         <a href="contact.html" class="nav-link">Contact</a>
       </nav>
     </div>
@@ -2601,13 +2585,6 @@
      INTERACTIVE DEVELOPER TRAINING HERO SECTION
 ============================================================ -->
 <section id="hero" class="page-hero-pro relative flex flex-col items-center justify-start pt-24 pb-12 lg:pt-28 lg:pb-16 overflow-hidden">
-  <!-- Background Ambient Elements -->
-  <div class="ambient-layer pointer-events-none absolute inset-0 overflow-hidden z-0" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
-    <div class="grid-lines-bg absolute inset-0 opacity-20"></div>
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#FF5500]/15 rounded-full blur-[130px]"></div>
-    <div class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] bg-[#FF7733]/15 rounded-full blur-[140px]"></div>
-  </div>
-
   <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
     <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
       Level Up Your <span class="hero-gradient-text">Tech Stack</span>
@@ -2633,24 +2610,6 @@
       </a>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-[var(--border)]/70 w-full max-w-2xl mx-auto">
-      <div class="flex flex-col items-center">
-        <span class="text-sm font-mono font-bold text-[var(--heading)]">100%</span>
-        <span class="text-[11px] text-[var(--muted)] tracking-wide">Production Code</span>
-      </div>
-      <div class="flex flex-col items-center">
-        <span class="text-sm font-mono font-bold text-[var(--heading)]">1-on-1</span>
-        <span class="text-[11px] text-[var(--muted)] tracking-wide">Code Reviews</span>
-      </div>
-      <div class="flex flex-col items-center">
-        <span class="text-sm font-mono font-bold text-[var(--heading)]">Live Projects</span>
-        <span class="text-[11px] text-[var(--muted)] tracking-wide">Real Clients</span>
-      </div>
-      <div class="flex flex-col items-center">
-        <span class="text-sm font-mono font-bold text-[var(--heading)]">Verified</span>
-        <span class="text-[11px] text-[var(--muted)] tracking-wide">Certification</span>
-      </div>
-    </div>
 
   </div>
 </section>

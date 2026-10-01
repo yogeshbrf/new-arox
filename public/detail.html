@@ -185,16 +185,14 @@
             padding-bottom: 4rem;
             position: relative;
             overflow: hidden;
+            background: transparent !important;
+            background-image: none !important;
         }
         @media (min-width: 1024px) {
             .detail-hero { padding-top: 4rem; padding-bottom: 6rem; }
         }
         .detail-hero .grid-bg {
-            position: absolute;
-            top: 0; right: 0;
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
+            display: none !important;
         }
         .hero-badge {
             display: inline-flex;

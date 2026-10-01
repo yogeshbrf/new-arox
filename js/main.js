@@ -19,6 +19,7 @@
     localStorage.setItem('arox-theme', t);
     updateThemeUI();
     updateLogos();
+    window.dispatchEvent(new CustomEvent('arox-theme-change', { detail: { theme: t } }));
   }
 
   function updateThemeUI() {
@@ -192,20 +193,37 @@
         }
       }
 
+      nav.classList.add('nav-pill-ready');
       const activeLink = nav.querySelector('.nav-link.active') || links[0];
       
       // Position on active link on load
       requestAnimationFrame(() => {
         updatePill(activeLink, true);
       });
+      setTimeout(() => {
+        const curActive = nav.querySelector('.nav-link.active') || links[0];
+        updatePill(curActive, true);
+      }, 80);
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          const curActive = nav.querySelector('.nav-link.active') || links[0];
+          updatePill(curActive, true);
+        });
+      }
 
       links.forEach(link => {
         link.addEventListener('mouseenter', () => {
+          nav.classList.add('nav-hovering');
+          links.forEach(l => l.classList.remove('nav-link-hovered'));
+          link.classList.add('nav-link-hovered');
           updatePill(link, false);
         });
       });
 
       nav.addEventListener('mouseleave', () => {
+        nav.classList.remove('nav-hovering');
+        links.forEach(l => l.classList.remove('nav-link-hovered'));
         const currentActive = nav.querySelector('.nav-link.active');
         if (currentActive) {
           updatePill(currentActive, false);
@@ -215,10 +233,18 @@
       });
 
       window.addEventListener('resize', () => {
-        const currentHovered = nav.querySelector('.nav-link:hover');
+        const currentHovered = nav.querySelector('.nav-link.nav-link-hovered') || nav.querySelector('.nav-link:hover');
         const currentActive = nav.querySelector('.nav-link.active');
         updatePill(currentHovered || currentActive, true);
       }, { passive: true });
+
+      window.addEventListener('arox-theme-change', () => {
+        setTimeout(() => {
+          const currentHovered = nav.querySelector('.nav-link.nav-link-hovered') || nav.querySelector('.nav-link:hover');
+          const currentActive = nav.querySelector('.nav-link.active');
+          updatePill(currentHovered || currentActive, true);
+        }, 50);
+      });
     });
   }
 
@@ -827,46 +853,6 @@
     autoSwipeInterval = setInterval(autoSwipe, 3800);
   }
 
-
-  /* ── PAGE TRANSITION SLIDE CURTAIN ── */
-  const curtain = document.createElement('div');
-  curtain.className = 'page-transition-curtain';
-  curtain.style.transform = 'translateY(0)'; // start at top to mask initial load
-  curtain.style.pointerEvents = 'all';
-  document.body.appendChild(curtain);
-
-  // Trigger curtain slide-out to reveal page content once ready
-  window.addEventListener('DOMContentLoaded', () => {
-    requestAnimationFrame(() => {
-      curtain.style.transform = 'translateY(-100%)';
-      setTimeout(() => {
-        curtain.style.pointerEvents = 'none';
-      }, 550);
-    });
-  });
-
-  // Intercept local page routing for curtain slide-in effect
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a');
-    if (link && link.href && link.getAttribute('href') !== '#' && !link.getAttribute('href').startsWith('javascript:') && link.target !== '_blank') {
-      const url = new URL(link.href, window.location.href);
-      if (url.origin === window.location.origin) {
-        e.preventDefault();
-        // Position curtain at bottom, then slide up to cover screen
-        curtain.style.transition = 'none';
-        curtain.style.transform = 'translateY(100%)';
-        curtain.style.pointerEvents = 'all';
-        
-        requestAnimationFrame(() => {
-          curtain.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
-          curtain.style.transform = 'translateY(0)';
-          setTimeout(() => {
-            window.location.href = link.href;
-          }, 420);
-        });
-      }
-    }
-  });
 
   /* ── LENIS SMOOTH INERTIA SCROLLING ── */
   function initLenis() {

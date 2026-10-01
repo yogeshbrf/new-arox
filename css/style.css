@@ -97,10 +97,11 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   padding: 4px;
 }
 
+/* Sliding pill element */
 .nav-sliding-pill {
   position: absolute;
   top: 0;
@@ -108,80 +109,139 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   z-index: 1;
   pointer-events: none;
   opacity: 0;
-  border-radius: var(--radius-btn, 12px);
-  background: rgba(255, 85, 0, 0.12);
-  border: 1px solid rgba(255, 85, 0, 0.45);
-  box-shadow: 0 4px 20px rgba(255, 85, 0, 0.25), inset 0 0 12px rgba(255, 85, 0, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: 9999px !important;
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
               width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
               height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
               opacity 0.2s ease,
-              background-color 0.3s ease,
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
+              background-color 0.25s ease,
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
 }
 
+/* Dark Theme Pill (Image 1 & 2) */
 .theme-dark .nav-sliding-pill,
 .theme-navy .nav-sliding-pill,
 [data-theme="dark"] .nav-sliding-pill {
-  background: rgba(255, 85, 0, 0.16);
-  border: 1.5px solid rgba(255, 106, 26, 0.55);
-  box-shadow: 0 0 20px rgba(255, 85, 0, 0.35), inset 0 0 10px rgba(255, 106, 26, 0.2);
+  background: rgba(255, 85, 0, 0.04);
+  border: 1.5px solid #FF5500;
+  box-shadow: 0 0 12px rgba(255, 85, 0, 0.4), inset 0 0 6px rgba(255, 85, 0, 0.1);
 }
 
+/* Light Theme Pill (Image 3 & 4) */
 .theme-light .nav-sliding-pill,
 [data-theme="light"] .nav-sliding-pill {
-  background: rgba(255, 85, 0, 0.09);
-  border: 1.5px solid rgba(255, 85, 0, 0.38);
-  box-shadow: 0 4px 16px rgba(255, 85, 0, 0.14), inset 0 0 8px rgba(255, 85, 0, 0.06);
+  background: rgba(255, 85, 0, 0.08);
+  border: 1.5px solid rgba(255, 85, 0, 0.48);
+  box-shadow: 0 2px 10px rgba(255, 85, 0, 0.12);
 }
 
+/* Individual Nav Link */
 .nav-link {
   position: relative;
   z-index: 2;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-family: var(--font-display);
-  font-weight: 550;
-  color: var(--muted);
-  border-radius: var(--radius-btn, 12px);
+  padding: 0.42rem 1.15rem;
+  font-size: 0.9375rem !important;
+  font-family: var(--font-display, 'Montserrat', sans-serif) !important;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  line-height: 1.25;
+  border-radius: 9999px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.22s ease, transform 0.2s ease;
+  border: 1.5px solid transparent;
+  transition: color 0.2s ease, font-weight 0.15s ease;
   user-select: none;
 }
 
-.nav-link:hover {
-  color: var(--heading);
+/* Base text colors for inactive links */
+.theme-dark .nav-link,
+.theme-navy .nav-link,
+[data-theme="dark"] .nav-link {
+  color: #8E9BA4;
+}
+
+.theme-light .nav-link,
+[data-theme="light"] .nav-link {
+  color: #596780;
+}
+
+/* Initial static state before sliding pill initializes (Zero-Flash Fallback) */
+.nav-links:not(.nav-pill-ready) .theme-dark .nav-link.active,
+.theme-dark .nav-links:not(.nav-pill-ready) .nav-link.active,
+[data-theme="dark"] .nav-links:not(.nav-pill-ready) .nav-link.active {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1.5px solid #FF5500 !important;
+  background: rgba(255, 85, 0, 0.04) !important;
+  box-shadow: 0 0 12px rgba(255, 85, 0, 0.4), inset 0 0 6px rgba(255, 85, 0, 0.1) !important;
+}
+
+.nav-links:not(.nav-pill-ready) .theme-light .nav-link.active,
+.theme-light .nav-links:not(.nav-pill-ready) .nav-link.active,
+[data-theme="light"] .nav-links:not(.nav-pill-ready) .nav-link.active {
+  color: #FF5500 !important;
+  font-weight: 700 !important;
+  border: 1.5px solid rgba(255, 85, 0, 0.48) !important;
+  background: rgba(255, 85, 0, 0.08) !important;
+  box-shadow: 0 2px 10px rgba(255, 85, 0, 0.12) !important;
+}
+
+/* Once sliding pill is active, clear static border so the moving pill controls it */
+.nav-links.nav-pill-ready .nav-link {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Rest state (no hover): Present page name is highlighted */
+.theme-dark .nav-links:not(.nav-hovering):not(:has(.nav-link:hover)) .nav-link.active,
+[data-theme="dark"] .nav-links:not(.nav-hovering):not(:has(.nav-link:hover)) .nav-link.active {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+.theme-light .nav-links:not(.nav-hovering):not(:has(.nav-link:hover)) .nav-link.active,
+[data-theme="light"] .nav-links:not(.nav-hovering):not(:has(.nav-link:hover)) .nav-link.active {
+  color: #FF5500 !important;
+  font-weight: 700 !important;
+}
+
+/* While hovering: Hovered item gets active text style */
+.theme-dark .nav-link:hover,
+.theme-dark .nav-link.nav-link-hovered,
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link.nav-link-hovered {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
 }
 
 .theme-light .nav-link:hover,
-[data-theme="light"] .nav-link:hover {
-  color: var(--primary, #FF5500);
+.theme-light .nav-link.nav-link-hovered,
+[data-theme="light"] .nav-link:hover,
+[data-theme="light"] .nav-link.nav-link-hovered {
+  color: #FF5500 !important;
+  font-weight: 700 !important;
 }
 
-.theme-dark .nav-link:hover,
-[data-theme="dark"] .nav-link:hover {
-  color: #ffffff;
+/* While hovering another item: Present page item drops highlight to muted text */
+.theme-dark .nav-links.nav-hovering .nav-link.active:not(:hover):not(.nav-link-hovered),
+.theme-dark .nav-links:has(.nav-link:hover) .nav-link.active:not(:hover),
+[data-theme="dark"] .nav-links.nav-hovering .nav-link.active:not(:hover):not(.nav-link-hovered),
+[data-theme="dark"] .nav-links:has(.nav-link:hover) .nav-link.active:not(:hover) {
+  color: #8E9BA4 !important;
+  font-weight: 500 !important;
 }
 
-.nav-link.active {
-  color: var(--heading);
-  font-weight: 650;
-}
-
-.theme-light .nav-link.active,
-[data-theme="light"] .nav-link.active {
-  color: var(--primary, #FF5500);
-}
-
-.theme-dark .nav-link.active,
-[data-theme="dark"] .nav-link.active {
-  color: #ffffff;
+.theme-light .nav-links.nav-hovering .nav-link.active:not(:hover):not(.nav-link-hovered),
+.theme-light .nav-links:has(.nav-link:hover) .nav-link.active:not(:hover),
+[data-theme="light"] .nav-links.nav-hovering .nav-link.active:not(:hover):not(.nav-link-hovered),
+[data-theme="light"] .nav-links:has(.nav-link:hover) .nav-link.active:not(:hover) {
+  color: #596780 !important;
+  font-weight: 500 !important;
 }
 
 .nav-link-indicator {
@@ -235,7 +295,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 #hero-interactive-canvas {
   display: none !important;
 }
-#hero, .home-hero-pro, .page-hero-pro {
+#hero, .home-hero-pro, .page-hero-pro, .home-hero, .about-hero, .services-hero, .courses-hero, .contact-hero, .internship-hero, .hero-section {
   position: relative !important;
   min-height: auto !important;
   display: flex !important;
@@ -250,10 +310,18 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   overflow: hidden;
   background-image: none !important;
   background: transparent !important;
+  border-bottom: none !important;
+}
+
+#hero .ambient-layer,
+.page-hero-pro .ambient-layer,
+.home-hero-pro .ambient-layer,
+.hero-section .ambient-layer {
+  display: none !important;
 }
 
 @media (min-width: 1024px) {
-  #hero, .home-hero-pro, .page-hero-pro {
+  #hero, .home-hero-pro, .page-hero-pro, .home-hero, .about-hero, .services-hero, .courses-hero, .contact-hero, .internship-hero, .hero-section {
     padding-top: 140px !important;
     padding-bottom: 4rem !important;
   }
@@ -743,35 +811,12 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   background: transparent !important;
 }
 
-.ambient-layer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-.ambient-glow-orange, .ambient-glow-blue, .ambient-glow-gold {
-  position: absolute;
-  width: 40vw;
-  height: 40vw;
-  border-radius: 9999px;
-  filter: blur(100px);
-  opacity: 0.15;
-  pointer-events: none;
-}
-.ambient-glow-orange {
-  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-}
-.ambient-glow-blue {
-  background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
-}
-.ambient-glow-gold {
-  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-}
-.theme-light .ambient-glow-orange,
-.theme-light .ambient-glow-blue,
-.theme-light .ambient-glow-gold {
-  opacity: 0.08;
+.ambient-layer,
+.ambient-glow-orange,
+.ambient-glow-blue,
+.ambient-glow-gold,
+.ambient-noise {
+  display: none !important;
 }
 
 /* ─── MongoDB Style Arrow Animations on Hover ─── */
@@ -828,22 +873,19 @@ button:hover svg.lucide-arrow-right path:last-child {
   transform: translateX(0);
 }
 
-/* ─── HERO BOTTOM FADE & TEXT SAFETY ─── */
+/* ─── HERO BOTTOM FADE (REMOVED) ─── */
 #hero::after,
 .courses-hero::after,
 .services-hero::after,
 .contact-hero::after,
 .detail-hero::after,
-.about-hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 160px;
-  background: linear-gradient(to bottom, transparent, var(--background));
-  pointer-events: none;
-  z-index: 5;
+.about-hero::after,
+.home-hero-pro::after,
+.page-hero-pro::after,
+.internship-hero::after,
+.hero-section::after {
+  display: none !important;
+  background: none !important;
 }
 
 #hero > .hero-inner,
@@ -871,19 +913,9 @@ button:hover svg.lucide-arrow-right path:last-child {
   z-index: 1 !important;
 }
 
-/* ─── GRID BACKGROUND OVERLAY ─── */
+/* ─── GRID BACKGROUND OVERLAY (REMOVED) ─── */
 .grid-lines-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-size: 40px 40px;
-  background-image:
-    linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 100%);
-  mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 100%);
-  opacity: 0.15;
-  pointer-events: none;
+  display: none !important;
 }
 
 /* ─── SCROLL INDICATOR ANIMATION ─── */
@@ -3403,22 +3435,7 @@ body.no-scroll {
   }
 }
 
-/* ─── PAGE TRANSITIONS & LENIS SMOOTH SCROLL ─── */
-.page-transition-curtain {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #050505;
-  z-index: 99999;
-  transform: translateY(100%);
-  pointer-events: none;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
-.theme-light .page-transition-curtain {
-  background-color: #FFFFFF;
-}
+
 
 html.lenis {
   height: auto;

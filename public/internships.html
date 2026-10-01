@@ -36,17 +36,11 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      background: transparent !important;
+      background-image: none !important;
     }
     .internship-hero .grid-lines-bg {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.18;
-      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+      display: none !important;
     }
     .section-badge {
       display: inline-flex;
@@ -704,7 +698,7 @@
           <a href="about.html" class="nav-link">About</a>
           <a href="services.html" class="nav-link">Services</a>
           <a href="courses.html" class="nav-link">Courses</a>
-          <a href="internships.html" class="nav-link active"><span class="nav-link-indicator"></span>Internships</a>
+          <a href="internships.html" class="nav-link active">Internships</a>
           <a href="contact.html" class="nav-link">Contact</a>
         </nav>
       </div>
@@ -773,7 +767,6 @@
   <main>
     <!-- HERO -->
     <section class="internship-hero">
-      <div class="grid-lines-bg" aria-hidden="true"></div>
       <div style="position:relative;">
         <div class="section-badge">
           <span class="badge-dot"></span>
