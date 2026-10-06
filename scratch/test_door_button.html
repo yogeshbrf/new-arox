@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Button Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #0f111a;
+      color: #fff;
+    }
+    .split-container {
+      display: flex;
+      width: 100%;
+      height: 380px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .background {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .background--light {
+      background: #f4f7ff;
+    }
+    .background--dark {
+      background: #1f2335;
+    }
+
+    /* ─── The Button ─── */
+    .button-door {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 20px 12px 24px;
+      font-size: 18px;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
+      min-width: 175px;
+      height: 54px;
+      overflow: hidden;
+    }
+    .button-door:active {
+      transform: scale(0.98);
+    }
+
+    /* Dark button on light background */
+    .button-door--dark {
+      background: #1f2335;
+      color: #f4f7ff;
+      box-shadow: 0 4px 14px rgba(31, 35, 53, 0.18);
+    }
+    .button-door--dark:hover {
+      box-shadow: 0 8px 24px rgba(31, 35, 53, 0.28);
+    }
+
+    /* Light button on dark background */
+    .button-door--light {
+      background: #f4f7ff;
+      color: #1f2335;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+    .button-door--light:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .button-text {
+      font-weight: 500;
+      position: relative;
+      z-index: 10;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ─── Animated SVG Scene ─── */
+    .door-scene {
+      width: 44px;
+      height: 38px;
+      position: relative;
+      flex-shrink: 0;
+      overflow: visible;
+    }
+
+    .door-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: block;
+    }
+
+    /* Colors */
+    .door-frame {
+      fill: none;
+      stroke: #2563eb;
+      stroke-width: 2;
+    }
+    .doorway {
+      fill: rgba(37, 99, 235, 0.15);
+      transition: fill 0.3s ease;
+    }
+    .button-door--light .doorway {
+      fill: #1f2335;
+    }
+
+    .door-leaf {
+      fill: #2563eb;
+      transform-origin: 38px 18px;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .doorknob {
+      fill: #ffffff;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Stickman Figure */
+    .figure {
+      fill: #2563eb;
+      stroke: #2563eb;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transform-origin: 14px 22px;
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+    }
+
+    .figure-head {
+      fill: #2563eb;
+      stroke: none;
+    }
+
+    /* Hover State: Door Opens, Figure leans */
+    .button-door:hover .door-leaf {
+      transform: perspective(120px) rotateY(-55deg);
+    }
+    .button-door:hover .figure {
+      transform: translateX(3px);
+    }
+
+    /* Active / Walking / Entered animation */
+    .button-door.is-walking .door-leaf {
+      transform: perspective(120px) rotateY(-65deg);
+    }
+
+    .button-door.is-walking .figure {
+      animation: figureWalk 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .button-door.is-walking .arm-front {
+      animation: armSwingFront 0.3s ease-in-out infinite alternate;
+    }
+    .button-door.is-walking .arm-back {
+      animation: armSwingBack 0.3s ease-in-out infinite alternate;
+    }
+    .button-door.is-walking .leg-front {
+      animation: legStrideFront 0.3s ease-in-out infinite alternate;
+    }
+    .button-door.is-walking .leg-back {
+      animation: legStrideBack 0.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes figureWalk {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(8px) translateY(-1px);
+        opacity: 1;
+      }
+      80% {
+        transform: translateX(15px) translateY(-2px) scale(0.9);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(20px) scale(0.7);
+        opacity: 0;
+      }
+    }
+
+    @keyframes armSwingFront {
+      0% { transform: rotate(-25deg); }
+      100% { transform: rotate(25deg); }
+    }
+    @keyframes armSwingBack {
+      0% { transform: rotate(25deg); }
+      100% { transform: rotate(-25deg); }
+    }
+    @keyframes legStrideFront {
+      0% { transform: rotate(-30deg); }
+      100% { transform: rotate(30deg); }
+    }
+    @keyframes legStrideBack {
+      0% { transform: rotate(30deg); }
+      100% { transform: rotate(-30deg); }
+    }
+
+    /* Slam Shut State */
+    .button-door.is-slammed .door-leaf {
+      animation: doorSlam 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes doorSlam {
+      0% { transform: perspective(120px) rotateY(-65deg); }
+      70% { transform: perspective(120px) rotateY(4deg); }
+      100% { transform: perspective(120px) rotateY(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-container">
+    <div class="background background--light">
+      <button class="button-door button-door--dark" id="btn-left">
+        <span class="button-text">Log Out</span>
+        <div class="door-scene">
+          <svg class="door-svg" viewBox="0 0 44 38">
+            <!-- Doorway opening -->
+            <rect class="doorway" x="24" y="5" width="14" height="28" rx="2" />
+            <!-- Door Frame -->
+            <path class="door-frame" d="M 24 33 L 24 5 L 38 5 L 38 33" />
+            <!-- Door Leaf (swings open) -->
+            <g class="door-leaf">
+              <rect x="24" y="5" width="14" height="28" rx="1.5" />
+              <circle class="doorknob" cx="26.5" cy="19" r="1.2" />
+            </g>
+            <!-- Stickman Figure -->
+            <g class="figure">
+              <circle class="figure-head" cx="13" cy="10" r="3.2" />
+              <!-- Torso -->
+              <path class="torso" d="M 13 13.5 L 13 22" />
+              <!-- Arms -->
+              <g style="transform-origin: 13px 14px;">
+                <path class="arm-back" d="M 13 14 L 8 18" />
+                <path class="arm-front" d="M 13 14 L 18 17" />
+              </g>
+              <!-- Legs -->
+              <g style="transform-origin: 13px 22px;">
+                <path class="leg-back" d="M 13 22 L 8 30" />
+                <path class="leg-front" d="M 13 22 L 18 29" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </button>
+    </div>
+
+    <div class="background background--dark">
+      <button class="button-door button-door--light" id="btn-right">
+        <span class="button-text">Log Out</span>
+        <div class="door-scene">
+          <svg class="door-svg" viewBox="0 0 44 38">
+            <!-- Doorway opening -->
+            <rect class="doorway" x="24" y="5" width="14" height="28" rx="2" />
+            <!-- Door Frame -->
+            <path class="door-frame" d="M 24 33 L 24 5 L 38 5 L 38 33" />
+            <!-- Door Leaf (swings open) -->
+            <g class="door-leaf">
+              <rect x="24" y="5" width="14" height="28" rx="1.5" />
+              <circle class="doorknob" cx="26.5" cy="19" r="1.2" />
+            </g>
+            <!-- Stickman Figure -->
+            <g class="figure">
+              <circle class="figure-head" cx="13" cy="10" r="3.2" />
+              <!-- Torso -->
+              <path class="torso" d="M 13 13.5 L 13 22" />
+              <!-- Arms -->
+              <g style="transform-origin: 13px 14px;">
+                <path class="arm-back" d="M 13 14 L 8 18" />
+                <path class="arm-front" d="M 13 14 L 18 17" />
+              </g>
+              <!-- Legs -->
+              <g style="transform-origin: 13px 22px;">
+                <path class="leg-back" d="M 13 22 L 8 30" />
+                <path class="leg-front" d="M 13 22 L 18 29" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function setupButton(btn) {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('is-walking')) return;
+        btn.classList.add('is-walking');
+        setTimeout(() => {
+          btn.classList.add('is-slammed');
+          setTimeout(() => {
+            btn.classList.remove('is-walking');
+            btn.classList.remove('is-slammed');
+          }, 1000);
+        }, 850);
+      });
+    }
+    setupButton(document.getElementById('btn-left'));
+    setupButton(document.getElementById('btn-right'));
+  </script>
+</body>
+</html>

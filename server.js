@@ -88,11 +88,11 @@ app.use('/api', (req, res) => {
 });
 
 // ==========================================
-// Navigation & Portal Redirections to ERP
+// Auth & Navigation Routes
 // ==========================================
-app.get('/login', (req, res) => res.redirect(`${ERP_URL}/login`));
-app.get(['/signup', '/register'], (req, res) => res.redirect(`${ERP_URL}/signup`));
-app.get('/portal', (req, res) => res.redirect(`${ERP_URL}/login`));
+app.get(['/login', '/login.html'], (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
+app.get(['/signup', '/signup.html', '/register'], (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
+app.get('/portal', (req, res) => res.redirect('/login'));
 app.use(['/admin', '/admin/*'], (req, res) => res.redirect(`${ERP_URL}${req.originalUrl}`));
 app.use(['/student', '/student/*'], (req, res) => res.redirect(`${ERP_URL}${req.originalUrl}`));
 app.get('/verify-certificate', (req, res) => res.redirect(`${ERP_URL}/cert/index.html`));
@@ -111,7 +111,7 @@ app.get(['/courses', '/courses.html'], (req, res) => res.sendFile(path.join(__di
 app.get(['/contact', '/contact.html'], (req, res) => res.sendFile(path.join(__dirname, 'contact.html')));
 app.get(['/apply', '/apply.html'], (req, res) => res.sendFile(path.join(__dirname, 'apply.html')));
 app.get('/course/:slug', (req, res) => res.sendFile(path.join(__dirname, 'detail.html')));
-app.get('/training', (req, res) => res.redirect('/courses.html?tab=training'));
+app.get('/training', (req, res) => res.redirect('/courses.html'));
 app.get('/internships', (req, res) => res.redirect('/courses.html?tab=internship'));
 app.get('/footer.html', (req, res) => res.sendFile(path.join(__dirname, 'footer.html')));
 

@@ -10,6 +10,7 @@
 
   function applyTheme(t) {
     const root = document.documentElement;
+    root.classList.add('theme-switching');
     root.classList.remove('theme-light', 'theme-dark', 'dark');
     root.classList.add('theme-' + t);
     if (t === 'dark') {
@@ -20,6 +21,12 @@
     updateThemeUI();
     updateLogos();
     window.dispatchEvent(new CustomEvent('arox-theme-change', { detail: { theme: t } }));
+
+    // Force instant style commit then release transition suppression
+    void root.offsetHeight;
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-switching');
+    });
   }
 
   function updateThemeUI() {
@@ -63,15 +70,60 @@
   function updateLogos() {
     const isDark = currentTheme === 'dark';
     const src = isDark ? 'public/assets/logo/logo-dark.png' : 'public/assets/logo/logo-light.png';
-    ['nav-logo-img', 'footer-logo-img'].forEach(id => {
-      const el = document.getElementById(id);
+    document.querySelectorAll('#nav-logo-img, #footer-logo-img, .nav-logo img, .footer-brand-logo img').forEach(el => {
       if (el) el.src = src;
     });
   }
 
+  // Preload all theme assets immediately for zero-delay instant switching
+  const PRELOAD_ASSETS = [
+    'public/assets/logo/logo-dark.png',
+    'public/assets/logo/logo-light.png',
+    'assets/logo/logo-dark.png',
+    'assets/logo/logo-light.png',
+    'images/hero/home_dark.png',
+    'images/hero/home_light.png',
+    'images/hero/about_dark.png',
+    'images/hero/about_light.png',
+    'images/hero/services_dark.png',
+    'images/hero/services_light.png',
+    'images/hero/courses_dark.png',
+    'images/hero/courses_light.png',
+    'images/hero/contact_dark.png',
+    'images/hero/contact_light.png'
+  ];
+  if (typeof window !== 'undefined') {
+    PRELOAD_ASSETS.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }
+
+  // Instant switch on click without event loop or label delay
+  document.addEventListener('click', (e) => {
+    const switchLabel = e.target.closest('.switch');
+    if (switchLabel) {
+      const cb = switchLabel.querySelector('input[type="checkbox"]');
+      if (cb) {
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        cb.checked = (nextTheme === 'light');
+        applyTheme(nextTheme);
+        e.preventDefault();
+        return;
+      }
+    }
+    if (e.target.matches('#checkbox, #theme-checkbox, .theme-switch-checkbox')) {
+      const nextTheme = e.target.checked ? 'light' : 'dark';
+      applyTheme(nextTheme);
+    }
+  });
+
   document.addEventListener('change', (e) => {
     if (e.target.id === 'checkbox' || e.target.id === 'theme-checkbox' || e.target.classList.contains('theme-switch-checkbox')) {
-      applyTheme(e.target.checked ? 'light' : 'dark');
+      const targetTheme = e.target.checked ? 'light' : 'dark';
+      if (targetTheme !== currentTheme) {
+        applyTheme(targetTheme);
+      }
     }
   });
 
@@ -83,7 +135,10 @@
     });
   }
   document.querySelectorAll('.mobile-theme-btn').forEach(btn => {
-    btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      applyTheme(btn.dataset.theme);
+    });
   });
   applyTheme(currentTheme);
 
@@ -394,13 +449,19 @@
     let itemH = 0;
 
     function setupWCU() {
-      if (wcuLabel && wcuListW) {
-        const lr = wcuLabel.getBoundingClientRect().right;
-        wcuListW.style.left = (lr + 18) + 'px';
-      }
       if (wcuItems[0]) {
         itemH = wcuItems[0].offsetHeight;
-        wcuList.style.top = (window.innerHeight / 2 - itemH / 2) + 'px';
+        if (wcuListW) {
+          wcuListW.style.height = itemH + 'px';
+          let maxW = 0;
+          wcuItems.forEach(el => {
+            maxW = Math.max(maxW, el.scrollWidth || el.offsetWidth);
+          });
+          if (maxW > 0) {
+            wcuListW.style.width = Math.ceil(maxW) + 'px';
+          }
+        }
+        wcuList.style.top = '0px';
       }
     }
 
@@ -423,6 +484,9 @@
       onUpdate(self) { renderWCU(self.progress * (N_ITEMS - 1)); }
     });
     window.addEventListener('resize', () => { setupWCU(); ScrollTrigger.refresh(); }, { passive: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { setupWCU(); ScrollTrigger.refresh(); });
+    }
   }
 
   /* ── MAGIC BENTO ─────────────────────────────────────────────── */
@@ -433,7 +497,8 @@
         title: 'Web Development',
         desc: 'Modern, fast and scalable websites.',
         label: 'For Business',
-        isWide: false,
+        isWide: true,
+        image: 'assets/our service/web development.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>'
       },
       {
@@ -441,13 +506,15 @@
         desc: 'High-performance mobile applications.',
         label: 'Mobile',
         isWide: false,
+        image: 'assets/our service/app development.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'
       },
       {
         title: 'Software Development',
         desc: 'Dedicated engineering support to build and scale your digital product.',
         label: 'Extended Team',
-        isWide: true,
+        isWide: false,
+        image: 'assets/our service/software development.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>'
       },
       {
@@ -455,6 +522,7 @@
         desc: 'Data-driven growth strategies that work.',
         label: 'Marketing',
         isWide: false,
+        image: 'assets/our service/digital marketing.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>'
       },
       {
@@ -462,20 +530,23 @@
         desc: 'Efficient, accurate and cost-effective support.',
         label: 'Operations',
         isWide: false,
+        image: 'assets/our service/bpo services.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>'
       },
       {
         title: 'Branding & Designing',
         desc: 'Crafting memorable visual identities.',
         label: 'Creative',
-        isWide: false,
+        isWide: true,
+        image: 'assets/our service/branding and designing.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>'
       },
       {
         title: 'Industry Training',
         desc: 'Corporate and technical training.',
         label: 'Education',
-        isWide: false,
+        isWide: true,
+        image: 'assets/our service/industry training.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>'
       },
       {
@@ -483,11 +554,13 @@
         desc: 'Real-world experience to kickstart your career with hands-on projects and industry mentors.',
         label: 'Career',
         isWide: true,
+        image: 'assets/our service/internships.png',
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>'
       }
     ];
     const arrowSVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
 
+    bentoGrid.innerHTML = '';
     bentoData.forEach((card, idx) => {
       const el = document.createElement('article');
       const isEven = idx % 2 === 0;
@@ -495,6 +568,10 @@
       el.innerHTML = `
         <div class="magic-blob-1"></div>
         <div class="magic-blob-2"></div>
+        ${card.image ? `
+        <div class="bento-card-media">
+          <img src="${card.image}" alt="${card.title}" class="bento-card-img" loading="lazy" />
+        </div>` : ''}
         <div class="icon-box magic-bento-card__icon">${card.icon}</div>
         <div class="service-meta magic-bento-card__label">${card.label}</div>
         <h2 class="service-title magic-bento-card__title">${card.title}</h2>
@@ -951,5 +1028,119 @@
     document.addEventListener('DOMContentLoaded', initFooterResponsive);
   } else {
     initFooterResponsive();
+  }
+
+  /* ── SMOOTH PAGE NAVIGATION TRANSITION ────────────────────────── */
+  function initPageTransitions() {
+    let overlay = document.querySelector('.page-transition-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'page-transition-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(overlay);
+    }
+
+    // Check if this page load is entering from an internal navigation transition
+    if (sessionStorage.getItem('arox-page-transition')) {
+      sessionStorage.removeItem('arox-page-transition');
+      overlay.classList.add('is-entering');
+      overlay.style.visibility = 'visible';
+      overlay.style.opacity = '1';
+      overlay.style.transform = 'translateY(0)';
+
+      // Trigger smooth upward wipe out to reveal the incoming page
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.documentElement.classList.remove('page-is-entering');
+          overlay.classList.remove('is-entering');
+          overlay.classList.add('is-leaving');
+          setTimeout(() => {
+            overlay.classList.remove('is-leaving');
+            overlay.style.visibility = 'hidden';
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'translateY(100%)';
+            overlay.style.pointerEvents = 'none';
+          }, 350);
+        });
+      });
+    } else {
+      document.documentElement.classList.remove('page-is-entering');
+    }
+
+    // Safety reset for back/forward navigation (bfcache)
+    window.addEventListener('pageshow', () => {
+      sessionStorage.removeItem('arox-page-transition');
+      document.documentElement.classList.remove('page-is-entering');
+      if (overlay) {
+        overlay.classList.remove('is-exiting', 'is-entering', 'is-leaving');
+        overlay.style.visibility = 'hidden';
+        overlay.style.opacity = '0';
+        overlay.style.transform = 'translateY(100%)';
+        overlay.style.pointerEvents = 'none';
+      }
+    });
+
+    // Intercept clicks on internal links for smooth transition
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // Allow new tab/window
+
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      const rawHref = link.getAttribute('href');
+      if (!rawHref) return;
+
+      // Skip non-navigational links
+      if (rawHref.startsWith('#') || rawHref.startsWith('javascript:') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) return;
+      if (link.target === '_blank' || link.hasAttribute('download')) return;
+
+      try {
+        const targetUrl = new URL(link.href, window.location.href);
+
+        // Only transition within same origin
+        if (targetUrl.origin !== window.location.origin) return;
+
+        // Skip if navigating to the same URL path and query
+        if (targetUrl.pathname === window.location.pathname && targetUrl.search === window.location.search) {
+          return;
+        }
+
+        // Avoid transition on external portal/admin redirects
+        if (targetUrl.pathname.startsWith('/api') || targetUrl.pathname.startsWith('/portal') || targetUrl.pathname.startsWith('/admin')) {
+          return;
+        }
+
+        e.preventDefault();
+
+        // Mark navigation transition flag
+        sessionStorage.setItem('arox-page-transition', '1');
+
+        // Play smooth exit animation (glides up from bottom)
+        overlay.classList.remove('is-leaving', 'is-entering');
+        overlay.style.transition = 'transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease';
+        overlay.style.transform = 'translateY(100%)';
+        overlay.style.visibility = 'visible';
+        overlay.style.pointerEvents = 'all';
+
+        requestAnimationFrame(() => {
+          overlay.classList.add('is-exiting');
+          overlay.style.transform = 'translateY(0)';
+          overlay.style.opacity = '1';
+
+          setTimeout(() => {
+            window.location.assign(targetUrl.href);
+          }, 260);
+        });
+      } catch (err) {
+        // Fallback: regular navigation
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPageTransitions);
+  } else {
+    initPageTransitions();
   }
 })();

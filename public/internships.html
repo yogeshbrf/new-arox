@@ -678,8 +678,10 @@
       .modal-right-panel { width: 100%; padding: 32px 24px; }
     }
   </style>
+  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 <body>
+  <div class="page-transition-overlay" aria-hidden="true"></div>
   <div class="noise-overlay" aria-hidden="true"></div>
   <header id="site-header">
     <div class="nav-inner">
@@ -703,7 +705,7 @@
         </nav>
       </div>
       <div class="nav-right">
-        <a href="/login" class="nav-login">Login</a>
+        <a href="/login" class="nav-login">Sign In</a>
         <label class="switch" title="Toggle theme">
           <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
           <span class="slider">
@@ -759,7 +761,7 @@
           <button class="mobile-theme-btn active" data-theme="dark">dark</button>
         </div>
       </div>
-      <a href="/login" class="mobile-login-btn">Login</a>
+      <a href="/login" class="mobile-login-btn">Sign In</a>
       <a href="apply.html" class="mobile-cta-btn">Get Started</a>
     </div>
   </div>
@@ -847,7 +849,6 @@
   <section class="cta-section" id="cta">
     <div class="cta-card reveal">
       <div class="cta-content">
-        <div class="card-number">03 / INTERNSHIPS</div>
         <h2 class="cta-heading">Learn technology by building it.</h2>
         <p class="cta-text">Develop practical skills through structured training, real-world projects, and guided learning designed for students and aspiring technology professionals.</p>
         <div class="cta-actions">
@@ -994,8 +995,8 @@
           desc: "Build real production-ready web platforms using React, Node.js, REST & GraphQL APIs, and SQL/NoSQL databases.",
           duration: "3 Months",
           rating: "4.85",
-          accentColor: "#FF5500",
-          accentGlow: "rgba(255, 85, 0, 0.4)",
+          accentColor: "#00D2FF",
+          accentGlow: "rgba(0, 210, 255, 0.4)",
           icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`
         },
         {

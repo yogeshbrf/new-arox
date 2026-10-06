@@ -94,7 +94,9 @@
     /* ============================================================
        DESIGN TOKENS
     ============================================================ */
-    :root {
+    :root,
+    .theme-light,
+    [data-theme="light"] {
       --primary: #000000;
       --secondary: #3C4043;
       --accent: #5F6368;
@@ -117,11 +119,14 @@
       --radius-l: 24px;
     }
 
-    .theme-dark {
+    .theme-dark,
+    .dark,
+    html.dark,
+    [data-theme="dark"] {
       --primary: #FFFFFF;
       --secondary: #E8EAED;
       --accent: #9AA0A6;
-      --background: #000000;
+      --background: #0b0c11;
       --surface: #202124;
       --surface-elevated: #3C4043;
       --heading: #FFFFFF;
@@ -142,7 +147,6 @@
       font-family: var(--font-sans);
       overflow-x: hidden;
       min-height: 100vh;
-      transition: background-color 300ms, color 300ms;
     }
     h1,h2,h3,h4,h5,h6 { color: var(--heading); font-family: var(--font-display); }
     button { cursor: pointer; border: none; background: none; font-family: inherit; }
@@ -165,7 +169,7 @@
        ORBITAL NETWORK CARD UTILITIES
     ============================================================ */
     .orbit-path {
-      border: 1px dashed rgba(255, 85, 0, 0.35);
+      border: 1px dashed rgba(0, 210, 255, 0.35);
       border-radius: 50%;
       position: absolute;
       top: 50%;
@@ -175,28 +179,28 @@
     .node-icon {
       background: #FFFFFF;
       border-radius: 50%;
-      box-shadow: 0 4px 15px rgba(255, 85, 0, 0.18);
+      box-shadow: 0 4px 15px rgba(0, 210, 255, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FF5500;
+      color: #00D2FF;
       position: absolute;
       transition: transform 300ms ease;
     }
     .theme-dark .node-icon {
       background: #1e293b;
-      color: #FF7733;
+      color: #38BDF8;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
     .tag-style {
       background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(255, 85, 0, 0.25);
+      border: 1px solid rgba(0, 210, 255, 0.25);
       box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
     .theme-dark .tag-style {
       background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 85, 0, 0.35);
-      color: #FF8533;
+      border-color: rgba(0, 210, 255, 0.35);
+      color: #38BDF8;
     }
 
     /* ============================================================
@@ -241,60 +245,60 @@
     }
 
     .badge-bg {
-      background: linear-gradient(90deg, rgba(255, 85, 0, 0.1) 0%, rgba(255, 85, 0, 0.02) 100%);
+      background: linear-gradient(90deg, rgba(0, 210, 255, 0.12) 0%, rgba(0, 102, 255, 0.02) 100%);
     }
 
     .badge-number {
-      background-color: #FF5500;
+      background-color: #00D2FF;
     }
 
     .text-primary-blue {
-      color: #CC4400; /* Deep coral for first line */
+      color: #0066FF; /* Deep tech blue for first line */
     }
     .theme-dark .text-primary-blue {
-      color: #FF7733;
+      color: #38BDF8;
     }
 
     .text-bright-blue {
-      color: #FF5500; /* Vibrant coral for second line */
+      color: #00D2FF; /* Vibrant cyan for second line */
     }
     .theme-dark .text-bright-blue {
-      color: #FFA04D;
+      color: #00E5FF;
     }
 
     .title-underline {
       width: 32px;
       height: 4px;
-      background-color: #FF5500;
+      background-color: #00D2FF;
       border-radius: 2px;
     }
 
     .tag {
       background: #ffffff;
-      border: 1px solid rgba(255, 85, 0, 0.15);
-      color: #FF5500;
-      box-shadow: 0 2px 8px rgba(255, 85, 0, 0.05);
+      border: 1px solid rgba(0, 210, 255, 0.15);
+      color: #00D2FF;
+      box-shadow: 0 2px 8px rgba(0, 210, 255, 0.08);
       transition: all 0.2s ease;
     }
     .theme-dark .tag {
       background: #1e293b;
-      border-color: rgba(255, 85, 0, 0.3);
-      color: #FFA04D;
+      border-color: rgba(0, 210, 255, 0.3);
+      color: #00E5FF;
     }
     
     .tag:hover {
-      background: rgba(255, 85, 0, 0.05);
-      border-color: rgba(255, 85, 0, 0.3);
+      background: rgba(0, 210, 255, 0.05);
+      border-color: rgba(0, 210, 255, 0.3);
     }
 
     .cta-btn {
-      background: linear-gradient(90deg, #FF5500 0%, #FF7733 100%);
-      box-shadow: 0 10px 25px -5px rgba(255, 85, 0, 0.4);
+      background: linear-gradient(90deg, #00D2FF 0%, #0066FF 100%);
+      box-shadow: 0 10px 25px -5px rgba(0, 210, 255, 0.4);
       transition: all 0.3s ease;
     }
 
     .cta-btn:hover {
-      box-shadow: 0 15px 30px -5px rgba(255, 85, 0, 0.5);
+      box-shadow: 0 15px 30px -5px rgba(0, 210, 255, 0.5);
       transform: translateY(-2px);
     }
 
@@ -312,12 +316,12 @@
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      border: 1px solid rgba(255, 85, 0, 0.08);
+      border: 1px solid rgba(0, 210, 255, 0.1);
     }
 
     .circle-1 { width: 85px; height: 85px; }
     .circle-2 { width: 125px; height: 125px; }
-    .circle-3 { width: 160px; height: 160px; border-style: dashed; border-color: rgba(255, 85, 0, 0.15); }
+    .circle-3 { width: 160px; height: 160px; border-style: dashed; border-color: rgba(0, 210, 255, 0.2); }
 
     .center-robot {
       position: absolute;
@@ -328,7 +332,7 @@
       height: 58px;
       background: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 10px 25px rgba(255, 85, 0, 0.15), inset 0 0 12px rgba(255, 85, 0, 0.05);
+      box-shadow: 0 10px 25px rgba(0, 210, 255, 0.18), inset 0 0 12px rgba(0, 210, 255, 0.06);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -341,7 +345,7 @@
     .robot-face {
       width: 32px;
       height: 20px;
-      background: linear-gradient(135deg, #E04800, #FF5500);
+      background: linear-gradient(135deg, #0066FF, #00D2FF);
       border-radius: 6px;
       position: relative;
     }
@@ -364,7 +368,7 @@
       transform: translateX(-50%);
       width: 2.5px;
       height: 6px;
-      background: #FF5500;
+      background: #00D2FF;
       border-radius: 1px;
     }
     .robot-antenna::before {
@@ -375,7 +379,7 @@
       transform: translateX(-50%);
       width: 5px;
       height: 5px;
-      background: #FF5500;
+      background: #00D2FF;
       border-radius: 50%;
     }
 
@@ -385,17 +389,17 @@
       height: 26px;
       background: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(255, 85, 0, 0.12);
+      box-shadow: 0 4px 12px rgba(0, 210, 255, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FF5500;
+      color: #00D2FF;
       z-index: 5;
       font-size: 11px;
     }
     .theme-dark .node {
       background: #1e293b;
-      color: #FF7733;
+      color: #38BDF8;
     }
 
     .node-chat { top: 0; left: 50%; transform: translate(-50%, -50%); }
@@ -406,16 +410,16 @@
 
     .connector-line {
       position: absolute;
-      background: #FF5500;
+      background: #00D2FF;
       opacity: 0.3;
       z-index: 1;
     }
 
-    .line-chat { top: 25%; left: 50%; width: 2px; height: 28px; transform: translateX(-50%); border-left: 2px dashed #FF5500; background: transparent;}
-    .line-brain { top: 40%; left: 65%; width: 28px; height: 2px; transform: rotate(-30deg); border-top: 2px dashed #FF5500; background: transparent;}
-    .line-code { top: 60%; left: 60%; width: 30px; height: 2px; transform: rotate(45deg); border-top: 2px dashed #FF5500; background: transparent;}
-    .line-db { top: 60%; left: 20%; width: 50px; height: 2px; transform: rotate(-45deg); border-top: 2px dashed #FF5500; background: transparent;}
-    .line-network { top: 40%; left: 15%; width: 28px; height: 2px; transform: rotate(30deg); border-top: 2px dashed #FF5500; background: transparent;}
+    .line-chat { top: 25%; left: 50%; width: 2px; height: 28px; transform: translateX(-50%); border-left: 2px dashed #00D2FF; background: transparent;}
+    .line-brain { top: 40%; left: 65%; width: 28px; height: 2px; transform: rotate(-30deg); border-top: 2px dashed #00D2FF; background: transparent;}
+    .line-code { top: 60%; left: 60%; width: 30px; height: 2px; transform: rotate(45deg); border-top: 2px dashed #00D2FF; background: transparent;}
+    .line-db { top: 60%; left: 20%; width: 50px; height: 2px; transform: rotate(-45deg); border-top: 2px dashed #00D2FF; background: transparent;}
+    .line-network { top: 40%; left: 15%; width: 28px; height: 2px; transform: rotate(30deg); border-top: 2px dashed #00D2FF; background: transparent;}
 
     /* ============================================================
        NOISE OVERLAY
@@ -1496,7 +1500,7 @@
       margin-bottom: 24px;
     }
     .modal-apply-trigger-btn {
-      background: linear-gradient(135deg, #FF6B00 0%, #FF8800 100%);
+      background: linear-gradient(135deg, #00D2FF 0%, #0066FF 100%);
       color: #ffffff;
       border: none;
       padding: 13px 30px;
@@ -1504,7 +1508,7 @@
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(255, 107, 0, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 210, 255, 0.35);
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -1512,7 +1516,7 @@
     }
     .modal-apply-trigger-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(255, 107, 0, 0.45);
+      box-shadow: 0 12px 30px rgba(0, 210, 255, 0.45);
       background: linear-gradient(135deg, #FF7711 0%, #FF9911 100%);
     }
 
@@ -1730,7 +1734,6 @@
       box-shadow: var(--card-shadow);
       background: var(--surface);
       backdrop-filter: blur(12px);
-      transition: background-color 300ms, border-color 300ms;
     }
     .theme-dark .flip-card-front,
     .theme-dark .flip-card-back {
@@ -2488,8 +2491,10 @@
     /* Transition helper */
     .fade-slide { animation: fadeUp 0.25s ease forwards; }
   </style>
+  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 <body>
+<div class="page-transition-overlay" aria-hidden="true"></div>
 
 <!-- Noise Overlay -->
 <div class="noise-overlay" aria-hidden="true"></div>
@@ -2518,7 +2523,7 @@
       </nav>
     </div>
     <div class="nav-right">
-      <a href="/login" class="nav-login">Login</a>
+      <a href="/login" class="nav-login">Sign In</a>
       <label class="switch" title="Toggle theme">
         <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
         <span class="slider">
@@ -2576,7 +2581,7 @@
         <button class="mobile-theme-btn active" data-theme="dark">dark</button>
       </div>
     </div>
-    <a href="/login" class="mobile-login-btn">Login</a>
+    <a href="/login" class="mobile-login-btn">Sign In</a>
     <a href="#" class="mobile-cta-btn">Get Started</a>
   </div>
 </div>
@@ -2584,7 +2589,7 @@
 <!-- ============================================================
      INTERACTIVE DEVELOPER TRAINING HERO SECTION
 ============================================================ -->
-<section id="hero" class="page-hero-pro relative flex flex-col items-center justify-start pt-24 pb-12 lg:pt-28 lg:pb-16 overflow-hidden">
+<section id="hero" class="page-hero-pro hero-courses relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden">
   <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
     <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
       Level Up Your <span class="hero-gradient-text">Tech Stack</span>
@@ -2595,7 +2600,7 @@
     </p>
 
     <div class="flex flex-wrap items-center justify-center gap-4 mb-10 w-full sm:w-auto">
-      <button onclick="scrollToCoursesSection()" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(255,85,0,0.3)] hover:shadow-[0_15px_40px_rgba(255,85,0,0.5)]">
+      <button onclick="scrollToCoursesSection()" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(0,210,255,0.3)] hover:shadow-[0_15px_40px_rgba(0,210,255,0.5)]">
         <span>Explore Programs</span>
         <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -2629,8 +2634,8 @@
 <section class="hscroll-section" id="hscrollSection">
   <!-- Tab switcher directly inside the section -->
   <div class="courses-pill-nav" id="coursesPillNav">
-    <button class="pill-btn" data-type="training">Training</button>
-    <button class="pill-btn active" data-type="internship">Internship</button>
+    <button class="pill-btn active" data-type="training">Training</button>
+    <button class="pill-btn" data-type="internship">Internship</button>
   </div>
   <div class="hscroll-track" id="hscrollTrack">
     <!-- Cards injected by JS -->
@@ -2757,7 +2762,7 @@
 
         <!-- Action Button & Kickstart Badge -->
         <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-top: 1rem;">
-          <button class="modal-apply-trigger-btn" id="modal-apply-trigger-btn" style="background: linear-gradient(135deg, #FF5500 0%, #FF7700 100%); padding: 14px 34px; border-radius: 12px; font-size: 0.95rem; font-weight: 700; color: #ffffff; border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(255, 85, 0, 0.35); transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px;">
+          <button class="modal-apply-trigger-btn" id="modal-apply-trigger-btn" style="background: linear-gradient(135deg, #00D2FF 0%, #0066FF 100%); padding: 14px 34px; border-radius: 12px; font-size: 0.95rem; font-weight: 700; color: #ffffff; border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(0, 210, 255, 0.35); transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px;">
             Apply Now &rarr;
           </button>
           <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.825rem; font-weight: 600; color: var(--muted);">
@@ -2996,7 +3001,6 @@
   <section class="cta-section" id="cta">
     <div class="cta-card reveal">
       <div class="cta-content">
-        <div class="card-number">03 / TRAINING</div>
         <h2 class="cta-heading">Learn technology by building it.</h2>
         <p class="cta-text">Develop practical skills through structured training, real-world projects, and guided learning designed for students and aspiring technology professionals.</p>
         <div class="cta-actions">
@@ -3659,9 +3663,9 @@ import { LogoParticleEngine, MetaParticleEngine } from './js/particle-engine.js'
     });
   });
 
-  // Initial load - respect ?tab=internship / ?tab=training (default to internship for instant card carousel display)
+  // Initial load - show horizontal scrolling flip cards (training) by default
   const urlParams = new URLSearchParams(window.location.search);
-  const initialTab = urlParams.get('tab') === 'training' ? 'training' : 'internship';
+  const initialTab = urlParams.get('tab') === 'internship' ? 'internship' : 'training';
   setActiveType(initialTab, true);
 
   window.addEventListener('resize', () => {

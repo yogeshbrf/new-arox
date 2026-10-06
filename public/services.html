@@ -244,9 +244,9 @@
             .mobile-service-item.active {
                 flex-basis: 160px;
                 width: 160px;
-                border-color: #FF5500;
+                border-color: #00D2FF;
                 transform: translateY(-1px);
-                box-shadow: 0 8px 22px rgba(255, 85, 0, 0.35);
+                box-shadow: 0 8px 22px rgba(0, 210, 255, 0.35);
             }
 
             .mobile-service-item::before {
@@ -255,7 +255,7 @@
                 inset: 0;
                 z-index: -2;
                 border-radius: inherit;
-                background: linear-gradient(135deg, var(--gradient-from, #FF6A1A), var(--gradient-to, #FF5500));
+                background: linear-gradient(135deg, var(--gradient-from, #00D2FF), var(--gradient-to, #0066FF));
                 opacity: 0;
                 transition: opacity .4s cubic-bezier(.16,.8,.24,1);
             }
@@ -272,7 +272,7 @@
                 height: 100%;
                 z-index: -3;
                 border-radius: 999px;
-                background: linear-gradient(135deg, var(--gradient-from, #FF6A1A), var(--gradient-to, #FF5500));
+                background: linear-gradient(135deg, var(--gradient-from, #00D2FF), var(--gradient-to, #0066FF));
                 filter: blur(14px);
                 opacity: 0;
                 pointer-events: none;
@@ -293,7 +293,7 @@
                 height: 20px;
                 place-items: center;
                 transform: translate(-50%, -50%) scale(1);
-                color: var(--primary, #FF5500);
+                color: var(--primary, #00D2FF);
                 transition: transform .35s cubic-bezier(.16,.8,.24,1), color .35s ease;
             }
 
@@ -364,7 +364,7 @@
                 width: 25%;
                 height: 100%;
                 border-radius: inherit;
-                background: linear-gradient(90deg, #FF6A1A, #FF5500);
+                background: linear-gradient(90deg, #00D2FF, #0066FF);
                 transition: transform .25s ease;
             }
 
@@ -423,8 +423,10 @@
         }
 
     </style>
+    <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 <body>
+    <div class="page-transition-overlay" aria-hidden="true"></div>
     <div class="noise-overlay" aria-hidden="true"></div>
     <header id="site-header">
       <div class="nav-inner">
@@ -447,7 +449,7 @@
           </nav>
         </div>
         <div class="nav-right">
-          <a href="/login" class="nav-login">Login</a>
+          <a href="/login" class="nav-login">Sign In</a>
         <label class="switch" title="Toggle theme">
           <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
           <span class="slider">
@@ -502,7 +504,7 @@
             <button class="mobile-theme-btn active" data-theme="dark">dark</button>
           </div>
         </div>
-        <a href="/login" class="mobile-login-btn">Login</a>
+        <a href="/login" class="mobile-login-btn">Sign In</a>
         <a href="#" class="mobile-cta-btn">Get Started</a>
       </div>
     </div>
@@ -510,7 +512,7 @@
     <!-- ============================================================
          SERVICES INTERACTIVE ARCHITECTURE HERO
     ============================================================ -->
-    <section id="hero" class="page-hero-pro relative flex flex-col items-center justify-start pt-24 pb-12 lg:pt-28 lg:pb-16 overflow-hidden">
+    <section id="hero" class="page-hero-pro hero-services relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden">
       <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
         <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
           Full-Spectrum <span class="hero-gradient-text">Digital Capabilities</span>
@@ -521,14 +523,14 @@
         </p>
 
         <div class="flex flex-wrap items-center justify-center gap-4 mb-10 w-full sm:w-auto">
-          <a href="contact.html" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(255,85,0,0.3)] hover:shadow-[0_15px_40px_rgba(255,85,0,0.5)]">
+          <a href="contact.html" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(0,210,255,0.3)] hover:shadow-[0_15px_40px_rgba(0,210,255,0.5)]">
             <span>Start a Project</span>
             <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
-          <button onclick="document.getElementById('root').scrollIntoView({behavior:'smooth'})" class="btn-secondary-pro inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full border border-[var(--border)] bg-[var(--surface)]/70 hover:bg-[var(--surface-elevated)] backdrop-blur-md text-[var(--heading)] font-display font-semibold text-sm transition-all duration-300">
+          <button onclick="if(window.lenis){window.lenis.scrollTo('#pinned-section')}else{document.getElementById('root').scrollIntoView({behavior:'smooth'})}" class="btn-secondary-pro inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full border border-[var(--border)] bg-[var(--surface)]/70 hover:bg-[var(--surface-elevated)] backdrop-blur-md text-[var(--heading)] font-display font-semibold text-sm transition-all duration-300">
             <svg class="w-4 h-4 text-[var(--primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
@@ -629,7 +631,7 @@
             {
                 id: "01",
                 name: "Development",
-                color: "rgba(255, 85, 0, ", // Coral / Red-Orange
+                color: "rgba(0, 210, 255, ", // Electric Cyan
                 services: [
                     { 
                         name: "Software Development", 
@@ -733,7 +735,7 @@
         function ServiceCard({ service, color }) {
             return (
                 <motion.div 
-                    className="snap-start flex-shrink-0 relative group cursor-pointer overflow-hidden rounded-[20px]"
+                    className="snap-start flex-shrink-0 relative group cursor-pointer overflow-hidden rounded-[20px] service-card-item select-none"
                     style={{ 
                         width: "340px", 
                         height: "450px", 
@@ -750,11 +752,12 @@
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >
                     {/* Full Height Image (Light & Dark Theme Switch) */}
-                    <div className="absolute inset-0 w-full h-full">
+                    <div className="absolute inset-0 w-full h-full pointer-events-none select-none">
                         <motion.img 
                             src={service.imgLight || service.img} 
                             alt={service.name}
-                            className="w-full h-full object-cover dark:hidden"
+                            draggable="false"
+                            className="w-full h-full object-cover dark:hidden pointer-events-none select-none"
                             variants={{
                                 rest: { scale: 1, opacity: 0.95 },
                                 hover: { scale: 1.05, opacity: 1 }
@@ -764,7 +767,8 @@
                         <motion.img 
                             src={service.imgDark || service.img} 
                             alt={service.name}
-                            className="w-full h-full object-cover hidden dark:block"
+                            draggable="false"
+                            className="w-full h-full object-cover hidden dark:block pointer-events-none select-none"
                             variants={{
                                 rest: { scale: 1, opacity: 0.95 },
                                 hover: { scale: 1.05, opacity: 1 }
@@ -774,7 +778,7 @@
                     </div>
                     
                     {/* Dark Bottom Gradient Overlay for High-Contrast Text Legibility */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300 pointer-events-none"></div>
                     
                     {/* Content Overlay positioned at the bottom */}
                     <div className="absolute inset-0 w-full h-full p-6 flex flex-col justify-end z-10 pointer-events-none">
@@ -798,33 +802,170 @@
         }
 
         function ServiceCarousel({ services, color }) {
+            const carouselRef = useRef(null);
+            const [canScrollLeft, setCanScrollLeft] = useState(false);
+            const [canScrollRight, setCanScrollRight] = useState(services.length > 2);
+
+            const updateScrollButtons = () => {
+                if (!carouselRef.current) return;
+                const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+                setCanScrollLeft(scrollLeft > 15);
+                setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 15);
+            };
+
+            useEffect(() => {
+                updateScrollButtons();
+                const el = carouselRef.current;
+                if (!el) return;
+                el.addEventListener('scroll', updateScrollButtons, { passive: true });
+                window.addEventListener('resize', updateScrollButtons);
+                return () => {
+                    el.removeEventListener('scroll', updateScrollButtons);
+                    window.removeEventListener('resize', updateScrollButtons);
+                };
+            }, [services]);
+
+            // Handle Wheel events:
+            // Allow vertical wheel events (deltaY without Shift) to scroll the page vertically.
+            // Horizontal wheel events (Shift+wheel or trackpad deltaX) scroll the carousel horizontally.
+            useEffect(() => {
+                const el = carouselRef.current;
+                if (!el) return;
+
+                const onWheel = (e) => {
+                    const isHorizontal = e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY);
+                    if (isHorizontal) {
+                        const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+                        el.scrollLeft += delta;
+                        e.preventDefault();
+                    }
+                    // For vertical scrolling, do not preventDefault or stopPropagation
+                    // This allows the wheel event to bubble naturally and scroll the main page!
+                };
+
+                el.addEventListener('wheel', onWheel, { passive: false });
+                return () => el.removeEventListener('wheel', onWheel);
+            }, []);
+
+            // Mouse / Pointer Drag-to-Scroll for horizontal exploration
+            useEffect(() => {
+                const el = carouselRef.current;
+                if (!el) return;
+
+                let isDown = false;
+                let startX = 0;
+                let scrollStart = 0;
+
+                const onPointerDown = (e) => {
+                    if (e.button !== undefined && e.button !== 0) return;
+                    if (e.target.closest('button') || e.target.closest('a')) return;
+                    isDown = true;
+                    startX = e.pageX;
+                    scrollStart = el.scrollLeft;
+                    el.style.scrollSnapType = 'none';
+                    el.style.cursor = 'grabbing';
+                    try { el.setPointerCapture(e.pointerId); } catch(err) {}
+                };
+
+                const onPointerMove = (e) => {
+                    if (!isDown) return;
+                    const diff = (e.pageX - startX) * 1.3;
+                    el.scrollLeft = scrollStart - diff;
+                };
+
+                const onPointerUp = (e) => {
+                    if (!isDown) return;
+                    isDown = false;
+                    el.style.scrollSnapType = 'x mandatory';
+                    el.style.cursor = 'grab';
+                    try { el.releasePointerCapture(e.pointerId); } catch(err) {}
+                };
+
+                el.addEventListener('pointerdown', onPointerDown);
+                el.addEventListener('pointermove', onPointerMove);
+                el.addEventListener('pointerup', onPointerUp);
+                el.addEventListener('pointercancel', onPointerUp);
+
+                return () => {
+                    el.removeEventListener('pointerdown', onPointerDown);
+                    el.removeEventListener('pointermove', onPointerMove);
+                    el.removeEventListener('pointerup', onPointerUp);
+                    el.removeEventListener('pointercancel', onPointerUp);
+                };
+            }, []);
+
+            const scrollByAmount = (amount) => {
+                if (carouselRef.current) {
+                    carouselRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+                }
+            };
+
+            const stepSize = typeof window !== 'undefined' && window.innerWidth < 980 ? 262 : 372;
+
             return (
-                <div className="w-full h-full relative flex items-center justify-center py-12 px-4 md:px-8">
-                    {/* Native Horizontal Scroll Container */}
+                <div className="w-full h-full relative flex items-center justify-center py-12 px-4 md:px-8 group/carousel">
+                    {/* Left Fade Mask */}
                     <div 
-                        className="w-full h-full overflow-x-auto hide-scroll snap-x snap-mandatory flex items-center gap-8 px-4"
-                        style={{ justifyContent: 'safe center' }}
-                        data-lenis-prevent
+                        className="absolute left-0 top-0 bottom-0 w-16 pointer-events-none z-20 transition-opacity duration-300"
+                        style={{ 
+                            background: 'linear-gradient(to right, var(--surface), transparent)', 
+                            opacity: canScrollLeft ? 1 : 0 
+                        }}
+                    />
+
+                    {/* Right Fade Mask */}
+                    <div 
+                        className="absolute right-0 top-0 bottom-0 w-24 pointer-events-none z-20 transition-opacity duration-300"
+                        style={{ 
+                            background: 'linear-gradient(to left, var(--surface), transparent)', 
+                            opacity: canScrollRight ? 1 : 0 
+                        }}
+                    />
+
+                    {/* Left Navigation Arrow */}
+                    {canScrollLeft && (
+                        <button
+                            type="button"
+                            aria-label="Previous services"
+                            onClick={() => scrollByAmount(-stepSize)}
+                            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 hover:border-white/60 flex items-center justify-center transition-all duration-300 shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+                            style={{
+                                boxShadow: `0 0 20px ${color}0.35)`
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                    )}
+
+                    {/* Right Navigation Arrow */}
+                    {canScrollRight && (
+                        <button
+                            type="button"
+                            aria-label="Next services"
+                            onClick={() => scrollByAmount(stepSize)}
+                            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 hover:border-white/60 flex items-center justify-center transition-all duration-300 shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+                            style={{
+                                boxShadow: `0 0 20px ${color}0.35)`
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    )}
+
+                    {/* Horizontal Scroll Container (Without data-lenis-prevent so vertical scrolling works freely) */}
+                    <div 
+                        ref={carouselRef}
+                        className="w-full h-full overflow-x-auto hide-scroll snap-x snap-mandatory flex items-center gap-8 px-4 cursor-grab select-none"
+                        style={{ justifyContent: services.length <= 2 ? 'center' : 'flex-start' }}
                     >
                         {services.map((svc, i) => (
                             <ServiceCard key={i} service={svc} color={color} />
                         ))}
                     </div>
-                    
-                    {/* Optional visual indicator that there is more content */}
-                    {services.length > 3 && (
-                        <div className="absolute right-0 top-0 bottom-0 w-32 fade-mask-right pointer-events-none flex items-center justify-end px-8">
-                            <motion.div 
-                                animate={{ x: [0, 5, 0] }} 
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 text-white"
-                            >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="m9 18 6-6-6-6"></path>
-                                </svg>
-                            </motion.div>
-                        </div>
-                    )}
                 </div>
             );
         }
@@ -884,13 +1025,23 @@
             const serviceNavRef = useRef(null);
             const mobileScrollerRef = useRef(null);
             const mobileProgressRef = useRef(null);
+            const scrollTriggerInstanceRef = useRef(null);
             const [activeIdx, setActiveIdx] = useState(0);
 
             const handleSelectCategory = (i) => {
                 setActiveIdx(i);
-                const section = document.getElementById('pinned-section');
-                if (section) {
-                    const targetScroll = section.offsetTop + (i * window.innerHeight);
+                const st = scrollTriggerInstanceRef.current || (window.ScrollTrigger && window.ScrollTrigger.getById("pinned-services-trigger"));
+                if (st) {
+                    const totalDist = st.end - st.start;
+                    let targetScroll;
+                    if (i === 0) {
+                        targetScroll = st.start + 2;
+                    } else if (i === CATEGORIES.length - 1) {
+                        targetScroll = st.end - 6;
+                    } else {
+                        targetScroll = st.start + (i / (CATEGORIES.length - 1)) * totalDist;
+                    }
+
                     if (window.lenis) {
                         window.lenis.scrollTo(targetScroll, { duration: 1.0 });
                     } else {
@@ -898,6 +1049,21 @@
                             top: targetScroll,
                             behavior: 'smooth'
                         });
+                    }
+                } else {
+                    const section = document.getElementById('pinned-section');
+                    if (section) {
+                        const rect = section.getBoundingClientRect();
+                        const top = window.pageYOffset + rect.top;
+                        const targetScroll = top + (i * window.innerHeight);
+                        if (window.lenis) {
+                            window.lenis.scrollTo(targetScroll, { duration: 1.0 });
+                        } else {
+                            window.scrollTo({
+                                top: targetScroll,
+                                behavior: 'smooth'
+                            });
+                        }
                     }
                 }
             };
@@ -976,6 +1142,28 @@
                 window.scrollTo(0, 0);
 
                 gsap.registerPlugin(ScrollTrigger);
+
+                // Initialize Lenis Smooth Inertia Scrolling
+                let lenis = window.lenis;
+                if (!lenis && typeof Lenis !== 'undefined') {
+                    lenis = new Lenis({
+                        duration: 1.2,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        orientation: 'vertical',
+                        gestureOrientation: 'vertical',
+                        smoothWheel: true,
+                        wheelMultiplier: 1,
+                        smoothTouch: false,
+                        touchMultiplier: 1.5,
+                    });
+                    window.lenis = lenis;
+
+                    lenis.on('scroll', ScrollTrigger.update);
+                    gsap.ticker.add((time) => {
+                        lenis.raf(time * 1000);
+                    });
+                    gsap.ticker.lagSmoothing(0);
+                }
                 
                 // Initialize nav bars
                 if (serviceNavRef.current) {
@@ -994,54 +1182,49 @@
                 // Master timeline pinned to the section
                 const tl = gsap.timeline({
                     scrollTrigger: {
+                        id: "pinned-services-trigger",
                         trigger: "#pinned-section",
                         start: "top top", 
                         end: `+=${cards.length * 100}%`,
                         pin: true,
-                        scrub: 0.5,
+                        scrub: 0.6,
+                        onEnter: () => {
+                            window.isServicesScrollActive = true;
+                            gsap.to("#site-header", { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
+                            if (serviceNavRef.current) {
+                                gsap.to(serviceNavRef.current, { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true });
+                            }
+                        },
+                        onLeave: () => {
+                            window.isServicesScrollActive = false;
+                            gsap.to("#site-header", { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true, onComplete: () => gsap.set("#site-header", { clearProps: "all" }) });
+                            if (serviceNavRef.current) {
+                                gsap.to(serviceNavRef.current, { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
+                            }
+                        },
+                        onEnterBack: () => {
+                            window.isServicesScrollActive = true;
+                            gsap.to("#site-header", { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
+                            if (serviceNavRef.current) {
+                                gsap.to(serviceNavRef.current, { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true });
+                            }
+                        },
+                        onLeaveBack: () => {
+                            window.isServicesScrollActive = false;
+                            gsap.to("#site-header", { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true, onComplete: () => gsap.set("#site-header", { clearProps: "all" }) });
+                            if (serviceNavRef.current) {
+                                gsap.to(serviceNavRef.current, { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
+                            }
+                        },
                         onUpdate: (self) => {
                             const progress = self.progress;
-                            const step = 1 / cards.length;
-                            const activeIndex = Math.min(cards.length - 1, Math.floor(progress / step));
+                            const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(progress * (cards.length - 1))));
                             setActiveIdx(activeIndex);
                         }
                     }
                 });
 
-                // Desktop Nav bar toggle logic
-                ScrollTrigger.create({
-                    trigger: "#pinned-section",
-                    start: "top 5%", 
-                    end: `+=${cards.length * 100}%`,
-                    onEnter: () => {
-                        window.isServicesScrollActive = true;
-                        gsap.to("#site-header", { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
-                        if (serviceNavRef.current) {
-                            gsap.to(serviceNavRef.current, { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true });
-                        }
-                    },
-                    onLeave: () => {
-                        window.isServicesScrollActive = false;
-                        gsap.to("#site-header", { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true, onComplete: () => gsap.set("#site-header", { clearProps: "all" }) });
-                        if (serviceNavRef.current) {
-                            gsap.to(serviceNavRef.current, { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
-                        }
-                    },
-                    onEnterBack: () => {
-                        window.isServicesScrollActive = true;
-                        gsap.to("#site-header", { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
-                        if (serviceNavRef.current) {
-                            gsap.to(serviceNavRef.current, { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true });
-                        }
-                    },
-                    onLeaveBack: () => {
-                        window.isServicesScrollActive = false;
-                        gsap.to("#site-header", { yPercent: 0, opacity: 1, duration: 0.3, overwrite: true, onComplete: () => gsap.set("#site-header", { clearProps: "all" }) });
-                        if (serviceNavRef.current) {
-                            gsap.to(serviceNavRef.current, { yPercent: -100, opacity: 0, duration: 0.3, overwrite: true });
-                        }
-                    }
-                });
+                scrollTriggerInstanceRef.current = tl.scrollTrigger;
 
                 // Sequential timeline steps
                 cards.forEach((card, i) => {
@@ -1067,6 +1250,7 @@
                 });
 
                 ScrollTrigger.refresh();
+                setTimeout(() => ScrollTrigger.refresh(), 200);
 
                 return () => {
                     ScrollTrigger.getAll().forEach(t => t.kill());
@@ -1074,10 +1258,10 @@
             }, []);
 
             const GRADIENTS = [
-                { from: '#FF5500', to: '#E04800', name: 'Development' },
-                { from: '#FF6A1A', to: '#FF3300', name: 'Creative' },
-                { from: '#FF7733', to: '#D63B00', name: 'Business' },
-                { from: '#FF5500', to: '#C43300', name: 'Infrastructure' }
+                { from: '#00D2FF', to: '#0066FF', name: 'Development' },
+                { from: '#00E5FF', to: '#0284C7', name: 'Creative' },
+                { from: '#38BDF8', to: '#2563EB', name: 'Business' },
+                { from: '#00C8F8', to: '#1D4ED8', name: 'Infrastructure' }
             ];
 
             return (
@@ -1097,20 +1281,7 @@
                                             ? 'font-bold shadow-sm' 
                                             : 'opacity-85 hover:opacity-100'
                                         }`}
-                                        onClick={() => {
-                                            const section = document.getElementById('pinned-section');
-                                            if (section) {
-                                                const targetScroll = section.offsetTop + (i * window.innerHeight);
-                                                if (window.lenis) {
-                                                    window.lenis.scrollTo(targetScroll, { duration: 1.2 });
-                                                } else {
-                                                    window.scrollTo({
-                                                        top: targetScroll,
-                                                        behavior: 'smooth'
-                                                    });
-                                                }
-                                            }
-                                        }}
+                                        onClick={() => handleSelectCategory(i)}
                                     >
                                         {cat.name}
                                     </button>
@@ -1119,8 +1290,8 @@
                         </nav>
                     </div>
 
-                    {/* GSAP Pinned Master Container - Now Full Width */}
-                    <div id="pinned-section" className="w-full h-screen overflow-hidden relative pt-20">
+                    {/* GSAP Pinned Master Container - Full Screen without extra padding */}
+                    <div id="pinned-section" className="w-full h-screen overflow-hidden relative">
                         {/* =========================================================
                              MOBILE SERVICES MENU (Pinned at top of services section on mobile)
                         ========================================================= */}
@@ -1261,7 +1432,6 @@
   <section class="cta-section" id="cta">
     <div class="cta-card reveal">
       <div class="cta-content">
-        <div class="card-number">02 / SERVICES</div>
         <h2 class="cta-heading">Technology built around your goals.</h2>
         <p class="cta-text">Websites, software platforms, mobile applications, AI solutions and data-driven systems designed around real business needs.</p>
         <div class="cta-actions">

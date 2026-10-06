@@ -48,9 +48,11 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/coverflow.css" />
+  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 
 <body>
+  <div class="page-transition-overlay" aria-hidden="true"></div>
   <div class="noise-overlay" aria-hidden="true"></div>
   <header id="site-header">
     <div class="nav-inner">
@@ -73,7 +75,7 @@
         </nav>
       </div>
       <div class="nav-right">
-        <a href="/login" class="nav-login">Login</a>
+        <a href="/login" class="nav-login">Sign In</a>
         <label class="switch" title="Toggle theme">
           <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
           <span class="slider">
@@ -128,7 +130,7 @@
           <button class="mobile-theme-btn active" data-theme="dark">dark</button>
         </div>
       </div>
-      <a href="/login" class="mobile-login-btn">Login</a>
+      <a href="/login" class="mobile-login-btn">Sign In</a>
       <a href="#" class="mobile-cta-btn">Get Started</a>
     </div>
   </div>
@@ -136,7 +138,7 @@
     <!-- ============================================================
          PROFESSIONAL INTERACTIVE HERO SECTION
     ============================================================ -->
-    <section id="hero" class="home-hero-pro relative flex flex-col items-center justify-start pt-24 pb-12 lg:pt-28 lg:pb-16 overflow-hidden">
+    <section id="hero" class="home-hero-pro hero-home relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden">
       <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
         <!-- Main Headline with Gradient Accent -->
         <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
@@ -150,7 +152,7 @@
 
         <!-- Dual Action Buttons -->
         <div class="flex flex-wrap items-center justify-center gap-4 mb-10 w-full sm:w-auto">
-          <a href="contact.html" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(255,85,0,0.3)] hover:shadow-[0_15px_40px_rgba(255,85,0,0.5)]">
+          <a href="contact.html" class="btn-primary-pro group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display font-semibold text-sm transition-all duration-300 shadow-[0_10px_30px_rgba(0,210,255,0.3)] hover:shadow-[0_15px_40px_rgba(0,210,255,0.5)]">
             <span>Start a Project</span>
             <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -184,7 +186,7 @@
         <h2 class="stats-title">Numbers that define us</h2>
       </div>
       <div class="stats-grid">
-        <div class="stat-card-gsap">git remote -v
+        <div class="stat-card-gsap">
           <div class="light-sweep"></div>
           <div class="stat-accent-bar"></div>
           <div class="card-number" data-target="100" data-suffix="+">0+</div>
@@ -212,16 +214,18 @@
     </section>
     <div id="wcu-scene" class="wcu-scene">
       <div id="wcu-sticky" class="wcu-sticky">
-        <div id="wcu-label" class="wcu-label">We Deliver</div>
-        <div id="wcu-list-wrap" class="wcu-list-wrap">
-          <div id="wcu-list" class="wcu-list">
-            <div class="wcu-item">Custom Software Solutions</div>
-            <div class="wcu-item">Premium UI/UX Experience</div>
-            <div class="wcu-item">AI-Powered Innovation</div>
-            <div class="wcu-item">Cloud-Ready Architecture</div>
-            <div class="wcu-item">Agile Development Process</div>
-            <div class="wcu-item">Business-First Solutions</div>
-            <div class="wcu-item">Long-Term Partnership</div>
+        <div class="wcu-inner">
+          <div id="wcu-label" class="wcu-label">We Deliver</div>
+          <div id="wcu-list-wrap" class="wcu-list-wrap">
+            <div id="wcu-list" class="wcu-list">
+              <div class="wcu-item">Custom Software Solutions</div>
+              <div class="wcu-item">Premium UI/UX Experience</div>
+              <div class="wcu-item">AI-Powered Innovation</div>
+              <div class="wcu-item">Cloud-Ready Architecture</div>
+              <div class="wcu-item">Agile Development Process</div>
+              <div class="wcu-item">Business-First Solutions</div>
+              <div class="wcu-item">Long-Term Partnership</div>
+            </div>
           </div>
         </div>
       </div>
@@ -365,7 +369,6 @@
   <section class="cta-section" id="cta">
     <div class="cta-card reveal">
       <div class="cta-content">
-        <div class="card-number">01 / HOME</div>
         <h2 class="cta-heading">Turn ideas into digital experiences.</h2>
         <p class="cta-text">Discover how AROX Tech combines technology, design, and problem-solving to create digital products that move businesses forward.</p>
         <div class="cta-actions">

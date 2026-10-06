@@ -93,7 +93,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            background: var(--primary, #FF5500);
+            background: var(--primary, #00D2FF);
             color: #ffffff !important;
             border: none;
             padding: 0.3rem 0.75rem;
@@ -106,7 +106,7 @@
         }
         .breadcrumb-back-btn:hover {
             transform: translateX(-3px);
-            box-shadow: 0 4px 14px var(--glow-color, rgba(255, 85, 0, 0.4));
+            box-shadow: 0 4px 14px var(--glow-color, rgba(0, 210, 255, 0.4));
         }
         .breadcrumb-separator {
             color: var(--muted);
@@ -1049,9 +1049,11 @@
         .faq-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; }
         @media (min-width: 1024px) { .faq-grid { grid-template-columns: 1fr 1fr; } }
     </style>
+    <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 
 <body>
+    <div class="page-transition-overlay" aria-hidden="true"></div>
     <div class="noise-overlay" aria-hidden="true"></div>
     <header id="site-header">
     <div class="nav-inner">
@@ -1074,7 +1076,7 @@
         </nav>
       </div>
       <div class="nav-right">
-        <a href="/login" class="nav-login">Login</a>
+        <a href="/login" class="nav-login">Sign In</a>
         <label class="switch" title="Toggle theme">
           <input id="theme-checkbox" type="checkbox" aria-label="Toggle theme" />
           <span class="slider">
@@ -1132,7 +1134,7 @@
           <button class="mobile-theme-btn active" data-theme="dark">dark</button>
         </div>
       </div>
-      <a href="/login" class="mobile-login-btn">Login</a>
+      <a href="/login" class="mobile-login-btn">Sign In</a>
       <a href="courses.html" class="mobile-cta-btn">Explore Courses</a>
     </div>
   </div>
@@ -1232,7 +1234,7 @@
                     <!-- COL 2: Course Content Topics (Scroll-driven arrival sequence) -->
                     <div class="syl-col syl-col-topics">
                         <h3 class="col-title">
-                            <span class="accent-bar" style="background:#FF5500;"></span>
+                            <span class="accent-bar" style="background:#00D2FF;"></span>
                             Course Content
                         </h3>
                         <p class="col-subtitle">Topics arrive sequentially as you scroll</p>
