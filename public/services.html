@@ -181,7 +181,7 @@
            REFINED SERVICE DOMAINS & CARDS (Dark & Light Theme)
         ========================================================= */
         /* =========================================================
-           STICKY FOLDER-TAB STACKING SYSTEM (Dark & Light Theme)
+           STICKY DOMAIN CARD STACKING SYSTEM (Dark & Light Theme)
         ========================================================= */
         .services-stack-stage {
             position: relative;
@@ -189,7 +189,7 @@
             max-width: 1320px;
             height: 80vh;
             min-height: 600px;
-            max-height: 740px;
+            max-height: 700px;
         }
 
         .domain-section-card.domain-folder-card {
@@ -200,7 +200,7 @@
             height: 100%;
             background: #0B0D10;
             border-radius: 36px;
-            padding: 38px 36px 28px 36px;
+            padding: 44px 40px 32px 40px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.7), 0 24px 60px rgba(0, 0, 0, 0.85);
             display: flex;
@@ -210,93 +210,21 @@
             transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Stepped Notches for Incoming Domain Cards (Card 1, 2, 3) */
-        .domain-folder-card.has-notch-1 {
-            clip-path: polygon(
-                0% 48px, 
-                185px 48px, 
-                200px 0%, 
-                100% 0%, 
-                100% 100%, 
-                0% 100%
-            );
-            padding-top: 52px;
-        }
-        .domain-folder-card.has-notch-2 {
-            clip-path: polygon(
-                0% 48px, 
-                385px 48px, 
-                400px 0%, 
-                100% 0%, 
-                100% 100%, 
-                0% 100%
-            );
-            padding-top: 52px;
-        }
-        .domain-folder-card.has-notch-3 {
-            clip-path: polygon(
-                0% 48px, 
-                580px 48px, 
-                595px 0%, 
-                100% 0%, 
-                100% 100%, 
-                0% 100%
-            );
-            padding-top: 52px;
-        }
-
-        /* Persistent Folder Tab Tray */
-        .folder-tab-tray {
-            position: absolute;
-            top: 8px;
-            left: 28px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 50;
-            pointer-events: auto;
-        }
-
-        .folder-tab-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 18px;
-            border-radius: 12px 12px 4px 4px;
-            background: #14171E;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            transition: all 0.25s ease;
-            white-space: nowrap;
-            user-select: none;
-        }
-        .folder-tab-badge:hover {
-            background: #1F242F;
-            color: #00D2FF;
-            border-color: rgba(0, 210, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 210, 255, 0.25);
-        }
-
-        /* Category Filter Pills Bar */
+        /* Category Filter Pills Nav Bar (Appears strictly between Card 0 and Card 3) */
         .services-category-pills-bar {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(18, 21, 29, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 21, 29, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 999px;
             padding: 6px 10px;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
         }
         .services-category-pill-btn {
-            padding: 7px 18px;
+            padding: 8px 20px;
             border-radius: 999px;
             font-size: 13px;
             font-weight: 600;
@@ -306,13 +234,16 @@
             border: none;
             background: transparent;
             font-family: inherit;
+            white-space: nowrap;
         }
         .services-category-pill-btn:hover {
             color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.06);
         }
         .services-category-pill-btn.active {
             background: #00D2FF;
             color: #000000;
+            font-weight: 700;
             box-shadow: 0 4px 16px rgba(0, 210, 255, 0.45);
         }
 
@@ -324,27 +255,12 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.05), 0 20px 48px rgba(0, 0, 0, 0.08);
         }
-        .theme-light .folder-tab-badge,
-        html.theme-light .folder-tab-badge,
-        html:not(.dark) .folder-tab-badge {
-            background: #E2E8F0;
-            border: 1px solid rgba(0, 0, 0, 0.14);
-            color: #0F172A;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        .theme-light .folder-tab-badge:hover,
-        html.theme-light .folder-tab-badge:hover,
-        html:not(.dark) .folder-tab-badge:hover {
-            background: #CBD5E1;
-            color: #0284C7;
-            border-color: rgba(2, 132, 199, 0.4);
-        }
         .theme-light .services-category-pills-bar,
         html.theme-light .services-category-pills-bar,
         html:not(.dark) .services-category-pills-bar {
-            background: rgba(241, 245, 249, 0.85);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
         .theme-light .services-category-pill-btn,
         html.theme-light .services-category-pill-btn,
@@ -355,6 +271,7 @@
         html.theme-light .services-category-pill-btn:hover,
         html:not(.dark) .services-category-pill-btn:hover {
             color: #0F172A;
+            background: rgba(0, 0, 0, 0.05);
         }
         .theme-light .services-category-pill-btn.active,
         html.theme-light .services-category-pill-btn.active,
@@ -362,6 +279,40 @@
             background: #0284C7;
             color: #FFFFFF;
             box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+        }
+
+        /* Tech Stack Previous Design Styles */
+        .tech-pill {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .tech-pill:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        .fade-mask-left {
+            background: linear-gradient(to right, var(--background), transparent);
+        }
+        .fade-mask-right {
+            background: linear-gradient(to left, var(--background), transparent);
+        }
+        @keyframes moveRightSlow {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+        @keyframes moveLeftSlow {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-slow-right {
+            animation: moveRightSlow 28s linear infinite;
+        }
+        .animate-slow-left {
+            animation: moveLeftSlow 28s linear infinite;
+        }
+        :root:not(.theme-light) .theme-nextjs-logo {
+            filter: invert(1);
         }
 
         @media (max-width: 768px) {
@@ -375,7 +326,6 @@
                 transform: none !important;
                 opacity: 1 !important;
                 scale: 1 !important;
-                clip-path: none !important;
                 margin-bottom: 24px;
                 padding: 32px 20px;
             }
@@ -388,67 +338,30 @@
                 padding-top: 24px;
                 padding-bottom: 24px;
             }
-            .folder-tab-tray {
-                display: none !important;
-            }
-        }
-
-        .domain-section-card {
-            background: #0B0D10;
-            border-radius: 40px;
-            padding: 48px 40px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            position: relative;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-            max-width: 1360px;
-            margin: 0 auto;
-            width: 100%;
         }
 
         .domain-title {
             color: #FFFFFF;
             transition: color 0.3s ease;
         }
-
         .domain-tagline {
             color: #A0A5AD;
             transition: color 0.3s ease;
         }
-
         .domain-divider {
             background-color: rgba(255, 255, 255, 0.15);
             transition: background-color 0.3s ease;
         }
-
-        @media (max-width: 768px) {
-            .domain-section-card {
-                border-radius: 32px;
-                padding: 32px 20px;
-            }
-        }
-
-        /* Light Theme Domain Section */
-        .theme-light .domain-section-card,
-        html.theme-light .domain-section-card,
-        html:not(.dark) .domain-section-card {
-            background: #F8FAFC;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.06);
-        }
-
         .theme-light .domain-title,
         html.theme-light .domain-title,
         html:not(.dark) .domain-title {
             color: #0F172A;
         }
-
         .theme-light .domain-tagline,
         html.theme-light .domain-tagline,
         html:not(.dark) .domain-tagline {
             color: #64748B;
         }
-
         .theme-light .domain-divider,
         html.theme-light .domain-divider,
         html:not(.dark) .domain-divider {
@@ -1259,14 +1172,13 @@
                 el.scrollBy({ left: step * direction, behavior: 'smooth' });
             };
 
-            const notchClass = domainIdx === 1 ? 'has-notch-1' : domainIdx === 2 ? 'has-notch-2' : domainIdx === 3 ? 'has-notch-3' : '';
             const initialTransform = domainIdx === 0 ? 'translateY(0%)' : 'translateY(105%)';
             const cardZIndex = (domainIdx + 1) * 10;
 
             return (
                 <section 
                     id={`domain-section-${domainIdx}`} 
-                    className={`domain-section-card domain-folder-card domain-card-${domainIdx} ${notchClass}`}
+                    className={`domain-section-card domain-folder-card domain-card-${domainIdx}`}
                     style={{ zIndex: cardZIndex, transform: initialTransform }}
                 >
                     {/* Top Header Bar */}
@@ -1344,6 +1256,7 @@
         // ------------------------------------------------------------
         function App() {
             const [activeIdx, setActiveIdx] = useState(0);
+            const [navVisible, setNavVisible] = useState(false);
 
             // Lenis smooth scroll initialization
             useEffect(() => {
@@ -1373,7 +1286,32 @@
                 }
             }, []);
 
-            // GSAP ScrollTrigger Sticky Folder-Tab Stacking Timeline
+            // Real-time visibility listener for the service cards nav bar
+            // Only appears in between the position of the fully initial service card upto fully final service card
+            useEffect(() => {
+                const checkNavVisibility = () => {
+                    const el = document.getElementById('services-stack-wrapper');
+                    if (!el) return;
+                    const rect = el.getBoundingClientRect();
+                    // Visible when top of services stack reaches near top, and remains visible until bottom leaves viewport
+                    const isInsideServices = (rect.top <= 120 && rect.bottom >= window.innerHeight * 0.35);
+                    setNavVisible(isInsideServices);
+                };
+
+                window.addEventListener('scroll', checkNavVisibility, { passive: true });
+                if (window.lenis) {
+                    window.lenis.on('scroll', checkNavVisibility);
+                }
+                checkNavVisibility();
+                return () => {
+                    window.removeEventListener('scroll', checkNavVisibility);
+                    if (window.lenis) {
+                        window.lenis.off('scroll', checkNavVisibility);
+                    }
+                };
+            }, []);
+
+            // GSAP ScrollTrigger Sticky Domain Stacking Timeline
             useEffect(() => {
                 if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
                 
@@ -1395,11 +1333,16 @@
                             start: "top top",
                             end: "bottom bottom",
                             scrub: 0.6,
+                            onEnter: () => setNavVisible(true),
+                            onLeave: () => setNavVisible(false),
+                            onEnterBack: () => setNavVisible(true),
+                            onLeaveBack: () => setNavVisible(false),
                             onUpdate: (self) => {
+                                setNavVisible(self.isActive);
                                 const p = self.progress;
-                                if (p < 0.25) setActiveIdx(0);
-                                else if (p < 0.55) setActiveIdx(1);
-                                else if (p < 0.85) setActiveIdx(2);
+                                if (p < 0.28) setActiveIdx(0);
+                                else if (p < 0.60) setActiveIdx(1);
+                                else if (p < 0.88) setActiveIdx(2);
                                 else setActiveIdx(3);
                             }
                         }
@@ -1412,8 +1355,6 @@
                         duration: 1
                     }, 0)
                     .to("#domain-section-0 .domain-tagline", { opacity: 0, duration: 0.3 }, 0.2)
-                    .to("#domain-section-0 .domain-title", { opacity: 0, scale: 0.75, transformOrigin: "left center", duration: 0.4 }, 0.2)
-                    .to("#folder-tab-badge-0", { opacity: 1, pointerEvents: "auto", duration: 0.3 }, 0.6)
                     .to("#domain-section-0", { scale: 0.97, opacity: 0.7, duration: 0.6 }, 0.4);
 
                     // Step 2: Card 2 (Business Solutions) slides up over Card 1
@@ -1423,8 +1364,6 @@
                         duration: 1
                     }, 1.2)
                     .to("#domain-section-1 .domain-tagline", { opacity: 0, duration: 0.3 }, 1.4)
-                    .to("#domain-section-1 .domain-title", { opacity: 0, scale: 0.75, transformOrigin: "left center", duration: 0.4 }, 1.4)
-                    .to("#folder-tab-badge-1", { opacity: 1, pointerEvents: "auto", duration: 0.3 }, 1.8)
                     .to("#domain-section-1", { scale: 0.97, opacity: 0.7, duration: 0.6 }, 1.6);
 
                     // Step 3: Card 3 (Infrastructure) slides up over Card 2
@@ -1434,8 +1373,6 @@
                         duration: 1
                     }, 2.4)
                     .to("#domain-section-2 .domain-tagline", { opacity: 0, duration: 0.3 }, 2.6)
-                    .to("#domain-section-2 .domain-title", { opacity: 0, scale: 0.75, transformOrigin: "left center", duration: 0.4 }, 2.6)
-                    .to("#folder-tab-badge-2", { opacity: 1, pointerEvents: "auto", duration: 0.3 }, 3.0)
                     .to("#domain-section-2", { scale: 0.97, opacity: 0.7, duration: 0.6 }, 2.8);
 
                     return () => {
@@ -1457,7 +1394,7 @@
                     return;
                 }
                 const total = st.end - st.start;
-                const progressMap = [0.0, 0.333, 0.666, 1.0];
+                const progressMap = [0.0, 0.34, 0.67, 1.0];
                 const targetY = st.start + progressMap[index] * total;
                 if (window.lenis) {
                     window.lenis.scrollTo(targetY, { duration: 1.2 });
@@ -1469,68 +1406,32 @@
             return (
                 <div className="w-full" style={{ backgroundColor: 'var(--background)', color: 'var(--body)' }}>
                     
-                    {/* Sticky Folder-Tab Stacking System for the 4 Service Domain Containers */}
-                    <div id="services-stack-wrapper" className="relative w-full" style={{ height: '400vh' }}>
-                        <div id="services-stack-pinned" className="w-full h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 z-30">
-                            
-                            {/* Top Category Filter Pills (Synced with active card, clickable) */}
-                            <div className="services-category-pills-bar mb-4 sm:mb-6 z-40">
-                                {CATEGORIES.map((cat, idx) => (
-                                    <button
-                                        key={cat.id}
-                                        type="button"
-                                        onClick={() => goToCard(idx)}
-                                        className={`services-category-pill-btn ${activeIdx === idx ? 'active' : ''}`}
-                                    >
-                                        {cat.name}
-                                    </button>
-                                ))}
-                            </div>
+                    {/* Floating Service Cards Navigation Bar */}
+                    {/* ONLY APPEARS in between the position of fully initial service card up to fully final service card */}
+                    <div 
+                        id="services-floating-nav"
+                        className={`fixed top-[76px] sm:top-[84px] left-0 right-0 z-50 flex justify-center pointer-events-none transition-all duration-300 ${navVisible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+                    >
+                        <div className="services-category-pills-bar pointer-events-auto">
+                            {CATEGORIES.map((cat, idx) => (
+                                <button
+                                    key={cat.id}
+                                    type="button"
+                                    onClick={() => goToCard(idx)}
+                                    className={`services-category-pill-btn ${activeIdx === idx ? 'active' : ''}`}
+                                >
+                                    {cat.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
+                    {/* Sticky Domain Stacking System for the 4 Service Domain Containers */}
+                    <div id="services-stack-wrapper" className="relative w-full" style={{ height: '400vh' }}>
+                        <div id="services-stack-pinned" className="w-full h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 z-30 pt-14 sm:pt-16">
+                            
                             {/* Stage Box (Cards Stack Stage) */}
                             <div id="services-stack-stage" className="services-stack-stage">
-                                
-                                {/* Shrunken Folder Tabs Shelf (Top-Left Cutout Badges) */}
-                                <div id="folder-tab-tray" className="folder-tab-tray">
-                                    <div 
-                                        id="folder-tab-badge-0" 
-                                        className="folder-tab-badge" 
-                                        style={{ opacity: 0, pointerEvents: 'none' }} 
-                                        onClick={() => goToCard(0)}
-                                        title="Jump to Development"
-                                    >
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                                        </svg>
-                                        <span>Development</span>
-                                    </div>
-                                    <div 
-                                        id="folder-tab-badge-1" 
-                                        className="folder-tab-badge" 
-                                        style={{ opacity: 0, pointerEvents: 'none' }} 
-                                        onClick={() => goToCard(1)}
-                                        title="Jump to Creative & Experience"
-                                    >
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                                        </svg>
-                                        <span>Creative &amp; Experience</span>
-                                    </div>
-                                    <div 
-                                        id="folder-tab-badge-2" 
-                                        className="folder-tab-badge" 
-                                        style={{ opacity: 0, pointerEvents: 'none' }} 
-                                        onClick={() => goToCard(2)}
-                                        title="Jump to Business Solutions"
-                                    >
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                                        </svg>
-                                        <span>Business Solutions</span>
-                                    </div>
-                                </div>
-
-                                {/* 4 Service Domain Containers */}
                                 {CATEGORIES.map((domain, domainIdx) => (
                                     <DomainSection 
                                         key={domain.id} 
@@ -1542,53 +1443,51 @@
                         </div>
                     </div>
 
-                    {/* Technology Stack Section */}
+                    {/* Technology Stack Section (Previous Design Restored) */}
                     <section id="tech-stack-section" className="tech-stack-section py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--background)' }}>
                         <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
                             
                             {/* Left Info Column (40%) */}
                             <div className="w-full lg:w-[40%] space-y-6">
-                                <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase border border-[var(--primary)]/30 text-[var(--primary)] bg-[var(--primary)]/5">
-                                    Our Tech Stack
-                                </span>
-                                
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--heading)] leading-tight">
-                                    Powering Solutions with <span className="hero-gradient-text">Modern Technology</span>
+                                <div className="section-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-opacity-30 text-xs font-bold" style={{ backgroundColor: 'var(--glow-color)', color: 'var(--primary)', borderColor: 'var(--primary)' }}>
+                                    <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse"></span>
+                                    ENTERPRISE TECH STACK
+                                </div>
+                                <h2 className="section-title text-3xl md:text-4xl font-bold tracking-tight leading-tight" style={{ color: 'var(--heading)' }}>
+                                    Powering Solutions with <br className="hidden md:block"/>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]">
+                                        Modern Technology
+                                    </span>
                                 </h2>
-                                
-                                <p className="text-[var(--muted)] text-base sm:text-lg leading-relaxed font-light">
-                                    We leverage industry-leading architectures, cloud infrastructure, and battle-tested frameworks to engineer ultra-fast, resilient digital solutions.
+                                <p className="opacity-70 leading-relaxed font-light text-base max-w-md" style={{ color: 'var(--body)' }}>
+                                    Our development stack leverages high-performance libraries, frameworks, cloud native services and secure databases trusted by world-class systems.
                                 </p>
                             </div>
 
-                            {/* Right Marquee Showcase (60%) */}
-                            <div className="w-full lg:w-[60%] flex flex-col gap-6 overflow-hidden relative">
-                                <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
-                                <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
+                            {/* Right Marquee Column (60%) */}
+                            <div className="w-full lg:w-[60%] flex flex-col gap-6 overflow-hidden relative py-4">
+                                {/* Edge Fade Masks */}
+                                <div className="absolute inset-y-0 left-0 w-20 fade-mask-left z-20 pointer-events-none"></div>
+                                <div className="absolute inset-y-0 right-0 w-20 fade-mask-right z-20 pointer-events-none"></div>
 
-                                {/* Marquee Row 1 */}
-                                <div className="marquee-wrapper">
-                                    <div className="marquee-track flex gap-6 items-center">
-                                        {[...ROW_1_IMAGES, ...ROW_1_IMAGES].map((tech, i) => (
-                                            <div key={i} className="flex-shrink-0 flex items-center justify-center w-28 h-20 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-sm hover:border-[var(--primary)]/50 transition-colors p-4">
-                                                <img src={tech.url} alt={tech.name} className="max-h-10 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300" />
-                                            </div>
+                                {/* Row 1 Marquee */}
+                                <div className="overflow-hidden w-full relative py-2">
+                                    <div className="flex items-center animate-slow-right w-max">
+                                        {[...ROW_1_IMAGES, ...ROW_1_IMAGES, ...ROW_1_IMAGES, ...ROW_1_IMAGES].map((item, idx) => (
+                                            <CleanIconItem key={idx} item={item} />
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Marquee Row 2 */}
-                                <div className="marquee-wrapper">
-                                    <div className="marquee-track-reverse flex gap-6 items-center">
-                                        {[...ROW_2_IMAGES, ...ROW_2_IMAGES].map((tech, i) => (
-                                            <div key={i} className="flex-shrink-0 flex items-center justify-center w-28 h-20 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-sm hover:border-[var(--primary)]/50 transition-colors p-4">
-                                                <img src={tech.url} alt={tech.name} className={`max-h-10 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 ${tech.name === "Next.js" ? "theme-nextjs-logo" : ""}`} />
-                                            </div>
+                                {/* Row 2 Marquee */}
+                                <div className="overflow-hidden w-full relative py-2">
+                                    <div className="flex items-center animate-slow-left w-max">
+                                        {[...ROW_2_IMAGES, ...ROW_2_IMAGES, ...ROW_2_IMAGES, ...ROW_2_IMAGES].map((item, idx) => (
+                                            <CleanIconItem key={idx} item={item} />
                                         ))}
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </section>
 
