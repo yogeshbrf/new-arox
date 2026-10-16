@@ -1,15 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-dark">
+<html lang="en">
 <head>
+  <style id="arox-critical-theme">
+    html { background-color: #0b0c11; }
+    html.theme-light, html.theme-light body, html:not(.dark) { background-color: #FFFFFF !important; color-scheme: light; }
+    html.theme-dark, html.theme-dark body, html.dark { background-color: #0b0c11 !important; color-scheme: dark; }
+  </style>
   <script>
     (function () {
-      const storedTheme = localStorage.getItem('arox-theme') || 'dark';
-      document.documentElement.className = 'theme-' + storedTheme;
-      if (storedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
+      try {
+        var storedTheme = localStorage.getItem('arox-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var isDark = storedTheme === 'dark';
+        var root = document.documentElement;
+        root.className = (root.className ? root.className.replace(/theme-[a-z]+|dark/g, '').trim() + ' ' : '') + 'theme-' + storedTheme + (isDark ? ' dark' : '');
+        root.style.colorScheme = storedTheme;
+        root.style.backgroundColor = isDark ? '#0b0c11' : '#FFFFFF';
+
+        var logoSrc = isDark ? 'public/assets/logo/logo-dark.png' : 'public/assets/logo/logo-light.png';
+        var syncElements = function () {
+          var logo = document.getElementById('nav-logo-img');
+          if (logo && logo.getAttribute('src') !== logoSrc) logo.src = logoSrc;
+          var fLogo = document.getElementById('footer-logo-img');
+          if (fLogo && fLogo.getAttribute('src') !== logoSrc) fLogo.src = logoSrc;
+          var cb = document.getElementById('theme-checkbox') || document.getElementById('checkbox');
+          if (cb && cb.checked !== !isDark) cb.checked = !isDark;
+        };
+
+        var obs = new MutationObserver(syncElements);
+        obs.observe(root, { childList: true, subtree: true });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          obs.disconnect();
+          document.querySelectorAll('#nav-logo-img, #footer-logo-img, .nav-logo img, .footer-brand-logo img').forEach(function (el) {
+            if (el) el.src = logoSrc;
+          });
+          document.querySelectorAll('#checkbox, #theme-checkbox, .theme-switch-checkbox').forEach(function (cb) {
+            cb.checked = !isDark;
+          });
+        });
+      } catch (e) {
+        document.documentElement.className = 'theme-dark dark';
       }
     })();
   </script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/coverflow.css" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AROX TECH - Building scalable software and systems</title>
@@ -44,12 +79,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/coverflow.css" />
-  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 <body>
-  <div class="page-transition-overlay" aria-hidden="true"></div>
   <header id="site-header">
     <div class="nav-inner">
       <div class="nav-left">
@@ -135,8 +166,14 @@
     <!-- ============================================================
          ABOUT INTERACTIVE DNA & ORIGIN HERO SECTION
     ============================================================ -->
-    <section id="hero" class="page-hero-pro hero-about relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden border-b border-[var(--border)]">
+    <section id="hero" class="page-hero-pro hero-about relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 overflow-hidden">
       <div class="hero-inner max-w-4xl w-full mx-auto px-6 sm:px-8 relative z-10 flex flex-col items-center text-center">
+        <!-- Eyebrow Badge -->
+        <div class="mb-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--primary)] shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse"></span>
+          ABOUT AROX TECH
+        </div>
+
         <h1 class="hero-main-title font-display text-4xl sm:text-5xl lg:text-[4.2rem] font-black tracking-tight text-[var(--heading)] leading-[1.08] mb-6 max-w-3xl">
           Built by Builders, Driven by <span class="hero-gradient-text">Extreme Velocity</span>
         </h1>
@@ -165,38 +202,68 @@
       </div>
     </section>
 
-    <!-- Our Mission & Vision Bento Grid Section -->
-    <section id="mission-section" class="py-16 md:py-24 bg-background border-b border-border">
-      <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-        <!-- Mission Card -->
-        <div class="bg-surface border border-border rounded-2xl p-6 md:p-12 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-primary">
-          <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary to-accent"></div>
-          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">PURPOSE</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-heading mt-2 mb-4 md:mb-6 font-display">Our Mission</h2>
-          <p class="text-sm md:text-base text-body leading-relaxed font-light opacity-90">
-            Empowering businesses through scalable software architectures, high-impact digital solutions, and personalized technology innovation.
-          </p>
+    <!-- Our Mission & Vision Section (We Deliver Card Style) -->
+    <section id="mission-section" class="py-16 md:py-24 bg-background relative overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6">
+        <!-- Section Header -->
+        <div class="section-header text-center max-w-3xl mx-auto mb-12 md:mb-16">
+          <span class="section-eyebrow text-primary">STRATEGIC DIRECTION</span>
+          <h2 class="section-title text-3xl md:text-5xl font-bold text-heading font-display">
+            Purpose &amp; <span class="text-primary-gradient">Aspiration</span>
+          </h2>
         </div>
-        
-        <!-- Vision Card -->
-        <div class="bg-surface border border-border rounded-2xl p-6 md:p-12 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-primary">
-          <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-accent to-primary"></div>
-          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">ASPIRATION</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-heading mt-2 mb-4 md:mb-6 font-display">Our Vision</h2>
-          <p class="text-sm md:text-base text-body leading-relaxed font-light opacity-90">
-            Setting the global benchmark for digital transformation, sustainable engineering, and future-proof digital product excellence.
-          </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
+          <!-- 1. Purpose Card (Our Mission) -->
+          <article class="deliver-card deliver-grid-card about-deliver-card" data-card="purpose">
+            <div class="flex items-center justify-between w-full mb-2">
+              <div class="deliver-squircle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+              </div>
+              <span class="section-eyebrow text-primary tracking-widest text-[11px] font-bold">OUR PURPOSE</span>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title text-2xl font-bold font-display">Our Mission</h3>
+              <p class="deliver-card-tagline text-base leading-relaxed">
+                Empowering businesses through scalable software architectures, high-impact digital solutions, and personalized technology innovation.
+              </p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 2. Aspiration Card (Our Vision) -->
+          <article class="deliver-card deliver-grid-card about-deliver-card" data-card="aspiration">
+            <div class="flex items-center justify-between w-full mb-2">
+              <div class="deliver-squircle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
+              <span class="section-eyebrow text-primary tracking-widest text-[11px] font-bold">OUR ASPIRATION</span>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title text-2xl font-bold font-display">Our Vision</h3>
+              <p class="deliver-card-tagline text-base leading-relaxed">
+                Setting the global benchmark for digital transformation, sustainable engineering, and future-proof digital product excellence.
+              </p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
         </div>
       </div>
     </section>
 
     <!-- Our Core Values Section -->
-    <section class="py-20 md:py-24 bg-background border-b border-border">
+    <section id="values-section" class="py-20 md:py-24 bg-background relative overflow-hidden">
       <div class="max-w-5xl mx-auto px-6">
-        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">PHILOSOPHY</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-heading mt-2 font-display">Our Core Values</h2>
-          <p class="text-muted mt-3 font-light text-sm md:text-base">The foundational principles defining how we engineer, collaborate, and deliver excellence.</p>
+        <div class="section-header text-center max-w-2xl mx-auto mb-12 md:mb-16">
+          <span class="section-eyebrow text-primary">PHILOSOPHY &amp; CULTURE</span>
+          <h2 class="section-title text-3xl md:text-5xl font-bold text-heading font-display">Our Core <span class="text-primary-gradient">Values</span></h2>
+          <p class="section-subtitle text-muted mt-3 font-light text-base md:text-lg">The foundational principles defining how we engineer, collaborate, and deliver excellence at global scale.</p>
         </div>
         
         <!-- 2 Rows and 3 Columns Grid for 6 Values -->
@@ -262,18 +329,18 @@
     </section>
 
     <!-- Our Process / How We Do It Section -->
-    <section class="py-16 md:py-28 bg-background border-b border-border" id="process-section">
+    <section class="py-16 md:py-28 bg-background relative overflow-hidden" id="process-section">
       <div class="max-w-6xl mx-auto px-5 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16 items-start">
         <!-- Left Content (Header on mobile) -->
         <div class="process-header flex flex-col items-start text-left md:col-span-1 md:sticky md:top-32">
-          <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">
-            OUR MODEL
+          <span class="section-eyebrow text-primary mb-2">
+            OUR OPERATING MODEL
           </span>
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-heading mb-3 md:mb-4 font-display">
-            How We Do It
+          <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-heading mb-3 md:mb-4 font-display">
+          How We<span class="text-primary-gradient"> Do It</span>
           </h2>
-          <p class="text-xs sm:text-sm md:text-base text-muted leading-relaxed mb-5 md:mb-8">
-            We work on a typical matrix of time, effort, and money, following Agile methodologies to deliver exceptional results.
+          <p class="section-subtitle text-xs sm:text-sm md:text-base text-muted leading-relaxed mb-6 md:mb-8">
+            We work on a high-precision matrix of time, effort, and commercial impact, adhering to Agile sprints to ensure predictable, flawless delivery.
           </p>
           <a href="services.html" class="btn-primary inline-flex items-center gap-2">
             <span>Learn More</span>
@@ -395,10 +462,11 @@
       </div>
     </section>
 
-      <!-- PRE-FOOTER CTA SECTION -->
+  <!-- PRE-FOOTER CTA SECTION -->
   <section class="cta-section" id="cta">
     <div class="cta-card reveal">
       <div class="cta-content">
+        <span class="section-eyebrow text-primary mb-3">TAKE THE NEXT STEP</span>
         <h2 class="cta-heading">Technology with a purpose.</h2>
         <p class="cta-text">AROX Tech focuses on creating useful digital products, practical technology solutions, and experiences that create lasting value.</p>
         <div class="cta-actions">
@@ -447,7 +515,7 @@
           <p class="footer-copyright">&copy; <span>AROX Tech 2026</span><br/>All Rights Reserved</p>
         </div>
 
-        <!-- Row 1 / Col 2: Company -->
+        <!-- Col 2: Company -->
         <details class="footer-col footer-col-company" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
@@ -466,21 +534,21 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="about.html"><span class="footer-link-arrow"></span> About Us</a></li>
-              <li><a class="footer-link" href="about.html#journey"><span class="footer-link-arrow"></span> Our Journey</a></li>
+              <li><a class="footer-link" href="about.html#mission-section"><span class="footer-link-arrow"></span> Purpose &amp; Vision</a></li>
+              <li><a class="footer-link" href="about.html#process-section"><span class="footer-link-arrow"></span> Operating Model</a></li>
               <li><a class="footer-link" href="apply.html"><span class="footer-link-arrow"></span> Careers</a></li>
-              <li><a class="footer-link" href="about.html#team"><span class="footer-link-arrow"></span> Core Team</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Partners</a></li>
-              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> News &amp; Updates</a></li>
+              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> Contact Us</a></li>
             </ul>
           </div>
         </details>
 
-        <!-- Row 1 / Col 3: Services -->
+        <!-- Col 3: Services -->
         <details class="footer-col footer-col-services" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               </div>
               <div>
                 <h3 class="footer-col-title">Services</h3>
@@ -494,16 +562,16 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Software Development</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Design &amp; Dev</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> App Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> UI/UX &amp; Branding</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; Infrastructure</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Digital Marketing &amp; SEO</a></li>
             </ul>
           </div>
         </details>
 
-        <!-- Row 1 / Col 4: Training -->
+        <!-- Col 4: Training -->
         <details class="footer-col footer-col-training" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
@@ -521,17 +589,17 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cyber Security</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Mobile App Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-web-development&amp;from=training"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
+              <li><a class="footer-link" href="detail.html?course=cyber-security&amp;from=training"><span class="footer-link-arrow"></span> Cyber Security</a></li>
+              <li><a class="footer-link" href="detail.html?course=devops-engineering&amp;from=training"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-designing&amp;from=training"><span class="footer-link-arrow"></span> UI/UX Designing</a></li>
             </ul>
           </div>
         </details>
 
-        <!-- Row 2 / Col 2: Internships -->
+        <!-- Col 5: Internships -->
         <details class="footer-col footer-col-internships" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
@@ -539,7 +607,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
               </div>
               <div>
-                <h3 class="footer-col-title">Internships</h3>
+                <h3 class="footer-col-title">Internship</h3>
                 <div class="footer-title-bar"></div>
               </div>
             </div>
@@ -549,17 +617,17 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Full Stack Internship</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Python Backend</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-internship&amp;from=internship"><span class="footer-link-arrow"></span> Full Stack Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=python-backend-internship&amp;from=internship"><span class="footer-link-arrow"></span> Python Backend</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-design-internship&amp;from=internship"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
+              <li><a class="footer-link" href="detail.html?course=ai-agent-internship&amp;from=internship"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=cloud-devops-internship&amp;from=internship"><span class="footer-link-arrow"></span> Cloud &amp; DevOps Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=mobile-app-internship&amp;from=internship"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
             </ul>
           </div>
         </details>
 
-        <!-- Row 2 / Col 3: Contact -->
+        <!-- Col 6: Contact -->
         <details class="footer-col footer-col-contact" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
@@ -594,35 +662,6 @@
                 <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
               </li>
             </ul>
-          </div>
-        </details>
-
-        <!-- Row 2 / Col 4: Stay Updated (Newsletter) -->
-        <details class="footer-col footer-col-newsletter" open>
-          <summary class="footer-col-header">
-            <div class="footer-col-header-left">
-              <div class="footer-col-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
-              </div>
-              <div>
-                <h3 class="footer-col-title">Stay Updated</h3>
-                <div class="footer-title-bar"></div>
-              </div>
-            </div>
-            <div class="footer-chevron">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-          </summary>
-          <div class="footer-col-body">
-            <div class="footer-newsletter">
-              <p class="footer-newsletter-desc">Subscribe to our newsletter for the latest tech releases, industry insights, and engineering updates.</p>
-              <form class="footer-newsletter-form" onsubmit="event.preventDefault();">
-                <input class="footer-newsletter-input" placeholder="Enter your email" required type="email" />
-                <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
-              </form>
-            </div>
           </div>
         </details>
       </div>

@@ -8,13 +8,24 @@
     currentTheme = window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
   }
 
-  function applyTheme(t) {
+  function applyTheme(t, isInit) {
     const root = document.documentElement;
-    root.classList.add('theme-switching');
-    root.classList.remove('theme-light', 'theme-dark', 'dark');
-    root.classList.add('theme-' + t);
-    if (t === 'dark') {
-      root.classList.add('dark');
+    const targetClass = 'theme-' + t;
+    const alreadyApplied = root.classList.contains(targetClass);
+
+    root.style.colorScheme = t;
+    root.style.backgroundColor = (t === 'dark') ? '#0b0c11' : '#FFFFFF';
+    if (document.body) {
+      document.body.style.backgroundColor = (t === 'dark') ? '#0b0c11' : '#FFFFFF';
+    }
+
+    if (!alreadyApplied) {
+      root.classList.add('theme-switching');
+      root.classList.remove('theme-light', 'theme-dark', 'dark');
+      root.classList.add(targetClass);
+      if (t === 'dark') {
+        root.classList.add('dark');
+      }
     }
     currentTheme = t;
     localStorage.setItem('arox-theme', t);
@@ -22,11 +33,13 @@
     updateLogos();
     window.dispatchEvent(new CustomEvent('arox-theme-change', { detail: { theme: t } }));
 
-    // Force instant style commit then release transition suppression
-    void root.offsetHeight;
-    requestAnimationFrame(() => {
-      root.classList.remove('theme-switching');
-    });
+    if (!alreadyApplied) {
+      // Force instant style commit then release transition suppression
+      void root.offsetHeight;
+      requestAnimationFrame(() => {
+        root.classList.remove('theme-switching');
+      });
+    }
   }
 
   function updateThemeUI() {
@@ -140,7 +153,7 @@
       applyTheme(btn.dataset.theme);
     });
   });
-  applyTheme(currentTheme);
+  applyTheme(currentTheme, true);
 
   // Sync theme changes across multiple tabs
   window.addEventListener('storage', (e) => {
@@ -310,21 +323,21 @@
   }
 
   /* ── HERO SECTION ENTRANCE & PARALLAX ────────────────────────── */
+  if (typeof gsap !== 'undefined') {
+    gsap.ticker.lagSmoothing(500, 33);
+  }
   const heroSection = document.getElementById('hero');
   if (heroSection && typeof gsap !== 'undefined') {
     const heroElements = heroSection.querySelectorAll('span.text-xs, h1, p, .flex.gap-4, .btn-primary, .btn-secondary, .scroll-indicator');
     if (heroElements.length) {
-      gsap.fromTo(heroElements,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: 'power3.out',
-          delay: 0.1
-        }
-      );
+      gsap.from(heroElements, {
+        opacity: 0,
+        y: 18,
+        duration: 0.75,
+        stagger: 0.08,
+        ease: 'power2.out',
+        clearProps: 'transform,opacity'
+      });
     }
 
     const gridBg = heroSection.querySelector('.grid-lines-bg');
@@ -383,6 +396,7 @@
       const target = parseFloat(numEl.dataset.target || '0');
       const suffix = numEl.dataset.suffix || '';
       if (p >= 0.99) {
+        card._appeared = true;
         if (!card._counting && card._val !== target) {
           card._counting = true;
           if (card._val === undefined) card._val = 0;
@@ -390,14 +404,17 @@
             gsap.to(card, {
               _val: target, duration: 1.2, ease: 'power3.out',
               onUpdate() { numEl.textContent = Math.round(card._val) + suffix; },
-              onComplete() { card._counting = false; }
+              onComplete() {
+                card._counting = false;
+                numEl.textContent = target + suffix;
+              }
             });
           } else {
             numEl.textContent = target + suffix;
             card._counting = false;
           }
         }
-      } else {
+      } else if (!card._appeared) {
         if (typeof gsap !== 'undefined') {
           gsap.killTweensOf(card, '_val');
         }
@@ -409,16 +426,82 @@
 
   if (N_STATS > 0 && document.getElementById('stats-section')) {
     if (window.innerWidth > 768) {
+      let statsTrigger = null;
+      let statsCompleted = false;
+      let maxProgress = 0;
+
+      function finalizeStats(isAtEnd) {
+        if (statsCompleted) return;
+        statsCompleted = true;
+
+        // Ensure all cards are in permanent 100% revealed state
+        statCards.forEach(card => {
+          card._appeared = true;
+          card.style.clipPath = 'none';
+          card.style.opacity = '1';
+          card.style.transform = 'none';
+          const sweep = card.querySelector('.light-sweep');
+          if (sweep) sweep.style.display = 'none';
+          const numEl = card.querySelector('.card-number');
+          if (numEl) {
+            const target = numEl.dataset.target || '0';
+            const suffix = numEl.dataset.suffix || '';
+            numEl.textContent = target + suffix;
+          }
+        });
+
+        if (statsTrigger) {
+          const pinDistance = TOTAL_SCROLL_STATS;
+          const currentY = window.scrollY;
+          statsTrigger.kill(true);
+          statsTrigger = null;
+
+          if (isAtEnd) {
+            const newY = Math.max(0, currentY - pinDistance);
+            if (window.lenis) {
+              window.lenis.scrollTo(newY, { immediate: true });
+            } else {
+              window.scrollTo(0, newY);
+            }
+          }
+          ScrollTrigger.refresh();
+        }
+      }
+
       statCards.forEach(c => revealStat(c, 0));
-      ScrollTrigger.create({
+
+      statsTrigger = ScrollTrigger.create({
         trigger: document.getElementById('stats-section'),
-        pin: true, start: 'top top', end: `+=${TOTAL_SCROLL_STATS}`,
-        scrub: 1, anticipatePin: 1,
+        pin: true,
+        start: 'top top',
+        end: `+=${TOTAL_SCROLL_STATS}`,
+        scrub: 1,
+        anticipatePin: 1,
         onUpdate(self) {
+          if (statsCompleted) return;
+          // Only play forward during initial scroll-down
+          maxProgress = Math.max(maxProgress, self.progress);
           statCards.forEach((card, i) => {
             const sliceStart = i / N_STATS;
-            revealStat(card, (self.progress - sliceStart) / (1 / N_STATS));
+            const p = (maxProgress - sliceStart) / (1 / N_STATS);
+            revealStat(card, p);
           });
+          // Once full stats have appeared, mark them permanently
+          if (maxProgress >= 0.99) {
+            statCards.forEach(c => { c._appeared = true; });
+          }
+        },
+        onLeave(self) {
+          // Scrolled past the stats section down into next content
+          if (maxProgress >= 0.95 || self.progress >= 0.95) {
+            finalizeStats(true);
+          }
+        },
+        onLeaveBack(self) {
+          // If all stats appeared and user scrolls back up to hero, unpin so it never triggers again
+          if (maxProgress >= 0.95) {
+            finalizeStats(false);
+          }
         }
       });
     } else {
@@ -437,57 +520,330 @@
     }
   }
 
-  /* ── GSAP WHY CHOOSE US ─────────────────────────────────────── */
-  const wcuList = document.getElementById('wcu-list');
-  if (wcuList && window.innerWidth > 768) {
-    const wcuScene = document.getElementById('wcu-scene');
-    const wcuSticky = document.getElementById('wcu-sticky');
-    const wcuLabel = document.getElementById('wcu-label');
-    const wcuListW = document.getElementById('wcu-list-wrap');
-    const wcuItems = Array.from(wcuList.querySelectorAll('.wcu-item'));
-    const N_ITEMS = wcuItems.length;
-    let itemH = 0;
+  /* ═══════════════════════════════════════════════════════════════
+     WE DELIVER — Scroll-Driven Card Burst Animation
+     ─────────────────────────────────────────────────────────────
+     Pixel-accurate recreation from reference frames 1–4 & video:
+     
+     Phase 1 (0%–25% scroll):  Hero card appears large & centered,
+                               scaled up ~1.8x, filling the viewport.
+                               All background cards are hidden behind it.
+     
+     Phase 2 (25%–50% scroll): Hero card begins shrinking toward its
+                               final grid position. Background cards
+                               start peeking out from behind, tiny and
+                               blurred, clustered at the center.
+     
+     Phase 3 (50%–80% scroll): Background cards burst outward radially
+                               from center, scaling up and fanning out
+                               to their final grid positions. Each card
+                               has a staggered delay based on distance.
+     
+     Phase 4 (80%–100% scroll): All cards settle into final positions.
+                               Hero glow fades, blur clears, hover
+                               interactions are re-enabled.
+     
+     This is scroll-driven (scrub) — the user controls the animation
+     progress by scrolling. The section is pinned during the animation.
+     Once completed, it unpins and stays in final state permanently.
+     ═══════════════════════════════════════════════════════════════ */
+  const deliverSection = document.getElementById('we-deliver-section');
+  if (deliverSection) {
+    const heroCard = document.getElementById('deliver-hero-card');
+    const surroundingCards = Array.from(deliverSection.querySelectorAll('.deliver-grid-card'));
+    const gridContainer = document.getElementById('deliver-grid-container');
 
-    function setupWCU() {
-      if (wcuItems[0]) {
-        itemH = wcuItems[0].offsetHeight;
-        if (wcuListW) {
-          wcuListW.style.height = itemH + 'px';
-          let maxW = 0;
-          wcuItems.forEach(el => {
-            maxW = Math.max(maxW, el.scrollWidth || el.offsetWidth);
-          });
-          if (maxW > 0) {
-            wcuListW.style.width = Math.ceil(maxW) + 'px';
+    // Detect prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ─── Per-card animation data (rotation, stagger delay, radial burst angle) ───
+    // Order matches DOM: software, uiux, cloud, agile, security, ai, business, partnership
+    const cardAnimData = [
+      { stagger: 0.00, rotZ:  2.5, burstAngle: -135 }, // software    (top-left)
+      { stagger: 0.04, rotZ: -1.8, burstAngle: -160 }, // uiux        (mid-left)
+      { stagger: 0.08, rotZ:  1.5, burstAngle:  160 }, // cloud       (bot-left)
+      { stagger: 0.02, rotZ: -2.0, burstAngle:  -90 }, // agile       (top-center)
+      { stagger: 0.06, rotZ:  2.2, burstAngle:   90 }, // security    (bot-center)
+      { stagger: 0.01, rotZ:  3.0, burstAngle:  -45 }, // ai          (top-right)
+      { stagger: 0.05, rotZ: -2.5, burstAngle:   20 }, // business    (mid-right)
+      { stagger: 0.09, rotZ:  1.2, burstAngle:  135 }, // partnership (bot-right)
+    ];
+
+    let deliverCompleted = false;
+    let deliverTrigger = null;
+    let masterTl = null;
+    let maxDeliverProgress = 0;
+    // Comfortable scroll distance synchronized to smooth scrolling
+    const TOTAL_SCROLL_DELIVER = 1200;
+
+    // ─── Finalize into permanent static layout & remove pin spacer ───
+    function finalizeDeliver(isAtEnd) {
+      if (deliverCompleted) return;
+      deliverCompleted = true;
+
+      deliverSection.classList.add('deliver-settled');
+      if (masterTl) {
+        masterTl.progress(1);
+        masterTl.pause();
+      }
+
+      // ── Lock all 9 cards into their permanent, static CSS grid layout ──
+      if (heroCard) {
+        gsap.set(heroCard, { clearProps: 'transform,opacity,scale,x,y,zIndex' });
+      }
+      surroundingCards.forEach((card) => {
+        gsap.set(card, { clearProps: 'transform,opacity,scale,x,y,rotateZ,zIndex' });
+        card.style.pointerEvents = 'auto';
+      });
+
+      // ── Clean up & disable pin, remove pin-spacer and artificial scroll height ──
+      if (deliverTrigger) {
+        const pinDistance = TOTAL_SCROLL_DELIVER;
+        const currentY = window.scrollY;
+        deliverTrigger.kill(true);
+        deliverTrigger = null;
+
+        if (isAtEnd) {
+          const newY = Math.max(0, currentY - pinDistance);
+          if (window.lenis) {
+            window.lenis.scrollTo(newY, { immediate: true });
+          } else {
+            window.scrollTo(0, newY);
           }
         }
-        wcuList.style.top = '0px';
+
+        ScrollTrigger.refresh();
       }
     }
 
-    function renderWCU(frac) {
-      frac = Math.max(0, Math.min(N_ITEMS - 1, frac));
-      const active = Math.round(frac);
-      gsap.set(wcuList, { y: -frac * itemH });
-      wcuItems.forEach((el, i) => {
-        const d = i - active;
-        if (d === 0) { el.style.opacity = '1'; el.style.filter = 'none'; }
-        else if (d < 0) { el.style.opacity = String(Math.max(0, 0.22 + d * 0.07)); el.style.filter = 'none'; }
-        else { el.style.opacity = String(Math.max(0.04, 0.48 - (d - 1) * 0.09)); el.style.filter = d > 1 ? `blur(${(d - 1) * 1.8}px)` : 'none'; }
+    // ─── Compute offset from each card's natural position to hero card's center ───
+    function computeCenterOffsets() {
+      if (!heroCard) return [];
+      const heroRect = heroCard.getBoundingClientRect();
+      const heroCX = heroRect.left + heroRect.width / 2;
+      const heroCY = heroRect.top + heroRect.height / 2;
+
+      return surroundingCards.map((card) => {
+        const r = card.getBoundingClientRect();
+        return {
+          dx: heroCX - (r.left + r.width / 2),
+          dy: heroCY - (r.top + r.height / 2)
+        };
       });
     }
 
-    setupWCU(); renderWCU(0);
-    ScrollTrigger.create({
-      trigger: wcuScene, start: 'top top', end: `+=${(N_ITEMS - 1) * 250}`,
-      pin: wcuSticky, scrub: 0.5,
-      onUpdate(self) { renderWCU(self.progress * (N_ITEMS - 1)); }
-    });
-    window.addEventListener('resize', () => { setupWCU(); ScrollTrigger.refresh(); }, { passive: true });
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => { setupWCU(); ScrollTrigger.refresh(); });
+    // ─── Reduced motion fallback ───
+    function runReducedMotionEntrance() {
+      finalizeDeliver(false);
     }
+
+    // ─── Mouse-following spotlight on background cards ───
+    surroundingCards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      });
+
+      // Micro-interaction on click
+      card.addEventListener('click', () => {
+        if (!deliverSection.classList.contains('deliver-settled')) return;
+        gsap.timeline()
+          .to(card, { scale: 0.98, duration: 0.1, ease: 'power1.in' })
+          .to(card, { scale: 1.02, duration: 0.2, ease: 'back.out(2)' });
+      });
+    });
+
+    // ─── Initialize scroll-driven animation ───
+    requestAnimationFrame(() => {
+      if (prefersReducedMotion) {
+        finalizeDeliver(false);
+        return;
+      }
+
+      if (!heroCard || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+      // If page was loaded/refreshed already scrolled past the deliver section, settle immediately
+      if (window.scrollY >= deliverSection.offsetTop + TOTAL_SCROLL_DELIVER) {
+        finalizeDeliver(false);
+        return;
+      }
+
+      // Measure offsets before setting initial state
+      const offsets = computeCenterOffsets();
+
+      // ── Set initial state: hero card large & centered, bg cards hidden behind ──
+      gsap.set(heroCard, {
+        scale: 1.5,
+        opacity: 0,
+        y: 16,
+        zIndex: 30
+      });
+
+      // Background cards: collapsed behind hero at centroid, invisible
+      surroundingCards.forEach((card, i) => {
+        const off = offsets[i] || { dx: 0, dy: 0 };
+        const anim = cardAnimData[i] || { rotZ: 0 };
+        gsap.set(card, {
+          x: off.dx,
+          y: off.dy,
+          scale: 0.18,
+          opacity: 0,
+          rotateZ: anim.rotZ * 1.5,
+          pointerEvents: 'none',
+          zIndex: 5
+        });
+      });
+
+      // ── Build the master scroll-driven timeline ──
+      masterTl = gsap.timeline({ paused: true });
+
+      // Phase 1: Center Hero Card smoothly fades in and rises (0.00 → 0.18)
+      masterTl.to(heroCard, {
+        scale: 1.5,
+        opacity: 1,
+        y: 0,
+        duration: 0.18,
+        ease: 'power1.out'
+      }, 0);
+
+      // Phase 2: Center Hero gently scales down toward grid scale (0.18 → 0.58)
+      masterTl.to(heroCard, {
+        scale: 1.0,
+        duration: 0.40,
+        ease: 'power1.inOut'
+      }, 0.18);
+
+      // Phase 3: Background cards smoothly burst and fan out radially (0.22 → 0.86)
+      surroundingCards.forEach((card, i) => {
+        const anim = cardAnimData[i] || { stagger: 0, rotZ: 0 };
+        const burstStart = 0.22 + anim.stagger * 1.2;
+        const burstDuration = 0.52;
+
+        masterTl.to(card, {
+          x: 0,
+          y: 0,
+          scale: 1.0,
+          opacity: 1,
+          rotateZ: 0,
+          duration: burstDuration,
+          ease: 'power2.out',
+          pointerEvents: 'auto'
+        }, burstStart);
+      });
+
+      // Phase 4: Final settle (0.85 → 1.00)
+      masterTl.to(surroundingCards, {
+        opacity: 1,
+        duration: 0.15,
+        ease: 'sine.out'
+      }, 0.85);
+
+      // ── Attach ScrollTrigger for silky smooth 60/120fps scrubbing (runs ONLY ONCE) ──
+      if (window.innerWidth > 768) {
+        deliverTrigger = ScrollTrigger.create({
+          trigger: deliverSection,
+          pin: true,
+          start: 'top top',
+          end: `+=${TOTAL_SCROLL_DELIVER}`,
+          scrub: 1,
+          anticipatePin: 1,
+          onUpdate(self) {
+            if (deliverCompleted) return;
+            maxDeliverProgress = Math.max(maxDeliverProgress, self.progress);
+            if (masterTl) {
+              masterTl.progress(maxDeliverProgress);
+            }
+            if (maxDeliverProgress >= 0.95) {
+              deliverSection.classList.add('deliver-settled');
+              surroundingCards.forEach(c => { c.style.pointerEvents = 'auto'; });
+              // If fully revealed and user scrolls back up, unpin so they are not trapped
+              if (self.direction === -1 && maxDeliverProgress >= 0.98) {
+                finalizeDeliver(false);
+              }
+            }
+          },
+          onLeave(self) {
+            // User scrolled past the deliver section into next content -> finalize & unpin permanently
+            if (maxDeliverProgress >= 0.95 || self.progress >= 0.95) {
+              finalizeDeliver(true);
+            }
+          },
+          onLeaveBack(self) {
+            // If cards were revealed and user scrolled back to top -> finalize & unpin permanently
+            if (maxDeliverProgress >= 0.95) {
+              finalizeDeliver(false);
+            }
+          }
+        });
+      } else {
+        // Mobile: use IntersectionObserver for a single triggered animation
+        gsap.set(heroCard, { scale: 1, opacity: 0, y: 30, clearProps: 'zIndex' });
+        surroundingCards.forEach((card, i) => {
+          gsap.set(card, { clearProps: 'x,y,rotateZ,zIndex', scale: 0.8, opacity: 0, y: 40 });
+        });
+
+        const mobileTl = gsap.timeline({
+          paused: true,
+          onComplete: () => {
+            finalizeDeliver(false);
+          }
+        });
+
+        mobileTl.to(heroCard, {
+          scale: 1, opacity: 1, y: 0, duration: 0.5, ease: 'power2.out'
+        }, 0);
+
+        surroundingCards.forEach((card, i) => {
+          mobileTl.to(card, {
+            scale: 1, opacity: 1, y: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+            pointerEvents: 'auto'
+          }, 0.15 + i * 0.06);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.15) {
+              mobileTl.play();
+              observer.disconnect();
+            }
+          });
+        }, { threshold: [0.0, 0.15, 0.3] });
+
+        observer.observe(deliverSection);
+      }
+    });
+
+    // Window resize handler — recalculate offsets if not yet completed
+    window.addEventListener('resize', () => {
+      if (!deliverCompleted && !prefersReducedMotion && deliverTrigger) {
+        ScrollTrigger.refresh();
+      }
+    }, { passive: true });
   }
+
+  /* ── DELIVER GRID CARDS (SPOTLIGHT & CLICK INTERACTION SITE-WIDE) ── */
+  document.querySelectorAll('.deliver-grid-card').forEach((card) => {
+    // If not already in deliverSection (which has its own scroll state tracking)
+    if (!card.closest('#we-deliver-section')) {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      });
+
+      card.addEventListener('click', () => {
+        if (typeof gsap !== 'undefined') {
+          gsap.timeline()
+            .to(card, { scale: 0.98, duration: 0.1, ease: 'power1.in' })
+            .to(card, { scale: 1.02, duration: 0.2, ease: 'back.out(2)' })
+            .to(card, { scale: 1, duration: 0.2, ease: 'power1.out' });
+        }
+      });
+    }
+  });
 
   /* ── MAGIC BENTO ─────────────────────────────────────────────── */
   const bentoGrid = document.getElementById('bento-grid');
@@ -983,22 +1339,120 @@
 
   /* ── SCROLL REVEAL ANIMATIONS ─────────────────────────────────── */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    const revealTargets = document.querySelectorAll('.services-header, .projects-header, .testimonials-header, .cta-card, .cta-section');
-    revealTargets.forEach(el => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 1. General Section Headers across all pages (initial scroll-down reveal)
+    const sectionHeaders = document.querySelectorAll(
+      '.section-header, .services-header, .projects-header, .testimonials-header, .process-header'
+    );
+    sectionHeaders.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top >= window.innerHeight) {
+        gsap.from(el, {
+          opacity: 0,
+          y: 28,
+          duration: 0.75,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: el,
             start: 'top 88%',
-            toggleActions: 'play none none none'
-          }
-        }
-      );
+            toggleActions: 'play none none none',
+            once: true
+          },
+          clearProps: 'transform,opacity'
+        });
+      }
+    });
+
+    // 2. Purpose & Aspiration Cards (About Page We Deliver Card Style)
+    const aboutDeliverCards = document.querySelectorAll('.about-deliver-card');
+    if (aboutDeliverCards.length) {
+      const triggerEl = document.getElementById('mission-section') || aboutDeliverCards[0];
+      const rect = triggerEl.getBoundingClientRect();
+      if (rect.top >= window.innerHeight) {
+        gsap.from(aboutDeliverCards, {
+          opacity: 0,
+          y: 35,
+          scale: 0.97,
+          duration: 0.75,
+          stagger: 0.12,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: triggerEl,
+            start: 'top 82%',
+            toggleActions: 'play none none none',
+            once: true
+          },
+          clearProps: 'transform,scale,opacity'
+        });
+      }
+    }
+
+    // 3. Core Values Grid Tiles (About Page)
+    const valueTiles = document.querySelectorAll('#values-section .value-tile');
+    if (valueTiles.length) {
+      const gridEl = document.querySelector('#values-section .grid') || valueTiles[0];
+      const rect = gridEl.getBoundingClientRect();
+      if (rect.top >= window.innerHeight) {
+        gsap.from(valueTiles, {
+          opacity: 0,
+          y: 28,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: gridEl,
+            start: 'top 86%',
+            toggleActions: 'play none none none',
+            once: true
+          },
+          clearProps: 'transform,scale,opacity'
+        });
+      }
+    }
+
+    // 4. Operating Model / How We Do It Process Cards (About Page)
+    const processCards = document.querySelectorAll('#process-section .process-card');
+    if (processCards.length) {
+      const gridEl = document.querySelector('#process-section .process-cards-grid') || processCards[0];
+      const rect = gridEl.getBoundingClientRect();
+      if (rect.top >= window.innerHeight) {
+        gsap.from(processCards, {
+          opacity: 0,
+          y: 25,
+          duration: 0.55,
+          stagger: 0.06,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: gridEl,
+            start: 'top 86%',
+            toggleActions: 'play none none none',
+            once: true
+          },
+          clearProps: 'transform,opacity'
+        });
+      }
+    }
+
+    // 5. Pre-footer CTA Section & Cards
+    const revealTargets = document.querySelectorAll('.cta-card, .cta-section');
+    revealTargets.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top >= window.innerHeight) {
+        gsap.from(el, {
+          opacity: 0,
+          y: 28,
+          duration: 0.75,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+            once: true
+          },
+          clearProps: 'transform,opacity'
+        });
+      }
     });
   }
 
@@ -1030,117 +1484,17 @@
     initFooterResponsive();
   }
 
-  /* ── SMOOTH PAGE NAVIGATION TRANSITION ────────────────────────── */
+  /* ── PAGE NAVIGATION: Native instant navigation with zero delay ── */
   function initPageTransitions() {
-    let overlay = document.querySelector('.page-transition-overlay');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.className = 'page-transition-overlay';
-      overlay.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(overlay);
-    }
-
-    // Check if this page load is entering from an internal navigation transition
-    if (sessionStorage.getItem('arox-page-transition')) {
+    try {
       sessionStorage.removeItem('arox-page-transition');
-      overlay.classList.add('is-entering');
-      overlay.style.visibility = 'visible';
-      overlay.style.opacity = '1';
-      overlay.style.transform = 'translateY(0)';
-
-      // Trigger smooth upward wipe out to reveal the incoming page
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.documentElement.classList.remove('page-is-entering');
-          overlay.classList.remove('is-entering');
-          overlay.classList.add('is-leaving');
-          setTimeout(() => {
-            overlay.classList.remove('is-leaving');
-            overlay.style.visibility = 'hidden';
-            overlay.style.opacity = '0';
-            overlay.style.transform = 'translateY(100%)';
-            overlay.style.pointerEvents = 'none';
-          }, 350);
-        });
-      });
-    } else {
-      document.documentElement.classList.remove('page-is-entering');
+    } catch (e) {}
+    document.documentElement.classList.remove('page-is-entering');
+    const overlay = document.querySelector('.page-transition-overlay');
+    if (overlay) {
+      overlay.remove();
     }
-
-    // Safety reset for back/forward navigation (bfcache)
-    window.addEventListener('pageshow', () => {
-      sessionStorage.removeItem('arox-page-transition');
-      document.documentElement.classList.remove('page-is-entering');
-      if (overlay) {
-        overlay.classList.remove('is-exiting', 'is-entering', 'is-leaving');
-        overlay.style.visibility = 'hidden';
-        overlay.style.opacity = '0';
-        overlay.style.transform = 'translateY(100%)';
-        overlay.style.pointerEvents = 'none';
-      }
-    });
-
-    // Intercept clicks on internal links for smooth transition
-    document.addEventListener('click', (e) => {
-      if (e.defaultPrevented || e.button !== 0) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // Allow new tab/window
-
-      const link = e.target.closest('a');
-      if (!link) return;
-
-      const rawHref = link.getAttribute('href');
-      if (!rawHref) return;
-
-      // Skip non-navigational links
-      if (rawHref.startsWith('#') || rawHref.startsWith('javascript:') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) return;
-      if (link.target === '_blank' || link.hasAttribute('download')) return;
-
-      try {
-        const targetUrl = new URL(link.href, window.location.href);
-
-        // Only transition within same origin
-        if (targetUrl.origin !== window.location.origin) return;
-
-        // Skip if navigating to the same URL path and query
-        if (targetUrl.pathname === window.location.pathname && targetUrl.search === window.location.search) {
-          return;
-        }
-
-        // Avoid transition on external portal/admin redirects
-        if (targetUrl.pathname.startsWith('/api') || targetUrl.pathname.startsWith('/portal') || targetUrl.pathname.startsWith('/admin')) {
-          return;
-        }
-
-        e.preventDefault();
-
-        // Mark navigation transition flag
-        sessionStorage.setItem('arox-page-transition', '1');
-
-        // Play smooth exit animation (glides up from bottom)
-        overlay.classList.remove('is-leaving', 'is-entering');
-        overlay.style.transition = 'transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease';
-        overlay.style.transform = 'translateY(100%)';
-        overlay.style.visibility = 'visible';
-        overlay.style.pointerEvents = 'all';
-
-        requestAnimationFrame(() => {
-          overlay.classList.add('is-exiting');
-          overlay.style.transform = 'translateY(0)';
-          overlay.style.opacity = '1';
-
-          setTimeout(() => {
-            window.location.assign(targetUrl.href);
-          }, 260);
-        });
-      } catch (err) {
-        // Fallback: regular navigation
-      }
-    });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPageTransitions);
-  } else {
-    initPageTransitions();
-  }
+  initPageTransitions();
 })();

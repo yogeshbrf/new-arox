@@ -8,9 +8,11 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     initEyeTracking();
+    initPasswordEyeClosing();
     initPasswordToggles();
     initAuthForms();
     initSocialAuth();
+    initPasteHandling();
   });
 
   function initEyeTracking() {
@@ -53,7 +55,49 @@
     // 60fps Render Loop - Eyes are ALWAYS visible and active
     function animate() {
       eyeStates.forEach((state) => {
-        const rect = state.element.getBoundingClientRect();
+        const eyeEl = state.element;
+        const isClosed = eyeEl.classList.contains('is-closed');
+        const isPeeking = eyeEl.classList.contains('is-peeking');
+
+        // When eyes are closed while entering password
+        if (isClosed) {
+          state.curX += (0 - state.curX) * 0.22;
+          state.curY += (2 - state.curY) * 0.22;
+          if (state.pupil) {
+            state.pupil.style.opacity = '1';
+            if (eyeEl.classList.contains('eye-flutter')) {
+              state.pupil.style.transform = `translate(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px) scale(1.22, 0.45)`;
+            } else {
+              state.pupil.style.transform = `translate(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px) scale(1.4, 0.12)`;
+            }
+          }
+          // The outer eye stays open, subtly level
+          eyeEl.style.transform = 'perspective(400px) rotateY(0deg) rotateX(2deg)';
+          return;
+        }
+
+        // When eyes are peeking (password visibility unmasked)
+        if (isPeeking) {
+          const rect = eyeEl.getBoundingClientRect();
+          const cardEl = document.querySelector('.auth-card');
+          const cardRect = cardEl ? cardEl.getBoundingClientRect() : rect;
+          const targetX = (cardRect.left + cardRect.width / 2 > rect.left) ? 6 : -6;
+          state.curX += (targetX - state.curX) * 0.2;
+          state.curY += (1 - state.curY) * 0.2;
+          if (state.pupil) {
+            state.pupil.style.opacity = '1';
+            state.pupil.style.transform = `translate(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px) scale(1.1, 0.65)`;
+          }
+          eyeEl.style.transform = 'perspective(400px) rotateY(0deg) rotateX(0deg)';
+          return;
+        }
+
+        // Normal tracking when open
+        if (state.pupil) {
+          state.pupil.style.opacity = '1';
+        }
+
+        const rect = eyeEl.getBoundingClientRect();
         const eyeCenterX = rect.left + rect.width / 2;
         const eyeCenterY = rect.top + rect.height / 2;
 
@@ -63,7 +107,7 @@
         const angle = Math.atan2(dy, dx);
 
         // Capsule boundary calculations
-        const pupilSize = state.pupil ? state.pupil.offsetWidth : 18;
+        const pupilSize = state.pupil ? state.pupil.offsetWidth : 22;
         const maxRx = Math.max(10, (rect.width / 2) - (pupilSize / 2) - 8);
         const maxRy = Math.max(6, (rect.height / 2) - (pupilSize / 2) - 7);
 
@@ -78,13 +122,13 @@
         state.curY += (state.targetY - state.curY) * 0.18;
 
         if (state.pupil) {
-          state.pupil.style.transform = `translate(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px)`;
+          state.pupil.style.transform = `translate(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px) scale(1, 1)`;
         }
 
         // Subtle eye socket 3D tilt towards mouse
         const tiltY = (state.curX / maxRx) * 6;
         const tiltX = -(state.curY / maxRy) * 5;
-        state.element.style.transform = `perspective(400px) rotateY(${tiltY.toFixed(2)}deg) rotateX(${tiltX.toFixed(2)}deg)`;
+        eyeEl.style.transform = `perspective(400px) rotateY(${tiltY.toFixed(2)}deg) rotateX(${tiltX.toFixed(2)}deg)`;
       });
 
       requestAnimationFrame(animate);
@@ -93,13 +137,114 @@
     requestAnimationFrame(animate);
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     EYE CLOSING ANIMATION WHILE ENTERING PASSWORD INPUTS
+     Applies to Sign In (#auth-password) and Sign Up (password & confirm-password)
+  ══════════════════════════════════════════════════════════════ */
+  function initPasswordEyeClosing() {
+    const eyes = document.querySelectorAll('.auth-eye');
+    if (!eyes.length) return;
+
+    function closeEyes() {
+      eyes.forEach((eye) => {
+        eye.classList.remove('is-peeking');
+        eye.classList.add('is-closed');
+      });
+    }
+
+    function peekEyes() {
+      eyes.forEach((eye) => {
+        eye.classList.remove('is-closed');
+        eye.classList.add('is-peeking');
+      });
+    }
+
+    function openEyes() {
+      eyes.forEach((eye) => {
+        eye.classList.remove('is-closed', 'is-peeking', 'eye-flutter');
+      });
+    }
+
+    function triggerFlutter() {
+      eyes.forEach((eye) => {
+        if (eye.classList.contains('is-closed')) {
+          eye.classList.remove('eye-flutter');
+          // Force layout reflow to replay CSS keyframe animation smoothly
+          void eye.offsetWidth;
+          eye.classList.add('eye-flutter');
+          
+          // Remove class after animation finishes (160ms)
+          setTimeout(() => {
+            eye.classList.remove('eye-flutter');
+          }, 160);
+        }
+      });
+    }
+
+    // Select all password inputs across Sign In and Sign Up
+    const passwordInputs = document.querySelectorAll(
+      'input[type="password"], input[name*="password"], #auth-password, #signup-password, #signup-confirm-password'
+    );
+
+    passwordInputs.forEach((pwdInput) => {
+      // When focused: close eyes (or peek if unmasked)
+      pwdInput.addEventListener('focus', () => {
+        if (pwdInput.type === 'text') {
+          peekEyes();
+        } else {
+          closeEyes();
+        }
+      });
+
+      // While typing / entering characters: keep eyes closed and do a responsive micro-flutter
+      pwdInput.addEventListener('input', () => {
+        if (pwdInput.type === 'text') {
+          peekEyes();
+        } else {
+          closeEyes();
+          triggerFlutter();
+        }
+      });
+
+      pwdInput.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab' && e.key !== 'Shift' && pwdInput.type !== 'text') {
+          closeEyes();
+          triggerFlutter();
+        }
+      });
+
+      // While pasting into password field: keep closed and flutter
+      pwdInput.addEventListener('paste', () => {
+        if (pwdInput.type === 'text') {
+          peekEyes();
+        } else {
+          closeEyes();
+          triggerFlutter();
+        }
+      });
+
+      // When blurred: check if focus shifted to another password input (e.g. from password to confirm-password)
+      pwdInput.addEventListener('blur', () => {
+        setTimeout(() => {
+          const activeEl = document.activeElement;
+          const isAnotherPwd = Array.from(passwordInputs).some((p) => p === activeEl);
+          if (!isAnotherPwd) {
+            openEyes();
+          }
+        }, 100);
+      });
+    });
+  }
+
   function initPasswordToggles() {
     const toggleBtns = document.querySelectorAll('.auth-input-toggle');
+    const eyes = document.querySelectorAll('.auth-eye');
+
     toggleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const wrapper = btn.closest('.auth-input-wrapper');
-        const input = wrapper.querySelector('input');
+        const input = wrapper ? wrapper.querySelector('input') : null;
         if (!input) return;
 
         const isPassword = input.type === 'password';
@@ -112,6 +257,11 @@
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           `;
+          // Password unmasked: eyes peek playfully
+          eyes.forEach((eye) => {
+            eye.classList.remove('is-closed');
+            eye.classList.add('is-peeking');
+          });
         } else {
           btn.innerHTML = `
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -119,7 +269,32 @@
               <line x1="1" y1="1" x2="23" y2="23"></line>
             </svg>
           `;
+          // Password masked again: eyes close tightly if input is active or has text
+          const passwordInputs = document.querySelectorAll('input[name*="password"], #auth-password, #signup-password, #signup-confirm-password');
+          const isAnyFocused = Array.from(passwordInputs).some((p) => p === document.activeElement);
+          if (isAnyFocused || input.value.length > 0) {
+            eyes.forEach((eye) => {
+              eye.classList.remove('is-peeking');
+              eye.classList.add('is-closed');
+            });
+          } else {
+            eyes.forEach((eye) => eye.classList.remove('is-closed', 'is-peeking'));
+          }
         }
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     PREVENT WHITE BACKGROUND ON PASTE & AUTOFILL
+  ══════════════════════════════════════════════════════════════ */
+  function initPasteHandling() {
+    const inputs = document.querySelectorAll('.auth-input');
+    inputs.forEach((input) => {
+      input.addEventListener('paste', () => {
+        // Clear any inline styles that could be added by third-party extensions on paste
+        input.style.backgroundColor = '';
+        input.style.color = '';
       });
     });
   }

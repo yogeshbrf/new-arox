@@ -1,16 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-dark">
+<html lang="en">
 
 <head>
+  <style id="arox-critical-theme">
+    html { background-color: #0b0c11; }
+    html.theme-light, html.theme-light body, html:not(.dark) { background-color: #FFFFFF !important; color-scheme: light; }
+    html.theme-dark, html.theme-dark body, html.dark { background-color: #0b0c11 !important; color-scheme: dark; }
+  </style>
   <script>
     (function () {
-      const storedTheme = localStorage.getItem('arox-theme') || 'dark';
-      document.documentElement.className = 'theme-' + storedTheme;
-      if (storedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
+      try {
+        var storedTheme = localStorage.getItem('arox-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var isDark = storedTheme === 'dark';
+        var root = document.documentElement;
+        root.className = (root.className ? root.className.replace(/theme-[a-z]+|dark/g, '').trim() + ' ' : '') + 'theme-' + storedTheme + (isDark ? ' dark' : '');
+        root.style.colorScheme = storedTheme;
+        root.style.backgroundColor = isDark ? '#0b0c11' : '#FFFFFF';
+
+        var logoSrc = isDark ? 'public/assets/logo/logo-dark.png' : 'public/assets/logo/logo-light.png';
+        var syncElements = function () {
+          var logo = document.getElementById('nav-logo-img');
+          if (logo && logo.getAttribute('src') !== logoSrc) logo.src = logoSrc;
+          var fLogo = document.getElementById('footer-logo-img');
+          if (fLogo && fLogo.getAttribute('src') !== logoSrc) fLogo.src = logoSrc;
+          var cb = document.getElementById('theme-checkbox') || document.getElementById('checkbox');
+          if (cb && cb.checked !== !isDark) cb.checked = !isDark;
+        };
+
+        var obs = new MutationObserver(syncElements);
+        obs.observe(root, { childList: true, subtree: true });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          obs.disconnect();
+          document.querySelectorAll('#nav-logo-img, #footer-logo-img, .nav-logo img, .footer-brand-logo img').forEach(function (el) {
+            if (el) el.src = logoSrc;
+          });
+          document.querySelectorAll('#checkbox, #theme-checkbox, .theme-switch-checkbox').forEach(function (cb) {
+            cb.checked = !isDark;
+          });
+        });
+      } catch (e) {
+        document.documentElement.className = 'theme-dark dark';
       }
     })();
   </script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/coverflow.css" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AROX TECH - Building scalable software and systems</title>
@@ -46,13 +81,9 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/coverflow.css" />
-  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 
 <body>
-  <div class="page-transition-overlay" aria-hidden="true"></div>
   <div class="noise-overlay" aria-hidden="true"></div>
   <header id="site-header">
     <div class="nav-inner">
@@ -172,7 +203,6 @@
         <!-- Scroll Chevron Indicator (Static) -->
         <div class="mt-10 flex flex-col items-center opacity-60 hover:opacity-100 transition-opacity">
           <a href="#stats-section" aria-label="Scroll to stats" class="flex flex-col items-center gap-1 text-[var(--muted)] hover:text-[var(--heading)]">
-            <span class="text-[10px] font-mono uppercase tracking-widest">SCROLL</span>
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -212,77 +242,161 @@
         </div>
       </div>
     </section>
-    <div id="wcu-scene" class="wcu-scene">
-      <div id="wcu-sticky" class="wcu-sticky">
-        <div class="wcu-inner">
-          <div id="wcu-label" class="wcu-label">We Deliver</div>
-          <div id="wcu-list-wrap" class="wcu-list-wrap">
-            <div id="wcu-list" class="wcu-list">
-              <div class="wcu-item">Custom Software Solutions</div>
-              <div class="wcu-item">Premium UI/UX Experience</div>
-              <div class="wcu-item">AI-Powered Innovation</div>
-              <div class="wcu-item">Cloud-Ready Architecture</div>
-              <div class="wcu-item">Agile Development Process</div>
-              <div class="wcu-item">Business-First Solutions</div>
-              <div class="wcu-item">Long-Term Partnership</div>
+    <!-- ======================================================== -->
+    <!-- WE DELIVER: 3-COLUMN BALANCED 9-CARD SKEUOMORPHIC GRID    -->
+    <!-- ======================================================== -->
+    <section id="we-deliver-section" class="deliver-section-wrap" aria-label="We Deliver">
+      <!-- 3-Column Structured Card Grid (9 Cards Total) -->
+      <div class="deliver-grid-container" id="deliver-grid-container">
+        
+        <!-- Left Column (3 cards) -->
+        <div class="deliver-grid-col deliver-col-left">
+          <!-- 1. Custom Software Solutions -->
+          <article class="deliver-card deliver-grid-card" data-card="software">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
             </div>
-          </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Custom Software Solutions</h3>
+              <p class="deliver-card-tagline">Bespoke architectures engineered precisely for your unique operational workflows and scale.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 2. Premium UI/UX Experience -->
+          <article class="deliver-card deliver-grid-card" data-card="uiux">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <path d="M3 9h18"></path>
+                <path d="M9 21V9"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Premium UI/UX Experience</h3>
+              <p class="deliver-card-tagline">Human-centered, pixel-perfect interfaces crafted to drive engagement and retention.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 3. Cloud-Ready Architecture -->
+          <article class="deliver-card deliver-grid-card" data-card="cloud">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Cloud-Ready Architecture</h3>
+              <p class="deliver-card-tagline">Scalable, resilient, and secure microservices built for zero downtime and peak traffic.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
         </div>
+
+        <!-- Center Column (3 cards) -->
+        <div class="deliver-grid-col deliver-col-center">
+          <!-- 4. Agile Development Process (Top Flank) -->
+          <article class="deliver-card deliver-grid-card" data-card="agile">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 2v6h-6"></path>
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                <path d="M3 22v-6h6"></path>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Agile Development Process</h3>
+              <p class="deliver-card-tagline">Rapid sprint cycles, continuous feedback, and transparent, on-time milestones.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 5. WE DELIVER (Hero Center Card - Permanently Anchored in Center) -->
+          <article class="deliver-card deliver-hero-card" id="deliver-hero-card" data-card="hero">
+            <div class="deliver-card-body deliver-hero-body">
+              <h3 class="deliver-hero-title">We Deliver</h3>
+            </div>
+            <div class="card-rim-glow" aria-hidden="true"></div>
+            <div class="card-bottom-line" aria-hidden="true"></div>
+          </article>
+
+          <!-- 6. Robust Cyber Security (Bottom Flank) -->
+          <article class="deliver-card deliver-grid-card" data-card="security">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="M12 8v4"></path>
+                <path d="M12 16h.01"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Robust Cyber Security</h3>
+              <p class="deliver-card-tagline">Proactive threat intelligence, end-to-end encryption, and rigorous compliance.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+        </div>
+
+        <!-- Right Column (3 cards) -->
+        <div class="deliver-grid-col deliver-col-right">
+          <!-- 7. AI-Powered Innovation -->
+          <article class="deliver-card deliver-grid-card" data-card="ai">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">AI-Powered Innovation</h3>
+              <p class="deliver-card-tagline">Intelligent automation and predictive models embedded natively into your core stack.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 8. Business-First Solutions -->
+          <article class="deliver-card deliver-grid-card" data-card="business">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Business-First Solutions</h3>
+              <p class="deliver-card-tagline">Technology engineered with clear ROI and strategic revenue drivers.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+
+          <!-- 9. Long-Term Partnership -->
+          <article class="deliver-card deliver-grid-card" data-card="partnership">
+            <div class="deliver-squircle-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </div>
+            <div class="deliver-card-body">
+              <h3 class="deliver-card-title">Long-Term Partnership</h3>
+              <p class="deliver-card-tagline">Dedicated continuous maintenance, proactive optimization, and evolving features.</p>
+            </div>
+            <div class="deliver-card-spotlight" aria-hidden="true"></div>
+          </article>
+        </div>
+
       </div>
-      <!-- Mobile Static We Deliver (2 Rows: 3 cols & 2 cols, neat non-bg stroke icons) -->
-      <div class="wcu-mobile-view">
-        <div class="wcu-mobile-header">
-          <span class="section-eyebrow">WHAT WE BUILD</span>
-          <h2 class="text-h2 section-title">We Deliver</h2>
-        </div>
-        <div class="wcu-mobile-grid-row1">
-          <div class="wcu-mobile-item">
-            <svg class="wcu-mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <polyline points="16 18 22 12 16 6"></polyline>
-              <polyline points="8 6 2 12 8 18"></polyline>
-            </svg>
-            <span class="wcu-mobile-name">Custom Software</span>
-          </div>
-          <div class="wcu-mobile-item">
-            <svg class="wcu-mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-              <path d="M2 2l7.586 7.586"></path>
-              <circle cx="11" cy="11" r="2"></circle>
-            </svg>
-            <span class="wcu-mobile-name">UI/UX Design</span>
-          </div>
-          <div class="wcu-mobile-item">
-            <svg class="wcu-mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5a2 2 0 0 0 4 0c0-2 2-3 2-5a4 4 0 0 0-4-4z"></path>
-              <path d="M10 17h4"></path>
-              <path d="M11 21h2"></path>
-            </svg>
-            <span class="wcu-mobile-name">AI Innovation</span>
-          </div>
-        </div>
-        <div class="wcu-mobile-grid-row2">
-          <div class="wcu-mobile-item">
-            <svg class="wcu-mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
-            </svg>
-            <span class="wcu-mobile-name">Cloud Systems</span>
-          </div>
-          <div class="wcu-mobile-item">
-            <svg class="wcu-mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-            </svg>
-            <span class="wcu-mobile-name">Agile Process</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
     <section id="services-section">
       <div style="max-width:1400px;margin:0 auto;">
         <div class="services-header">
           <span class="section-eyebrow">OUR SERVICES</span>
-          <h2 class="text-h2 section-title">Our Service <span class="text-primary-gradient">Ecosystem</span></h2>
-          <p class="services-subtitle">End-to-end solutions designed to accelerate your digital growth.</p>
+          <h2 class="text-h2 section-title">Our Service Ecosystem</h2>
+         <center> <p class="services-subtitle">End-to-end solutions designed to accelerate your digital growth.</p>
         </div>
         <div style="width:100%;margin-top:3rem;position:relative;z-index:20;">
           <div class="card-grid bento-section" id="bento-grid"></div>
@@ -333,14 +447,6 @@
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
                 </button>
-              </div>
-              <div class="swipe-help">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5m-4 0V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v9"/>
-                  <path d="M22 13c0-1.66-1.34-3-3-3v3m-12 1v-3.5a1.5 1.5 0 0 1 3 0V15"/>
-                  <path d="M2 13a6 6 0 0 0 6 6h7a6 6 0 0 0 6-6V9a4 4 0 0 0-8 0v2m-6 3H2"/>
-                </svg>
-                <span>SWIPE TO VIEW</span>
               </div>
             </div>
           </div>
@@ -419,7 +525,7 @@
         </div>
 
         <!-- Row 1 / Col 2: Company -->
-        <details class="footer-col footer-col-company">
+        <details class="footer-col footer-col-company" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
@@ -437,17 +543,17 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="about.html"><span class="footer-link-arrow"></span> About Us</a></li>
-              <li><a class="footer-link" href="about.html#journey"><span class="footer-link-arrow"></span> Our Journey</a></li>
+              <li><a class="footer-link" href="about.html#mission-section"><span class="footer-link-arrow"></span> Purpose &amp; Vision</a></li>
+              <li><a class="footer-link" href="about.html#process-section"><span class="footer-link-arrow"></span> Operating Model</a></li>
               <li><a class="footer-link" href="apply.html"><span class="footer-link-arrow"></span> Careers</a></li>
-              <li><a class="footer-link" href="about.html#team"><span class="footer-link-arrow"></span> Core Team</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Partners</a></li>
-              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> News &amp; Updates</a></li>
+              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> Contact Us</a></li>
             </ul>
           </div>
         </details>
 
         <!-- Row 1 / Col 3: Services -->
-        <details class="footer-col footer-col-services">
+        <details class="footer-col footer-col-services" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
@@ -465,17 +571,17 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Software Development</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Design &amp; Dev</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> App Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> UI/UX &amp; Branding</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; Infrastructure</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Digital Marketing &amp; SEO</a></li>
             </ul>
           </div>
         </details>
 
         <!-- Row 1 / Col 4: Training -->
-        <details class="footer-col footer-col-training">
+        <details class="footer-col footer-col-training" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
@@ -492,25 +598,25 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cyber Security</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Mobile App Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-web-development&amp;from=training"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
+              <li><a class="footer-link" href="detail.html?course=cyber-security&amp;from=training"><span class="footer-link-arrow"></span> Cyber Security</a></li>
+              <li><a class="footer-link" href="detail.html?course=devops-engineering&amp;from=training"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-designing&amp;from=training"><span class="footer-link-arrow"></span> UI/UX Designing</a></li>
             </ul>
           </div>
         </details>
 
         <!-- Row 2 / Col 2: Internships -->
-        <details class="footer-col footer-col-internships">
+        <details class="footer-col footer-col-internships" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
               </div>
               <div>
-                <h3 class="footer-col-title">Internships</h3>
+                <h3 class="footer-col-title">Internship</h3>
                 <div class="footer-title-bar"></div>
               </div>
             </div>
@@ -520,18 +626,18 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Full Stack Internship</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Python Backend</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-internship&amp;from=internship"><span class="footer-link-arrow"></span> Full Stack Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=python-backend-internship&amp;from=internship"><span class="footer-link-arrow"></span> Python Backend</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-design-internship&amp;from=internship"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
+              <li><a class="footer-link" href="detail.html?course=ai-agent-internship&amp;from=internship"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=cloud-devops-internship&amp;from=internship"><span class="footer-link-arrow"></span> Cloud &amp; DevOps Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=mobile-app-internship&amp;from=internship"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
             </ul>
           </div>
         </details>
 
         <!-- Row 2 / Col 3: Contact -->
-        <details class="footer-col footer-col-contact">
+        <details class="footer-col footer-col-contact" open>
           <summary class="footer-col-header">
             <div class="footer-col-header-left">
               <div class="footer-col-icon">
@@ -565,35 +671,6 @@
                 <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
               </li>
             </ul>
-          </div>
-        </details>
-
-        <!-- Row 2 / Col 4: Stay Updated (Newsletter) -->
-        <details class="footer-col footer-col-newsletter">
-          <summary class="footer-col-header">
-            <div class="footer-col-header-left">
-              <div class="footer-col-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
-              </div>
-              <div>
-                <h3 class="footer-col-title">Stay Updated</h3>
-                <div class="footer-title-bar"></div>
-              </div>
-            </div>
-            <div class="footer-chevron">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-          </summary>
-          <div class="footer-col-body">
-            <div class="footer-newsletter">
-              <p class="footer-newsletter-desc">Subscribe to our newsletter for the latest tech releases, industry insights, and engineering updates.</p>
-              <form class="footer-newsletter-form" onsubmit="event.preventDefault();">
-                <input class="footer-newsletter-input" placeholder="Enter your email" required type="email" />
-                <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
-              </form>
-            </div>
           </div>
         </details>
       </div>

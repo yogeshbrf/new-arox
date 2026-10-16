@@ -1,15 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-dark">
+<html lang="en">
 <head>
+  <style id="arox-critical-theme">
+    html { background-color: #0b0c11; }
+    html.theme-light, html.theme-light body, html:not(.dark) { background-color: #FFFFFF !important; color-scheme: light; }
+    html.theme-dark, html.theme-dark body, html.dark { background-color: #0b0c11 !important; color-scheme: dark; }
+  </style>
   <script>
     (function () {
-      const storedTheme = localStorage.getItem('arox-theme') || 'dark';
-      document.documentElement.className = 'theme-' + storedTheme;
-      if (storedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
+      try {
+        var storedTheme = localStorage.getItem('arox-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var isDark = storedTheme === 'dark';
+        var root = document.documentElement;
+        root.className = (root.className ? root.className.replace(/theme-[a-z]+|dark/g, '').trim() + ' ' : '') + 'theme-' + storedTheme + (isDark ? ' dark' : '');
+        root.style.colorScheme = storedTheme;
+        root.style.backgroundColor = isDark ? '#0b0c11' : '#FFFFFF';
+
+        var logoSrc = isDark ? 'public/assets/logo/logo-dark.png' : 'public/assets/logo/logo-light.png';
+        var syncElements = function () {
+          var logo = document.getElementById('nav-logo-img');
+          if (logo && logo.getAttribute('src') !== logoSrc) logo.src = logoSrc;
+          var fLogo = document.getElementById('footer-logo-img');
+          if (fLogo && fLogo.getAttribute('src') !== logoSrc) fLogo.src = logoSrc;
+          var cb = document.getElementById('theme-checkbox') || document.getElementById('checkbox');
+          if (cb && cb.checked !== !isDark) cb.checked = !isDark;
+        };
+
+        var obs = new MutationObserver(syncElements);
+        obs.observe(root, { childList: true, subtree: true });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          obs.disconnect();
+          document.querySelectorAll('#nav-logo-img, #footer-logo-img, .nav-logo img, .footer-brand-logo img').forEach(function (el) {
+            if (el) el.src = logoSrc;
+          });
+          document.querySelectorAll('#checkbox, #theme-checkbox, .theme-switch-checkbox').forEach(function (cb) {
+            cb.checked = !isDark;
+          });
+        });
+      } catch (e) {
+        document.documentElement.className = 'theme-dark dark';
       }
     })();
   </script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/coverflow.css" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Internships | AROX Tech - Launch Your Engineering Career</title>
@@ -23,8 +58,6 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/coverflow.css" />
   <style>
     /* ============================================================
        MAGNETIC CAROUSEL - Skeuomorphic macOS-dock style
@@ -678,10 +711,8 @@
       .modal-right-panel { width: 100%; padding: 32px 24px; }
     }
   </style>
-  <script>if(sessionStorage.getItem('arox-page-transition'))document.documentElement.classList.add('page-is-entering');</script>
 </head>
 <body>
-  <div class="page-transition-overlay" aria-hidden="true"></div>
   <div class="noise-overlay" aria-hidden="true"></div>
   <header id="site-header">
     <div class="nav-inner">
@@ -1411,11 +1442,11 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="about.html"><span class="footer-link-arrow"></span> About Us</a></li>
-              <li><a class="footer-link" href="about.html#journey"><span class="footer-link-arrow"></span> Our Journey</a></li>
+              <li><a class="footer-link" href="about.html#mission-section"><span class="footer-link-arrow"></span> Purpose &amp; Vision</a></li>
+              <li><a class="footer-link" href="about.html#process-section"><span class="footer-link-arrow"></span> Operating Model</a></li>
               <li><a class="footer-link" href="apply.html"><span class="footer-link-arrow"></span> Careers</a></li>
-              <li><a class="footer-link" href="about.html#team"><span class="footer-link-arrow"></span> Core Team</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Partners</a></li>
-              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> News &amp; Updates</a></li>
+              <li><a class="footer-link" href="contact.html"><span class="footer-link-arrow"></span> Contact Us</a></li>
             </ul>
           </div>
         </details>
@@ -1439,10 +1470,10 @@
           <div class="footer-col-body">
             <ul class="footer-links">
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Software Development</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Design &amp; Dev</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Web Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> App Development</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> UI/UX &amp; Branding</a></li>
-              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; Infrastructure</a></li>
+              <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
               <li><a class="footer-link" href="services.html"><span class="footer-link-arrow"></span> Digital Marketing &amp; SEO</a></li>
             </ul>
           </div>
@@ -1466,12 +1497,12 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cyber Security</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="courses.html"><span class="footer-link-arrow"></span> Mobile App Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-web-development&amp;from=training"><span class="footer-link-arrow"></span> Full Stack Web Dev</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> Python &amp; Data Science</a></li>
+              <li><a class="footer-link" href="detail.html?course=data-science-and-ai&amp;from=training"><span class="footer-link-arrow"></span> AI &amp; Machine Learning</a></li>
+              <li><a class="footer-link" href="detail.html?course=cyber-security&amp;from=training"><span class="footer-link-arrow"></span> Cyber Security</a></li>
+              <li><a class="footer-link" href="detail.html?course=devops-engineering&amp;from=training"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-designing&amp;from=training"><span class="footer-link-arrow"></span> UI/UX Designing</a></li>
             </ul>
           </div>
         </details>
@@ -1484,7 +1515,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
               </div>
               <div>
-                <h3 class="footer-col-title">Internships</h3>
+                <h3 class="footer-col-title">Internship</h3>
                 <div class="footer-title-bar"></div>
               </div>
             </div>
@@ -1494,12 +1525,12 @@
           </summary>
           <div class="footer-col-body">
             <ul class="footer-links">
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Full Stack Internship</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Python Backend</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Cloud &amp; DevOps</a></li>
-              <li><a class="footer-link" href="internships.html"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=full-stack-internship&amp;from=internship"><span class="footer-link-arrow"></span> Full Stack Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=python-backend-internship&amp;from=internship"><span class="footer-link-arrow"></span> Python Backend</a></li>
+              <li><a class="footer-link" href="detail.html?course=ui-ux-design-internship&amp;from=internship"><span class="footer-link-arrow"></span> UI/UX Product Design</a></li>
+              <li><a class="footer-link" href="detail.html?course=ai-agent-internship&amp;from=internship"><span class="footer-link-arrow"></span> AI Agent Engineering</a></li>
+              <li><a class="footer-link" href="detail.html?course=cloud-devops-internship&amp;from=internship"><span class="footer-link-arrow"></span> Cloud &amp; DevOps Track</a></li>
+              <li><a class="footer-link" href="detail.html?course=mobile-app-internship&amp;from=internship"><span class="footer-link-arrow"></span> Mobile App Engineering</a></li>
             </ul>
           </div>
         </details>
@@ -1539,35 +1570,6 @@
                 <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
               </li>
             </ul>
-          </div>
-        </details>
-
-        <!-- Row 2 / Col 4: Stay Updated (Newsletter) -->
-        <details class="footer-col footer-col-newsletter" open>
-          <summary class="footer-col-header">
-            <div class="footer-col-header-left">
-              <div class="footer-col-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
-              </div>
-              <div>
-                <h3 class="footer-col-title">Stay Updated</h3>
-                <div class="footer-title-bar"></div>
-              </div>
-            </div>
-            <div class="footer-chevron">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-          </summary>
-          <div class="footer-col-body">
-            <div class="footer-newsletter">
-              <p class="footer-newsletter-desc">Subscribe to our newsletter for the latest tech releases, industry insights, and engineering updates.</p>
-              <form class="footer-newsletter-form" onsubmit="event.preventDefault();">
-                <input class="footer-newsletter-input" placeholder="Enter your email" required type="email" />
-                <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
-              </form>
-            </div>
           </div>
         </details>
       </div>
