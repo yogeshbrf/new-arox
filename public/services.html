@@ -636,87 +636,6 @@
             background: linear-gradient(to left, #F8FAFC, transparent);
         }
 
-        /* Category Floating Nav */
-        .category-floating-nav {
-            position: sticky;
-            top: 104px;
-            z-index: 35;
-            display: flex;
-            justify-content: center;
-            pointer-events: none;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
-        .category-floating-nav nav {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 8px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: rgba(11, 13, 16, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 9999px;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-            pointer-events: auto;
-            max-width: 100%;
-            overflow-x: auto;
-            transition: background 0.3s ease, border-color 0.3s ease;
-        }
-
-        .category-nav-pill {
-            padding: 8px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 9999px;
-            color: rgba(255, 255, 255, 0.75);
-            transition: all 0.25s ease;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .category-nav-pill:hover {
-            color: #FFFFFF;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .category-nav-pill.active {
-            background: #00D2FF;
-            color: #090C12;
-            font-weight: 700;
-            box-shadow: 0 0 16px rgba(0, 210, 255, 0.4);
-        }
-
-        .theme-light .category-floating-nav nav,
-        html.theme-light .category-floating-nav nav,
-        html:not(.dark) .category-floating-nav nav {
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-        }
-
-        .theme-light .category-nav-pill,
-        html.theme-light .category-nav-pill,
-        html:not(.dark) .category-nav-pill {
-            color: #64748B;
-        }
-
-        .theme-light .category-nav-pill:hover,
-        html.theme-light .category-nav-pill:hover,
-        html:not(.dark) .category-nav-pill:hover {
-            color: #0F172A;
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .theme-light .category-nav-pill.active,
-        html.theme-light .category-nav-pill.active,
-        html:not(.dark) .category-nav-pill.active {
-            background: #0066FF;
-            color: #FFFFFF;
-            font-weight: 700;
-            box-shadow: 0 4px 14px rgba(0, 102, 255, 0.35);
-        }
     </style>
 </head>
 <body>
@@ -1206,45 +1125,6 @@
         // MAIN APP
         // ------------------------------------------------------------
         function App() {
-            const [activeIdx, setActiveIdx] = useState(0);
-
-            const handleSelectCategory = (i) => {
-                setActiveIdx(i);
-                const targetEl = document.getElementById(`domain-section-${i}`);
-                if (targetEl) {
-                    const headerOffset = 110;
-                    const elementPosition = targetEl.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    if (window.lenis) {
-                        window.lenis.scrollTo(offsetPosition, { duration: 0.9 });
-                    } else {
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            };
-
-            // Active category indicator based on scroll position
-            useEffect(() => {
-                const handleScroll = () => {
-                    const scrollPos = window.scrollY + 220;
-                    let currentIdx = 0;
-                    CATEGORIES.forEach((_, idx) => {
-                        const el = document.getElementById(`domain-section-${idx}`);
-                        if (el && el.offsetTop <= scrollPos) {
-                            currentIdx = idx;
-                        }
-                    });
-                    setActiveIdx(currentIdx);
-                };
-
-                window.addEventListener('scroll', handleScroll, { passive: true });
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
-
             // Lenis smooth scroll initialization
             useEffect(() => {
                 if ('scrollRestoration' in history) {
@@ -1276,24 +1156,6 @@
             return (
                 <div className="w-full" style={{ backgroundColor: 'var(--background)', color: 'var(--body)' }}>
                     
-                    {/* Floating Domain Quick Jump Pills */}
-                    <div className="category-floating-nav">
-                        <nav aria-label="Service Domains Navigation">
-                            {CATEGORIES.map((cat, i) => {
-                                const isActive = activeIdx === i;
-                                return (
-                                    <button 
-                                        key={cat.id} 
-                                        className={`category-nav-pill ${isActive ? 'active' : ''}`}
-                                        onClick={() => handleSelectCategory(i)}
-                                    >
-                                        {cat.name}
-                                    </button>
-                                );
-                            })}
-                        </nav>
-                    </div>
-
                     {/* 4 Service Domain Containers */}
                     <div id="services-domains" className="w-full py-8 md:py-14 px-4 sm:px-6 lg:px-8 max-w-[1360px] mx-auto flex flex-col gap-12 md:gap-16">
                         {CATEGORIES.map((domain, domainIdx) => (
