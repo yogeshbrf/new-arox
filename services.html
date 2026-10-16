@@ -178,7 +178,7 @@
         }
 
         /* =========================================================
-           REFINED SERVICE DOMAINS & CARDS (Matches Reference Image)
+           REFINED SERVICE DOMAINS & CARDS (Dark & Light Theme)
         ========================================================= */
         .domain-section-card {
             background: #0B0D10;
@@ -187,10 +187,25 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-            transition: border-color 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             max-width: 1360px;
             margin: 0 auto;
             width: 100%;
+        }
+
+        .domain-title {
+            color: #FFFFFF;
+            transition: color 0.3s ease;
+        }
+
+        .domain-tagline {
+            color: #A0A5AD;
+            transition: color 0.3s ease;
+        }
+
+        .domain-divider {
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: background-color 0.3s ease;
         }
 
         @media (max-width: 768px) {
@@ -200,7 +215,34 @@
             }
         }
 
-        /* Individual Service Card */
+        /* Light Theme Domain Section */
+        .theme-light .domain-section-card,
+        html.theme-light .domain-section-card,
+        html:not(.dark) .domain-section-card {
+            background: #F8FAFC;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.06);
+        }
+
+        .theme-light .domain-title,
+        html.theme-light .domain-title,
+        html:not(.dark) .domain-title {
+            color: #0F172A;
+        }
+
+        .theme-light .domain-tagline,
+        html.theme-light .domain-tagline,
+        html:not(.dark) .domain-tagline {
+            color: #64748B;
+        }
+
+        .theme-light .domain-divider,
+        html.theme-light .domain-divider,
+        html:not(.dark) .domain-divider {
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Individual Service Card (Single-Row Horizontal Item) */
         .arox-service-card {
             background: #262729;
             border-radius: 30px;
@@ -209,14 +251,43 @@
             flex-direction: column;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, background 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
             user-select: none;
+            width: 360px;
+            min-width: 360px;
+            max-width: 360px;
+            flex-shrink: 0;
         }
 
         .arox-service-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65);
+        }
+
+        @media (max-width: 768px) {
+            .arox-service-card {
+                width: 290px;
+                min-width: 290px;
+                max-width: 290px;
+                padding: 20px 16px 16px 16px;
+                border-radius: 26px;
+            }
+        }
+
+        /* Light Theme Service Card */
+        .theme-light .arox-service-card,
+        html.theme-light .arox-service-card,
+        html:not(.dark) .arox-service-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .theme-light .arox-service-card:hover,
+        html.theme-light .arox-service-card:hover,
+        html:not(.dark) .arox-service-card:hover {
+            box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12);
         }
 
         .card-title-text {
@@ -228,14 +299,21 @@
             min-height: 64px;
             display: flex;
             align-items: center;
+            transition: color 0.3s ease;
         }
 
         @media (max-width: 640px) {
             .card-title-text {
-                font-size: 1.45rem;
-                min-height: auto;
-                padding-bottom: 12px;
+                font-size: 1.4rem;
+                min-height: 52px;
+                padding-bottom: 10px;
             }
+        }
+
+        .theme-light .card-title-text,
+        html.theme-light .card-title-text,
+        html:not(.dark) .card-title-text {
+            color: #0F172A;
         }
 
         /* Stacked Tabs */
@@ -260,6 +338,12 @@
             transition: background-color 0.3s ease;
         }
 
+        .theme-light .tab-layer-top,
+        html.theme-light .tab-layer-top,
+        html:not(.dark) .tab-layer-top {
+            background: #CBD5E1;
+        }
+
         .tab-layer-mid {
             width: 88%;
             height: 12px;
@@ -267,6 +351,12 @@
             border-radius: 16px 16px 0 0;
             margin: 0 auto;
             transition: background-color 0.3s ease;
+        }
+
+        .theme-light .tab-layer-mid,
+        html.theme-light .tab-layer-mid,
+        html:not(.dark) .tab-layer-mid {
+            background: #94A3B8;
         }
 
         /* Media Box */
@@ -278,12 +368,38 @@
             border-radius: 24px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         @media (max-width: 640px) {
             .media-box {
-                height: 210px;
+                height: 200px;
+                border-radius: 20px;
             }
+        }
+
+        .theme-light .media-box,
+        html.theme-light .media-box,
+        html:not(.dark) .media-box {
+            background: #F1F5F9;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .media-img-light {
+            display: none;
+        }
+        .media-img-dark {
+            display: block;
+        }
+        .theme-light .media-img-light,
+        html.theme-light .media-img-light,
+        html:not(.dark) .media-img-light {
+            display: block !important;
+        }
+        .theme-light .media-img-dark,
+        html.theme-light .media-img-dark,
+        html:not(.dark) .media-img-dark {
+            display: none !important;
         }
 
         /* Bottom-Right Concave Notched Cutout */
@@ -296,6 +412,21 @@
             background: #262729; /* Matches card background */
             border-top-left-radius: 32px;
             z-index: 20;
+            transition: background 0.3s ease;
+        }
+
+        @media (max-width: 640px) {
+            .notch-cutout {
+                width: 72px;
+                height: 72px;
+                border-top-left-radius: 28px;
+            }
+        }
+
+        .theme-light .notch-cutout,
+        html.theme-light .notch-cutout,
+        html:not(.dark) .notch-cutout {
+            background: #FFFFFF;
         }
 
         /* Inverted Fillet Top */
@@ -308,6 +439,13 @@
             height: 24px;
             background: radial-gradient(circle at 0 0, transparent 23.5px, #262729 24px);
             pointer-events: none;
+            transition: background 0.3s ease;
+        }
+
+        .theme-light .notch-cutout::before,
+        html.theme-light .notch-cutout::before,
+        html:not(.dark) .notch-cutout::before {
+            background: radial-gradient(circle at 0 0, transparent 23.5px, #FFFFFF 24px);
         }
 
         /* Inverted Fillet Left */
@@ -320,6 +458,13 @@
             height: 24px;
             background: radial-gradient(circle at 0 0, transparent 23.5px, #262729 24px);
             pointer-events: none;
+            transition: background 0.3s ease;
+        }
+
+        .theme-light .notch-cutout::after,
+        html.theme-light .notch-cutout::after,
+        html:not(.dark) .notch-cutout::after {
+            background: radial-gradient(circle at 0 0, transparent 23.5px, #FFFFFF 24px);
         }
 
         /* Circular Action Button */
@@ -341,6 +486,15 @@
             outline: none;
         }
 
+        @media (max-width: 640px) {
+            .card-action-btn {
+                width: 52px;
+                height: 52px;
+                bottom: 8px;
+                right: 8px;
+            }
+        }
+
         .arox-service-card:hover .card-action-btn {
             background: #00D2FF;
             transform: scale(1.05);
@@ -352,8 +506,134 @@
             transform: translate(1px, -1px);
         }
 
+        .theme-light .card-action-btn,
+        html.theme-light .card-action-btn,
+        html:not(.dark) .card-action-btn {
+            background: #0F172A;
+        }
+
+        .theme-light .arox-service-card:hover .card-action-btn,
+        html.theme-light .arox-service-card:hover .card-action-btn,
+        html:not(.dark) .arox-service-card:hover .card-action-btn {
+            background: #0066FF;
+            box-shadow: 0 0 22px rgba(0, 102, 255, 0.45);
+        }
+
+        .theme-light .arox-service-card:hover .card-action-btn svg,
+        html.theme-light .arox-service-card:hover .card-action-btn svg,
+        html:not(.dark) .arox-service-card:hover .card-action-btn svg {
+            stroke: #FFFFFF;
+            transform: translate(1px, -1px);
+        }
+
         .card-action-btn svg {
             transition: stroke 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Carousel Navigation Arrow Buttons */
+        .domain-scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 35;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(20, 22, 28, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .domain-scroll-arrow:hover {
+            background: #00D2FF;
+            color: #090C12;
+            border-color: #00D2FF;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 24px rgba(0, 210, 255, 0.5);
+        }
+
+        .domain-scroll-arrow:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .domain-scroll-arrow-left {
+            left: -18px;
+        }
+
+        .domain-scroll-arrow-right {
+            right: -18px;
+        }
+
+        @media (max-width: 768px) {
+            .domain-scroll-arrow {
+                width: 42px;
+                height: 42px;
+            }
+            .domain-scroll-arrow-left {
+                left: 4px;
+            }
+            .domain-scroll-arrow-right {
+                right: 4px;
+            }
+        }
+
+        .theme-light .domain-scroll-arrow,
+        html.theme-light .domain-scroll-arrow,
+        html:not(.dark) .domain-scroll-arrow {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            color: #0F172A;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-light .domain-scroll-arrow:hover,
+        html.theme-light .domain-scroll-arrow:hover,
+        html:not(.dark) .domain-scroll-arrow:hover {
+            background: #0066FF;
+            color: #FFFFFF;
+            border-color: #0066FF;
+            box-shadow: 0 0 24px rgba(0, 102, 255, 0.4);
+        }
+
+        /* Edge Fades */
+        .domain-edge-fade {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 48px;
+            pointer-events: none;
+            z-index: 25;
+            transition: opacity 0.3s ease;
+        }
+
+        .domain-edge-fade-left {
+            left: 0;
+            background: linear-gradient(to right, #0B0D10, transparent);
+        }
+
+        .domain-edge-fade-right {
+            right: 0;
+            background: linear-gradient(to left, #0B0D10, transparent);
+        }
+
+        .theme-light .domain-edge-fade-left,
+        html.theme-light .domain-edge-fade-left,
+        html:not(.dark) .domain-edge-fade-left {
+            background: linear-gradient(to right, #F8FAFC, transparent);
+        }
+
+        .theme-light .domain-edge-fade-right,
+        html.theme-light .domain-edge-fade-right,
+        html:not(.dark) .domain-edge-fade-right {
+            background: linear-gradient(to left, #F8FAFC, transparent);
         }
 
         /* Category Floating Nav */
@@ -382,6 +662,7 @@
             pointer-events: auto;
             max-width: 100%;
             overflow-x: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .category-nav-pill {
@@ -405,6 +686,36 @@
             color: #090C12;
             font-weight: 700;
             box-shadow: 0 0 16px rgba(0, 210, 255, 0.4);
+        }
+
+        .theme-light .category-floating-nav nav,
+        html.theme-light .category-floating-nav nav,
+        html:not(.dark) .category-floating-nav nav {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .theme-light .category-nav-pill,
+        html.theme-light .category-nav-pill,
+        html:not(.dark) .category-nav-pill {
+            color: #64748B;
+        }
+
+        .theme-light .category-nav-pill:hover,
+        html.theme-light .category-nav-pill:hover,
+        html:not(.dark) .category-nav-pill:hover {
+            color: #0F172A;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-light .category-nav-pill.active,
+        html.theme-light .category-nav-pill.active,
+        html:not(.dark) .category-nav-pill.active {
+            background: #0066FF;
+            color: #FFFFFF;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(0, 102, 255, 0.35);
         }
     </style>
 </head>
@@ -726,7 +1037,7 @@
             return (
                 <div 
                     onClick={handleNavigate}
-                    className="arox-service-card group"
+                    className="arox-service-card group snap-start"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleNavigate(); }}
@@ -742,14 +1053,21 @@
                         <div className="tab-layer-mid"></div>
                     </div>
 
-                    {/* 3. Service Illustration Container */}
+                    {/* 3. Service Illustration Container (Dual Theme Light & Dark Images) */}
                     <div className="media-box">
                         <img 
-                            src={service.imgDark || service.imgLight || service.img} 
+                            src={service.imgLight || service.img} 
                             alt={service.name}
                             loading="lazy"
                             draggable="false"
-                            className="w-full h-full object-cover p-3"
+                            className="media-img-light w-full h-full object-cover p-3"
+                        />
+                        <img 
+                            src={service.imgDark || service.img} 
+                            alt={service.name}
+                            loading="lazy"
+                            draggable="false"
+                            className="media-img-dark w-full h-full object-cover p-3"
                         />
 
                         {/* 4. Bottom-Right Concave Notched Cutout & Circular Action Button */}
@@ -763,13 +1081,124 @@
                                 }}
                                 className="card-action-btn"
                             >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M7 17L17 7M17 7H9M17 7V15" />
                                 </svg>
                             </button>
                         </div>
                     </div>
                 </div>
+            );
+        }
+
+        function DomainSection({ domain, domainIdx }) {
+            const trackRef = useRef(null);
+            const [canScrollLeft, setCanScrollLeft] = useState(false);
+            const [canScrollRight, setCanScrollRight] = useState(false);
+
+            const updateArrows = () => {
+                const el = trackRef.current;
+                if (!el) return;
+                const canLeft = el.scrollLeft > 15;
+                const canRight = el.scrollLeft < el.scrollWidth - el.clientWidth - 15;
+                setCanScrollLeft(canLeft);
+                setCanScrollRight(canRight);
+            };
+
+            useEffect(() => {
+                updateArrows();
+                const el = trackRef.current;
+                if (!el) return;
+                el.addEventListener('scroll', updateArrows, { passive: true });
+                window.addEventListener('resize', updateArrows);
+                const timer = setTimeout(updateArrows, 300);
+                return () => {
+                    el.removeEventListener('scroll', updateArrows);
+                    window.removeEventListener('resize', updateArrows);
+                    clearTimeout(timer);
+                };
+            }, [domain.services]);
+
+            const scrollByAmount = (direction) => {
+                const el = trackRef.current;
+                if (!el) return;
+                const card = el.querySelector('.arox-service-card');
+                const step = card ? card.offsetWidth + 24 : 384;
+                el.scrollBy({ left: step * direction, behavior: 'smooth' });
+            };
+
+            return (
+                <section 
+                    id={`domain-section-${domainIdx}`} 
+                    className="domain-section-card"
+                >
+                    {/* Top Header Bar */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <h2 className="domain-title font-bold text-4xl sm:text-5xl lg:text-[3.25rem] tracking-tight leading-none">
+                                {domain.name}
+                            </h2>
+                        </div>
+                        <p className="domain-tagline text-sm md:text-[0.95rem] leading-[1.55] max-w-[440px] md:text-right">
+                            {domain.tagline}
+                        </p>
+                    </div>
+
+                    {/* Divider Line */}
+                    <div className="domain-divider w-full h-[1px] mt-6 mb-9"></div>
+
+                    {/* Horizontal Track Container */}
+                    <div className="relative w-full group/carousel">
+                        
+                        {/* Left Navigation Arrow (Only appears if service cards exist to the left) */}
+                        {canScrollLeft && (
+                            <button
+                                type="button"
+                                aria-label={`Previous ${domain.name} services`}
+                                onClick={() => scrollByAmount(-1)}
+                                className="domain-scroll-arrow domain-scroll-arrow-left"
+                            >
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                            </button>
+                        )}
+
+                        {/* Right Navigation Arrow (Only appears if service cards exist to the right) */}
+                        {canScrollRight && (
+                            <button
+                                type="button"
+                                aria-label={`Next ${domain.name} services`}
+                                onClick={() => scrollByAmount(1)}
+                                className="domain-scroll-arrow domain-scroll-arrow-right"
+                            >
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        )}
+
+                        {/* Edge Fades */}
+                        <div 
+                            className="domain-edge-fade domain-edge-fade-left" 
+                            style={{ opacity: canScrollLeft ? 1 : 0 }} 
+                        />
+                        <div 
+                            className="domain-edge-fade domain-edge-fade-right" 
+                            style={{ opacity: canScrollRight ? 1 : 0 }} 
+                        />
+
+                        {/* Horizontal Cards Row (Single Column / Row) */}
+                        <div 
+                            ref={trackRef}
+                            className="flex items-stretch gap-6 overflow-x-auto hide-scroll snap-x snap-mandatory py-2 px-1"
+                        >
+                            {domain.services.map((svc, sIdx) => (
+                                <ServiceCard key={sIdx} service={svc} />
+                            ))}
+                        </div>
+                    </div>
+                </section>
             );
         }
 
@@ -868,33 +1297,11 @@
                     {/* 4 Service Domain Containers */}
                     <div id="services-domains" className="w-full py-8 md:py-14 px-4 sm:px-6 lg:px-8 max-w-[1360px] mx-auto flex flex-col gap-12 md:gap-16">
                         {CATEGORIES.map((domain, domainIdx) => (
-                            <section 
+                            <DomainSection 
                                 key={domain.id} 
-                                id={`domain-section-${domainIdx}`} 
-                                className="domain-section-card"
-                            >
-                                {/* Top Header Bar: Flex header row */}
-                                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                                    <div>
-                                        <h2 className="text-white font-bold text-4xl sm:text-5xl lg:text-[3.25rem] tracking-tight leading-none">
-                                            {domain.name}
-                                        </h2>
-                                    </div>
-                                    <p className="text-[#A0A5AD] text-sm md:text-[0.95rem] leading-[1.55] max-w-[440px] md:text-right">
-                                        {domain.tagline}
-                                    </p>
-                                </div>
-
-                                {/* Divider Line: Subtle crisp horizontal divider */}
-                                <div className="w-full h-[1px] bg-white/15 mt-6 mb-9"></div>
-
-                                {/* 3-Column Responsive Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {domain.services.map((svc, sIdx) => (
-                                        <ServiceCard key={sIdx} service={svc} />
-                                    ))}
-                                </div>
-                            </section>
+                                domain={domain} 
+                                domainIdx={domainIdx} 
+                            />
                         ))}
                     </div>
 
